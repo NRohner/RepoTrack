@@ -22,6 +22,8 @@ export function KanbanBoard({ issues, activeTab, onIssueClick, onStatusChange }:
   const [collapsedCols, setCollapsedCols] = useState<Set<string>>(
     () => new Set(COLUMNS.filter((c) => c.collapsed).map((c) => c.key))
   );
+  const [dragOverCol, setDragOverCol] = useState<string | null>(null);
+  const [draggingId, setDraggingId] = useState<string | null>(null);
 
   const toggleCollapse = (key: string) => {
     setCollapsedCols((prev) => {
@@ -43,15 +45,30 @@ export function KanbanBoard({ issues, activeTab, onIssueClick, onStatusChange }:
   const handleDragStart = (e: React.DragEvent, issue: Issue) => {
     e.dataTransfer.setData("issue-id", issue.id);
     e.dataTransfer.effectAllowed = "move";
+    setDraggingId(issue.id);
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
+  const handleDragEnd = () => {
+    setDraggingId(null);
+    setDragOverCol(null);
+  };
+
+  const handleDragOver = (e: React.DragEvent, columnKey: string) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = "move";
+    setDragOverCol(columnKey);
+  };
+
+  const handleDragLeave = (e: React.DragEvent, columnKey: string) => {
+    const relatedTarget = e.relatedTarget as Node | null;
+    if (relatedTarget && (e.currentTarget as Node).contains(relatedTarget)) return;
+    if (dragOverCol === columnKey) setDragOverCol(null);
   };
 
   const handleDrop = (e: React.DragEvent, columnKey: string) => {
     e.preventDefault();
+    setDragOverCol(null);
+    setDraggingId(null);
     const issueId = e.dataTransfer.getData("issue-id");
     const issue = issues.find((i) => i.id === issueId);
     if (!issue) return;
@@ -75,8 +92,13 @@ export function KanbanBoard({ issues, activeTab, onIssueClick, onStatusChange }:
         return (
           <div
             key={column.key}
-            className={`flex flex-col ${isCollapsed ? "w-12" : "min-w-[280px] w-[280px]"} shrink-0 transition-all`}
-            onDragOver={handleDragOver}
+            className={`flex flex-col ${isCollapsed ? "w-12" : "min-w-[280px] w-[280px]"} shrink-0 transition-all rounded-xl ${
+              dragOverCol === column.key
+                ? "bg-accent-500/10 ring-2 ring-accent-500/40"
+                : ""
+            }`}
+            onDragOver={(e) => handleDragOver(e, column.key)}
+            onDragLeave={(e) => handleDragLeave(e, column.key)}
             onDrop={(e) => handleDrop(e, column.key)}
           >
             {/* Column header */}
@@ -113,8 +135,11 @@ export function KanbanBoard({ issues, activeTab, onIssueClick, onStatusChange }:
                     key={issue.id}
                     draggable
                     onDragStart={(e) => handleDragStart(e, issue)}
+                    onDragEnd={handleDragEnd}
                     onClick={() => onIssueClick(issue)}
-                    className="bg-white dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700 p-3 cursor-pointer hover:border-accent-500/50 hover:shadow-lg transition-all group"
+                    className={`bg-white dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700 p-3 cursor-grab hover:border-accent-500/50 hover:shadow-lg transition-all group active:cursor-grabbing ${
+                      draggingId === issue.id ? "opacity-40" : ""
+                    }`}
                   >
                     <div className="flex items-start gap-2">
                       <div
