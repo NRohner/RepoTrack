@@ -4,6 +4,7 @@ import { useAppStore } from "@/lib/store";
 import type { IssueType, Severity, CreateIssueRequest } from "@/lib/types";
 import { SEVERITIES } from "@/lib/types";
 import { TypeIcon } from "@/shared/components/TypeIcon";
+import { SegmentedControl } from "@/shared/components/SegmentedControl";
 import { IoClose } from "react-icons/io5";
 
 interface NewIssueFormProps {
@@ -146,21 +147,16 @@ export function NewIssueForm({ defaultType, onClose, existingTags }: NewIssueFor
 
         <div className="flex-1 overflow-y-auto p-6 space-y-5">
           {/* Type selector */}
-          <div className="flex bg-surface-100 dark:bg-surface-800 rounded-lg p-1">
-            {TYPE_OPTIONS.map((opt) => (
-              <button
-                key={opt.key}
-                onClick={() => setIssueType(opt.key)}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-sm font-medium transition-all ${
-                  issueType === opt.key
-                    ? "bg-white dark:bg-surface-700 shadow-sm dark:text-white"
-                    : "text-surface-500 hover:text-surface-700 dark:hover:text-surface-300"
-                }`}
-              >
-                <TypeIcon type={opt.key} className="w-4 h-4" /> {opt.label}
-              </button>
-            ))}
-          </div>
+          <SegmentedControl
+            options={TYPE_OPTIONS.map((opt) => ({
+              key: opt.key,
+              label: opt.label,
+              icon: <TypeIcon type={opt.key} className="w-4 h-4" />,
+            }))}
+            value={issueType}
+            onChange={setIssueType}
+            size="md"
+          />
 
           {/* Template */}
           <div className="flex gap-2">

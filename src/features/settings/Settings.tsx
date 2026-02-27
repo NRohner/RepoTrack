@@ -3,6 +3,7 @@ import { useAppStore } from "@/lib/store";
 import * as api from "@/lib/api";
 import type { UserPreferences } from "@/lib/types";
 import { Modal } from "@/shared/components/Modal";
+import { SegmentedControl } from "@/shared/components/SegmentedControl";
 
 export function Settings() {
   const { theme, setTheme, activeProject, activeProjectPath, addToast } = useAppStore();
@@ -108,21 +109,15 @@ export function Settings() {
       <div className="p-6 max-w-3xl space-y-8">
         {/* Theme */}
         <SettingsSection title="Appearance" description="Customize the look and feel">
-          <div className="flex gap-3">
-            {(["light", "dark", "system"] as const).map((t) => (
-              <button
-                key={t}
-                onClick={() => handleThemeChange(t)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium capitalize transition-all ${
-                  theme === t
-                    ? "bg-accent-600 text-white shadow-md"
-                    : "bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-400 hover:bg-surface-200 dark:hover:bg-surface-700"
-                }`}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
+          <SegmentedControl
+            options={[
+              { key: "light" as const, label: "Light" },
+              { key: "dark" as const, label: "Dark" },
+              { key: "system" as const, label: "System" },
+            ]}
+            value={theme}
+            onChange={handleThemeChange}
+          />
         </SettingsSection>
 
         {/* Default View */}

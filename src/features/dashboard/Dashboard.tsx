@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import * as api from "@/lib/api";
 import { useAppStore } from "@/lib/store";
 import type { ProjectStats } from "@/lib/types";
+import { SegmentedControl } from "@/shared/components/SegmentedControl";
 import { OverviewDashboard } from "./OverviewDashboard";
 import { BugsDashboard } from "./BugsDashboard";
 import { FeaturesDashboard } from "./FeaturesDashboard";
@@ -59,21 +60,12 @@ export function Dashboard() {
     <div className="h-full overflow-auto">
       <div className="px-6 py-4 border-b border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-900 flex items-center justify-between sticky top-0 z-10">
         <h1 className="text-xl font-bold dark:text-white">Dashboard</h1>
-        <div className="flex bg-surface-100 dark:bg-surface-800 rounded-lg p-0.5">
-          {tabs.map((t) => (
-            <button
-              key={t.key}
-              onClick={() => setTab(t.key)}
-              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${
-                tab === t.key
-                  ? "bg-white dark:bg-surface-700 shadow-sm dark:text-white"
-                  : "text-surface-500 hover:text-surface-700 dark:hover:text-surface-300"
-              }`}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
+        <SegmentedControl
+          options={tabs.map((t) => ({ key: t.key, label: t.label }))}
+          value={tab}
+          onChange={setTab}
+          size="sm"
+        />
       </div>
       <div className="p-6">
         {tab === "overview" && <OverviewDashboard stats={stats} />}

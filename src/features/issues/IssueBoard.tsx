@@ -13,6 +13,7 @@ import { LuClipboardList } from "react-icons/lu";
 import { IoClose } from "react-icons/io5";
 import { StatusBadge, SeverityBadge } from "@/shared/components/StatusBadge";
 import { TypeIcon } from "@/shared/components/TypeIcon";
+import { SegmentedControl } from "@/shared/components/SegmentedControl";
 import { IssueDetail } from "./IssueDetail";
 import { NewIssueForm } from "./NewIssueForm";
 import { KanbanBoard } from "./KanbanBoard";
@@ -224,28 +225,15 @@ export function IssueBoard() {
           <h1 className="text-xl font-bold dark:text-white">Issues</h1>
           <div className="flex items-center gap-2">
             {/* Layout toggle */}
-            <div className="flex bg-surface-100 dark:bg-surface-800 rounded-lg p-0.5">
-              <button
-                onClick={() => setLayout("table")}
-                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
-                  layout === "table"
-                    ? "bg-white dark:bg-surface-700 shadow-sm dark:text-white"
-                    : "text-surface-500 hover:text-surface-700 dark:hover:text-surface-300"
-                }`}
-              >
-                Table
-              </button>
-              <button
-                onClick={() => setLayout("kanban")}
-                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
-                  layout === "kanban"
-                    ? "bg-white dark:bg-surface-700 shadow-sm dark:text-white"
-                    : "text-surface-500 hover:text-surface-700 dark:hover:text-surface-300"
-                }`}
-              >
-                Kanban
-              </button>
-            </div>
+            <SegmentedControl
+              options={[
+                { key: "table" as LayoutMode, label: "Table" },
+                { key: "kanban" as LayoutMode, label: "Kanban" },
+              ]}
+              value={layout}
+              onChange={setLayout}
+              size="sm"
+            />
             {/* New issue button */}
             <button
               onClick={() => setShowNewIssue(true)}
@@ -260,25 +248,17 @@ export function IssueBoard() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1">
-          {tabs.map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                activeTab === tab.key
-                  ? "bg-accent-600/10 text-accent-600 dark:text-accent-400"
-                  : "text-surface-500 hover:bg-surface-100 dark:hover:bg-surface-800"
-              }`}
-            >
-              {tab.icon}
-              {tab.label}
-              <span className="text-xs bg-surface-200 dark:bg-surface-700 px-1.5 py-0.5 rounded-full">
-                {tabCounts[tab.key] || 0}
-              </span>
-            </button>
-          ))}
-        </div>
+        <SegmentedControl
+          options={tabs.map((tab) => ({
+            key: tab.key,
+            label: tab.label,
+            icon: tab.icon ?? undefined,
+            badge: tabCounts[tab.key] || 0,
+          }))}
+          value={activeTab}
+          onChange={setActiveTab}
+          variant="accent"
+        />
       </div>
 
       {/* Filters */}

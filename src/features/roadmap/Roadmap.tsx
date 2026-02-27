@@ -15,6 +15,8 @@ export function Roadmap() {
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [tagFilter, setTagFilter] = useState<string>("");
   const [collapsedCols, setCollapsedCols] = useState<Set<string>>(new Set());
+  const [dragOverCol, setDragOverCol] = useState<string | null>(null);
+  const [draggingId, setDraggingId] = useState<string | null>(null);
 
   const features = useMemo(() => {
     let result = issues.filter((i) => i.type === "feature");
@@ -40,8 +42,33 @@ export function Roadmap() {
     return Array.from(set).sort();
   }, [features]);
 
+  const handleDragStart = (e: React.DragEvent, issueId: string) => {
+    e.dataTransfer.setData("issue-id", issueId);
+    e.dataTransfer.effectAllowed = "move";
+    setDraggingId(issueId);
+  };
+
+  const handleDragEnd = () => {
+    setDraggingId(null);
+    setDragOverCol(null);
+  };
+
+  const handleDragOver = (e: React.DragEvent, quarter: string) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    setDragOverCol(quarter);
+  };
+
+  const handleDragLeave = (e: React.DragEvent, quarter: string) => {
+    const relatedTarget = e.relatedTarget as Node | null;
+    if (relatedTarget && (e.currentTarget as Node).contains(relatedTarget)) return;
+    if (dragOverCol === quarter) setDragOverCol(null);
+  };
+
   const handleDrop = async (e: React.DragEvent, quarter: string) => {
     e.preventDefault();
+    setDragOverCol(null);
+    setDraggingId(null);
     const issueId = e.dataTransfer.getData("issue-id");
     const issue = issues.find((i) => i.id === issueId);
     if (!issue || issue.roadmap_quarter === quarter) return;
@@ -123,8 +150,13 @@ export function Roadmap() {
             return (
               <div
                 key={col.quarter}
-                className={`flex flex-col ${collapsed ? "w-12" : "min-w-[280px] w-[280px]"} shrink-0 transition-all`}
-                onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; }}
+                className={`flex flex-col ${collapsed ? "w-12" : "min-w-[280px] w-[280px]"} shrink-0 transition-all rounded-xl ${
+                  dragOverCol === col.quarter
+                    ? "bg-accent-500/10 ring-2 ring-accent-500/40"
+                    : ""
+                }`}
+                onDragOver={(e) => handleDragOver(e, col.quarter)}
+                onDragLeave={(e) => handleDragLeave(e, col.quarter)}
                 onDrop={(e) => handleDrop(e, col.quarter)}
               >
                 {/* Column header */}
@@ -165,11 +197,11 @@ export function Roadmap() {
                       <div
                         key={feature.id}
                         draggable
-                        onDragStart={(e) => {
-                          e.dataTransfer.setData("issue-id", feature.id);
-                          e.dataTransfer.effectAllowed = "move";
-                        }}
-                        className="bg-white dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700 p-3 cursor-grab hover:border-accent-500/50 hover:shadow-md transition-all active:cursor-grabbing"
+                        onDragStart={(e) => handleDragStart(e, feature.id)}
+                        onDragEnd={handleDragEnd}
+                        className={`bg-white dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700 p-3 cursor-grab hover:border-accent-500/50 hover:shadow-md transition-all active:cursor-grabbing ${
+                          draggingId === feature.id ? "opacity-40" : ""
+                        }`}
                       >
                         <div className="flex items-center justify-between mb-1">
                           <span className="text-xs font-mono text-accent-500">{feature.id}</span>
