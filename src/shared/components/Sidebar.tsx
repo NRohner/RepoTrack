@@ -1,4 +1,5 @@
-import { NavLink } from "react-router-dom";
+import { useRef, useLayoutEffect, useState, useCallback } from "react";
+import { NavLink, useLocation } from "react-router-dom";
 import { useAppStore } from "@/lib/store";
 
 const navItems = [
@@ -44,6 +45,34 @@ const navItems = [
 export function Sidebar() {
   const activeProject = useAppStore((s) => s.activeProject);
   const setActiveProject = useAppStore((s) => s.setActiveProject);
+  const location = useLocation();
+
+  const navRef = useRef<HTMLElement>(null);
+  const linkRefs = useRef<Map<string, HTMLAnchorElement>>(new Map());
+  const [pillStyle, setPillStyle] = useState<{ top: number; height: number }>({ top: 0, height: 0 });
+  const [ready, setReady] = useState(false);
+
+  const activePath = navItems.find((item) => location.pathname.startsWith(item.path))?.path;
+
+  useLayoutEffect(() => {
+    if (!activePath) return;
+    const link = linkRefs.current.get(activePath);
+    const nav = navRef.current;
+    if (link && nav) {
+      const navRect = nav.getBoundingClientRect();
+      const linkRect = link.getBoundingClientRect();
+      setPillStyle({
+        top: linkRect.top - navRect.top,
+        height: linkRect.height,
+      });
+      if (!ready) setReady(true);
+    }
+  }, [activePath]);
+
+  const setLinkRef = useCallback((path: string) => (el: HTMLAnchorElement | null) => {
+    if (el) linkRefs.current.set(path, el);
+    else linkRefs.current.delete(path);
+  }, []);
 
   return (
     <div className="w-56 h-screen flex flex-col bg-white dark:bg-surface-950 border-r border-surface-200 dark:border-surface-800 shrink-0">
@@ -73,15 +102,30 @@ export function Sidebar() {
         </div>
       )}
 
-      <nav className="flex-1 p-2 space-y-0.5 mt-2">
+      <nav ref={navRef} className="relative flex-1 p-2 space-y-0.5 mt-2">
+        {/* Sliding pill */}
+        {activePath && (
+          <div
+            className={`absolute left-2 right-2 rounded-lg bg-accent-600/10 ${
+              ready ? "transition-all duration-200 ease-out" : ""
+            }`}
+            style={{
+              top: pillStyle.top,
+              height: pillStyle.height,
+              opacity: ready ? 1 : 0,
+            }}
+          />
+        )}
+
         {navItems.map((item) => (
           <NavLink
             key={item.path}
             to={item.path}
+            ref={setLinkRef(item.path)}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+              `relative z-10 flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                 isActive
-                  ? "bg-accent-600/10 text-accent-500"
+                  ? "text-accent-500"
                   : "text-surface-500 dark:text-surface-400 hover:bg-surface-100 dark:hover:bg-surface-800 hover:text-surface-700 dark:hover:text-surface-200"
               }`
             }
