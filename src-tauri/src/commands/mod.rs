@@ -31,8 +31,6 @@ pub fn list_recent_projects(state: State<AppState>) -> CmdResult<Vec<ProjectInfo
             if let Ok(data) = storage::read_repotrack_file(&rt_path) {
                 project.open_issues = data.issues.iter().filter(|i| {
                     i.status == "open" || i.status == "in-progress"
-                        || i.status == "proposed" || i.status == "under-review"
-                        || i.status == "planned"
                 }).count() as i32;
                 project.name = data.project_name.clone();
             }
@@ -99,12 +97,7 @@ pub fn create_issue(request: CreateIssueRequest, state: State<AppState>) -> CmdR
 
     let now = Utc::now();
     let id = project.data.next_id(&request.issue_type);
-    let default_status = match request.issue_type {
-        IssueType::Bug => "open".to_string(),
-        IssueType::Feature => "proposed".to_string(),
-        IssueType::Improvement => "open".to_string(),
-        IssueType::Task => "open".to_string(),
-    };
+    let default_status = "open".to_string();
 
     let issue = Issue {
         id: id.clone(),
@@ -170,10 +163,10 @@ pub fn update_issue(request: UpdateIssueRequest, state: State<AppState>) -> CmdR
     if let Some(pri) = request.priority { issue.priority = Some(pri); }
     if let Some(status) = request.status.clone() {
         issue.status = status.clone();
-        if (status == "resolved" || status == "closed" || status == "completed") && issue.resolved_at.is_none() {
+        if status == "completed" && issue.resolved_at.is_none() {
             issue.resolved_at = Some(now);
         }
-        if status == "open" || status == "in-progress" || status == "proposed" || status == "planned" {
+        if status == "open" || status == "in-progress" {
             issue.resolved_at = None;
         }
     }
@@ -240,7 +233,7 @@ pub fn bulk_update_issues(request: BulkUpdateRequest, state: State<AppState>) ->
         if request.ids.contains(&issue.id) {
             if let Some(ref status) = request.status {
                 issue.status = status.clone();
-                if status == "resolved" || status == "closed" || status == "completed" {
+                if status == "completed" {
                     if issue.resolved_at.is_none() {
                         issue.resolved_at = Some(now);
                     }

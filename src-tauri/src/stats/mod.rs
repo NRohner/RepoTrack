@@ -12,7 +12,7 @@ pub fn compute_stats(data: &RepoTrackFile, activity: Vec<ActivityEntry>) -> Proj
 
     let open_bugs = bugs.iter().filter(|i| i.status == "open" || i.status == "in-progress").count();
     let open_features = features.iter().filter(|i| {
-        i.status == "proposed" || i.status == "under-review" || i.status == "planned" || i.status == "in-progress"
+        i.status == "open" || i.status == "in-progress"
     }).count();
 
     let resolved_this_week = data.issues.iter().filter(|i| {
@@ -56,7 +56,7 @@ pub fn compute_stats(data: &RepoTrackFile, activity: Vec<ActivityEntry>) -> Proj
             && (b.status == "open" || b.status == "in-progress")
     }).count();
 
-    let planned_features = features.iter().filter(|f| f.status == "planned").count();
+    let planned_features = 0; // No longer a distinct status
     let completed_features_this_month = features.iter().filter(|f| {
         f.status == "completed" && f.resolved_at.map(|r| r > month_ago).unwrap_or(false)
     }).count();
@@ -75,7 +75,7 @@ pub fn compute_stats(data: &RepoTrackFile, activity: Vec<ActivityEntry>) -> Proj
 
     let issues_over_time = compute_issues_over_time(&data.issues);
     let open_bugs_over_time = compute_open_over_time(&bugs, &["open", "in-progress"]);
-    let open_features_over_time = compute_open_over_time(&features, &["proposed", "under-review", "planned", "in-progress"]);
+    let open_features_over_time = compute_open_over_time(&features, &["open", "in-progress"]);
 
     ProjectStats {
         total_issues: data.issues.len(),
@@ -248,7 +248,7 @@ fn compute_bug_velocity(bugs: &[&Issue]) -> Vec<TimeSeriesPoint> {
 }
 
 fn compute_feature_funnel(features: &[&Issue]) -> Vec<FunnelStep> {
-    let stages = vec!["proposed", "under-review", "planned", "in-progress", "completed"];
+    let stages = vec!["open", "in-progress", "completed"];
     stages.iter().map(|stage| {
         let count = features.iter().filter(|f| f.status == *stage).count();
         FunnelStep { stage: stage.to_string(), count }

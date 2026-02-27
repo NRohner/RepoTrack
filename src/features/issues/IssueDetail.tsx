@@ -4,8 +4,9 @@ import remarkGfm from "remark-gfm";
 import * as api from "@/lib/api";
 import { useAppStore } from "@/lib/store";
 import type { Issue, Severity, IssueType } from "@/lib/types";
-import { BUG_STATUSES, FEATURE_STATUSES, SEVERITIES, TYPE_ICONS } from "@/lib/types";
+import { STATUSES, SEVERITIES } from "@/lib/types";
 import { StatusBadge, SeverityBadge } from "@/shared/components/StatusBadge";
+import { TypeIcon } from "@/shared/components/TypeIcon";
 
 interface IssueDetailProps {
   issue: Issue;
@@ -30,7 +31,7 @@ export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailP
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [votePulse, setVotePulse] = useState(false);
 
-  const statusOptions = issue.type === "bug" ? BUG_STATUSES : issue.type === "feature" ? FEATURE_STATUSES : BUG_STATUSES;
+  const statusOptions = STATUSES;
 
   const handleSave = async () => {
     try {
@@ -138,7 +139,7 @@ export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailP
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-sm font-mono text-accent-500 font-semibold">{issue.id}</span>
-              <span className="text-sm">{TYPE_ICONS[issue.type as IssueType]}</span>
+              <TypeIcon type={issue.type as IssueType} className="w-4 h-4" />
               {issue.type === "feature" && (
                 <button
                   onClick={handleVote}

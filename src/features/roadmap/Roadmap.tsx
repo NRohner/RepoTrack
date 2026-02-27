@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { useAppStore } from "@/lib/store";
 import * as api from "@/lib/api";
 import type { Issue, Severity } from "@/lib/types";
-import { SEVERITIES } from "@/lib/types";
+import { STATUSES, SEVERITIES } from "@/lib/types";
 import { StatusBadge, SeverityBadge } from "@/shared/components/StatusBadge";
 
 const QUARTERS = ["Backlog", "Q1 2026", "Q2 2026", "Q3 2026", "Q4 2026", "Q1 2027", "Q2 2027"];
@@ -98,7 +98,7 @@ export function Roadmap() {
             className="px-3 py-1.5 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white text-sm"
           >
             <option value="">All Statuses</option>
-            {["proposed", "under-review", "planned", "in-progress", "completed"].map((s) => (
+            {STATUSES.map((s) => (
               <option key={s} value={s}>{s.replace(/-/g, " ")}</option>
             ))}
           </select>
@@ -148,7 +148,7 @@ export function Roadmap() {
                           {col.quarter}
                         </h3>
                         <p className="text-xs text-surface-400 mt-0.5">
-                          {col.features.length} features \u00b7 {col.totalVotes} votes
+                          {col.features.length} features &middot; {col.totalVotes} votes
                         </p>
                       </div>
                       <span className="text-xs bg-surface-200 dark:bg-surface-700 text-surface-500 px-2 py-0.5 rounded-full">

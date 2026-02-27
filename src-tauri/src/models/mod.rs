@@ -19,60 +19,6 @@ pub enum Severity {
     Low,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum BugStatus {
-    Open,
-    #[serde(rename = "in-progress")]
-    InProgress,
-    Resolved,
-    Closed,
-    #[serde(rename = "wont-fix")]
-    WontFix,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum FeatureStatus {
-    Proposed,
-    #[serde(rename = "under-review")]
-    UnderReview,
-    Planned,
-    #[serde(rename = "in-progress")]
-    InProgress,
-    Completed,
-    Declined,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-#[serde(untagged)]
-pub enum Status {
-    Bug(BugStatus),
-    Feature(FeatureStatus),
-}
-
-impl std::fmt::Display for Status {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Status::Bug(s) => match s {
-                BugStatus::Open => write!(f, "open"),
-                BugStatus::InProgress => write!(f, "in-progress"),
-                BugStatus::Resolved => write!(f, "resolved"),
-                BugStatus::Closed => write!(f, "closed"),
-                BugStatus::WontFix => write!(f, "wont-fix"),
-            },
-            Status::Feature(s) => match s {
-                FeatureStatus::Proposed => write!(f, "proposed"),
-                FeatureStatus::UnderReview => write!(f, "under-review"),
-                FeatureStatus::Planned => write!(f, "planned"),
-                FeatureStatus::InProgress => write!(f, "in-progress"),
-                FeatureStatus::Completed => write!(f, "completed"),
-                FeatureStatus::Declined => write!(f, "declined"),
-            },
-        }
-    }
-}
-
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Comment {
     pub id: String,

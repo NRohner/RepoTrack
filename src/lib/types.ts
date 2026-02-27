@@ -2,9 +2,8 @@ export type IssueType = "bug" | "feature" | "improvement" | "task";
 
 export type Severity = "critical" | "high" | "medium" | "low";
 
-export type BugStatus = "open" | "in-progress" | "resolved" | "closed" | "wont-fix";
-export type FeatureStatus = "proposed" | "under-review" | "planned" | "in-progress" | "completed" | "declined";
-export type IssueStatus = BugStatus | FeatureStatus;
+export const STATUSES = ["open", "in-progress", "completed", "wont-fix"] as const;
+export type IssueStatus = (typeof STATUSES)[number];
 
 export interface Comment {
   id: string;
@@ -238,21 +237,13 @@ export interface DirEntry {
   is_dir: boolean;
 }
 
-export const BUG_STATUSES: BugStatus[] = ["open", "in-progress", "resolved", "closed", "wont-fix"];
-export const FEATURE_STATUSES: FeatureStatus[] = ["proposed", "under-review", "planned", "in-progress", "completed", "declined"];
 export const SEVERITIES: Severity[] = ["critical", "high", "medium", "low"];
 
 export const STATUS_COLORS: Record<string, string> = {
   open: "bg-blue-500",
   "in-progress": "bg-yellow-500",
-  resolved: "bg-green-500",
-  closed: "bg-gray-500",
-  "wont-fix": "bg-gray-400",
-  proposed: "bg-purple-500",
-  "under-review": "bg-indigo-500",
-  planned: "bg-blue-500",
   completed: "bg-green-500",
-  declined: "bg-red-400",
+  "wont-fix": "bg-gray-400",
 };
 
 export const SEVERITY_COLORS: Record<string, string> = {
@@ -262,9 +253,4 @@ export const SEVERITY_COLORS: Record<string, string> = {
   low: "bg-slate-400 text-white",
 };
 
-export const TYPE_ICONS: Record<IssueType, string> = {
-  bug: "\u{1F41B}",
-  feature: "\u2728",
-  improvement: "\u{1F527}",
-  task: "\u{1F4CB}",
-};
+// TYPE_ICONS moved to shared/components/TypeIcon.tsx as React components

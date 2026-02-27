@@ -8,12 +8,12 @@ interface Props {
   stats: ProjectStats;
 }
 
-const FUNNEL_COLORS = ["#8b5cf6", "#7c3aed", "#6366f1", "#4f46e5", "#22c55e"];
+const FUNNEL_COLORS = ["#8b5cf6", "#6366f1", "#22c55e"];
 
 export function FeaturesDashboard({ stats }: Props) {
   const metrics = [
-    { label: "Total Features", value: stats.open_features + stats.completed_features_this_month + stats.planned_features },
-    { label: "Planned", value: stats.planned_features, color: "text-blue-500" },
+    { label: "Total Features", value: stats.open_features + stats.completed_features_this_month },
+    { label: "Open", value: stats.open_features, color: "text-blue-500" },
     { label: "Completed This Month", value: stats.completed_features_this_month, color: "text-green-500" },
     { label: "Most Voted", value: stats.most_voted_feature ? stats.most_voted_feature.slice(0, 25) : "N/A", small: true },
     { label: "Total Votes", value: stats.total_votes, color: "text-purple-500" },

@@ -3,12 +3,16 @@ import { useAppStore } from "@/lib/store";
 import * as api from "@/lib/api";
 import type { Issue, IssueType, Severity } from "@/lib/types";
 import {
-  BUG_STATUSES,
-  FEATURE_STATUSES,
+  STATUSES,
   SEVERITIES,
-  TYPE_ICONS,
 } from "@/lib/types";
+import { VscBug } from "react-icons/vsc";
+import { HiOutlineSparkles } from "react-icons/hi2";
+import { GoTools } from "react-icons/go";
+import { LuClipboardList } from "react-icons/lu";
+import { IoClose } from "react-icons/io5";
 import { StatusBadge, SeverityBadge } from "@/shared/components/StatusBadge";
+import { TypeIcon } from "@/shared/components/TypeIcon";
 import { IssueDetail } from "./IssueDetail";
 import { NewIssueForm } from "./NewIssueForm";
 import { KanbanBoard } from "./KanbanBoard";
@@ -36,12 +40,12 @@ export function IssueBoard() {
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
   const [inlineEditId, setInlineEditId] = useState<string | null>(null);
 
-  const tabs: { key: ViewTab; label: string; icon: string }[] = [
-    { key: "all", label: "All", icon: "" },
-    { key: "bug", label: "Bugs", icon: "\u{1F41B}" },
-    { key: "feature", label: "Features", icon: "\u2728" },
-    { key: "improvement", label: "Improvements", icon: "\u{1F527}" },
-    { key: "task", label: "Tasks", icon: "\u{1F4CB}" },
+  const tabs: { key: ViewTab; label: string; icon: React.ReactNode | null }[] = [
+    { key: "all", label: "All", icon: null },
+    { key: "bug", label: "Bugs", icon: <VscBug className="w-3.5 h-3.5 text-red-500" /> },
+    { key: "feature", label: "Features", icon: <HiOutlineSparkles className="w-3.5 h-3.5 text-purple-500" /> },
+    { key: "improvement", label: "Improvements", icon: <GoTools className="w-3.5 h-3.5 text-amber-500" /> },
+    { key: "task", label: "Tasks", icon: <LuClipboardList className="w-3.5 h-3.5 text-blue-500" /> },
   ];
 
   const allTags = useMemo(() => {
@@ -195,17 +199,9 @@ export function IssueBoard() {
     }
   };
 
-  const statusOptions =
-    activeTab === "bug"
-      ? BUG_STATUSES
-      : activeTab === "feature"
-      ? FEATURE_STATUSES
-      : [...new Set([...BUG_STATUSES, ...FEATURE_STATUSES])];
+  const statusOptions = STATUSES;
 
-  const getStatusesForIssue = (issue: Issue) =>
-    issue.type === "bug" ? BUG_STATUSES :
-    issue.type === "feature" ? FEATURE_STATUSES :
-    BUG_STATUSES;
+  const getStatusesForIssue = (_issue: Issue) => STATUSES;
 
   const tabCounts = useMemo(() => {
     const counts: Record<string, number> = { all: issues.length };
@@ -275,7 +271,7 @@ export function IssueBoard() {
                   : "text-surface-500 hover:bg-surface-100 dark:hover:bg-surface-800"
               }`}
             >
-              {tab.icon && <span className="text-xs">{tab.icon}</span>}
+              {tab.icon}
               {tab.label}
               <span className="text-xs bg-surface-200 dark:bg-surface-700 px-1.5 py-0.5 rounded-full">
                 {tabCounts[tab.key] || 0}
@@ -343,7 +339,7 @@ export function IssueBoard() {
               onClick={() => setTagFilter(tagFilter.filter((t) => t !== tag))}
               className="hover:text-accent-300"
             >
-              \u00d7
+              <IoClose className="w-3.5 h-3.5" />
             </button>
           </span>
         ))}
@@ -430,7 +426,7 @@ export function IssueBoard() {
                   </td>
                   <td className="px-3 py-3 text-sm font-mono text-surface-500 dark:text-surface-400">{issue.id}</td>
                   <td className="px-3 py-3 text-sm font-medium dark:text-white max-w-md truncate">{issue.title}</td>
-                  <td className="px-3 py-3 text-sm">{TYPE_ICONS[issue.type as IssueType]}</td>
+                  <td className="px-3 py-3 text-sm"><TypeIcon type={issue.type as IssueType} /></td>
                   <td className="px-3 py-3" onClick={(e) => e.stopPropagation()}>
                     <div className="relative">
                       <SeverityBadge
