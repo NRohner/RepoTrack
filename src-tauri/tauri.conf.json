@@ -35,13 +35,6 @@
     ]
   },
   "plugins": {
-    "dialog": {},
-    "fs": {
-      "scope": {
-        "allow": ["**"],
-        "requireLiteralLeadingDot": false
-      }
-    },
     "shell": {
       "open": true
     }
