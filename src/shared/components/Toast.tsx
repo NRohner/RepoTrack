@@ -1,4 +1,5 @@
 import { useAppStore } from "@/lib/store";
+import { IoCheckmarkCircle, IoCloseCircle, IoInformationCircle, IoClose } from "react-icons/io5";
 
 export function ToastContainer() {
   const toasts = useAppStore((s) => s.toasts);
@@ -17,17 +18,15 @@ export function ToastContainer() {
             ${toast.type === "info" ? "bg-accent-600 text-white" : ""}
           `}
         >
-          <span>
-            {toast.type === "success" && "\u2713"}
-            {toast.type === "error" && "\u2717"}
-            {toast.type === "info" && "\u2139"}
-          </span>
+          {toast.type === "success" && <IoCheckmarkCircle className="w-4 h-4" />}
+          {toast.type === "error" && <IoCloseCircle className="w-4 h-4" />}
+          {toast.type === "info" && <IoInformationCircle className="w-4 h-4" />}
           <span>{toast.message}</span>
           <button
             onClick={() => removeToast(toast.id)}
             className="ml-2 opacity-70 hover:opacity-100"
           >
-            \u00d7
+            <IoClose className="w-4 h-4" />
           </button>
         </div>
       ))}

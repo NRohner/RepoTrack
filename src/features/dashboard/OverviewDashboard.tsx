@@ -3,7 +3,8 @@ import {
   PieChart, Pie, Cell,
   BarChart, Bar,
 } from "recharts";
-import type { ProjectStats } from "@/lib/types";
+import type { ProjectStats, IssueType } from "@/lib/types";
+import { TypeIcon } from "@/shared/components/TypeIcon";
 
 interface Props {
   stats: ProjectStats;
@@ -167,8 +168,8 @@ export function OverviewDashboard({ stats }: Props) {
             {stats.activity_feed.length > 0 ? (
               stats.activity_feed.map((entry, i) => (
                 <div key={i} className="flex items-start gap-3 text-sm">
-                  <span className="text-xs shrink-0 mt-0.5">
-                    {entry.issue_type === "bug" ? "\u{1F41B}" : "\u2728"}
+                  <span className="shrink-0 mt-0.5">
+                    <TypeIcon type={entry.issue_type as IssueType} className="w-3.5 h-3.5" />
                   </span>
                   <div className="flex-1 min-w-0">
                     <span className="font-mono text-accent-500 text-xs">{entry.issue_id}</span>{" "}

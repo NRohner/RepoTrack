@@ -3,6 +3,8 @@ import * as api from "@/lib/api";
 import { useAppStore } from "@/lib/store";
 import type { IssueType, Severity, CreateIssueRequest } from "@/lib/types";
 import { SEVERITIES } from "@/lib/types";
+import { TypeIcon } from "@/shared/components/TypeIcon";
+import { IoClose } from "react-icons/io5";
 
 interface NewIssueFormProps {
   defaultType: IssueType;
@@ -10,11 +12,11 @@ interface NewIssueFormProps {
   existingTags: string[];
 }
 
-const TYPE_OPTIONS: { key: IssueType; label: string; icon: string }[] = [
-  { key: "bug", label: "Bug", icon: "\u{1F41B}" },
-  { key: "feature", label: "Feature", icon: "\u2728" },
-  { key: "improvement", label: "Improvement", icon: "\u{1F527}" },
-  { key: "task", label: "Task", icon: "\u{1F4CB}" },
+const TYPE_OPTIONS: { key: IssueType; label: string }[] = [
+  { key: "bug", label: "Bug" },
+  { key: "feature", label: "Feature" },
+  { key: "improvement", label: "Improvement" },
+  { key: "task", label: "Task" },
 ];
 
 const BUG_TEMPLATE = `## Summary
@@ -155,7 +157,7 @@ export function NewIssueForm({ defaultType, onClose, existingTags }: NewIssueFor
                     : "text-surface-500 hover:text-surface-700 dark:hover:text-surface-300"
                 }`}
               >
-                <span>{opt.icon}</span> {opt.label}
+                <TypeIcon type={opt.key} className="w-4 h-4" /> {opt.label}
               </button>
             ))}
           </div>
@@ -243,7 +245,7 @@ export function NewIssueForm({ defaultType, onClose, existingTags }: NewIssueFor
               {tags.map((tag) => (
                 <span key={tag} className="inline-flex items-center gap-1 px-2 py-0.5 bg-accent-600/10 text-accent-500 rounded-full text-xs font-medium">
                   {tag}
-                  <button onClick={() => setTags(tags.filter((t) => t !== tag))} className="hover:text-accent-300">\u00d7</button>
+                  <button onClick={() => setTags(tags.filter((t) => t !== tag))} className="hover:text-accent-300"><IoClose className="w-3.5 h-3.5" /></button>
                 </span>
               ))}
             </div>
@@ -323,7 +325,7 @@ export function NewIssueForm({ defaultType, onClose, existingTags }: NewIssueFor
               {linkedFiles.map((f) => (
                 <span key={f} className="inline-flex items-center gap-1 px-2 py-0.5 bg-surface-100 dark:bg-surface-800 text-surface-500 dark:text-surface-400 rounded text-xs font-mono">
                   {f}
-                  <button onClick={() => setLinkedFiles(linkedFiles.filter((lf) => lf !== f))} className="hover:text-red-500">\u00d7</button>
+                  <button onClick={() => setLinkedFiles(linkedFiles.filter((lf) => lf !== f))} className="hover:text-red-500"><IoClose className="w-3.5 h-3.5" /></button>
                 </span>
               ))}
             </div>
