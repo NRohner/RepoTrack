@@ -51,7 +51,7 @@ export function SegmentedControl<T extends string>({
   return (
     <div
       ref={containerRef}
-      className={`relative flex rounded-lg ${
+      className={`relative inline-flex w-fit rounded-lg ${
         isNeutral
           ? "bg-surface-100 dark:bg-surface-800 p-0.5"
           : "p-0.5"
