@@ -401,7 +401,7 @@ export function IssueBoard() {
               {filteredIssues.map((issue) => (
                 <tr
                   key={issue.id}
-                  className="hover:bg-surface-50 dark:hover:bg-surface-800/50 transition-colors cursor-pointer"
+                  className="hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors cursor-pointer"
                   onClick={() => setSelectedIssue(issue)}
                 >
                   <td className="px-6 py-3" onClick={(e) => e.stopPropagation()}>
