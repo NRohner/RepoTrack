@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import * as api from "@/lib/api";
 import { useAppStore } from "@/lib/store";
 import type { IssueType, Severity, CreateIssueRequest } from "@/lib/types";
@@ -49,6 +49,12 @@ Describe the user problem...
 export function NewIssueForm({ defaultType, onClose, existingTags }: NewIssueFormProps) {
   const addIssueToStore = useAppStore((s) => s.addIssueToStore);
   const addToast = useAppStore((s) => s.addToast);
+  const [closing, setClosing] = useState(false);
+
+  const handleClose = useCallback(() => {
+    setClosing(true);
+    setTimeout(onClose, 250);
+  }, [onClose]);
 
   const [issueType, setIssueType] = useState<IssueType>(defaultType);
   const [title, setTitle] = useState("");
@@ -134,11 +140,11 @@ export function NewIssueForm({ defaultType, onClose, existingTags }: NewIssueFor
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40" onClick={onClose} />
-      <div className="fixed inset-y-0 right-0 w-full max-w-2xl bg-white dark:bg-surface-900 shadow-2xl z-50 flex flex-col border-l border-surface-200 dark:border-surface-800">
+      <div className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-40 ${closing ? "animate-backdrop-out" : "animate-backdrop-in"}`} onClick={handleClose} />
+      <div className={`fixed inset-y-0 right-0 w-full max-w-2xl bg-white dark:bg-surface-900 shadow-2xl z-50 flex flex-col border-l border-surface-200 dark:border-surface-800 ${closing ? "animate-slide-out-right" : "animate-slide-in-right"}`}>
         <div className="px-6 py-4 border-b border-surface-200 dark:border-surface-800 flex items-center justify-between shrink-0">
           <h2 className="text-lg font-bold dark:text-white">New Issue</h2>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-surface-400">
+          <button onClick={handleClose} className="p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-surface-400">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -347,7 +353,7 @@ export function NewIssueForm({ defaultType, onClose, existingTags }: NewIssueFor
             Ctrl+Enter to submit
           </p>
           <div className="flex gap-3">
-            <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-surface-600 dark:text-surface-400 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-lg transition-colors">
+            <button onClick={handleClose} className="px-4 py-2 text-sm font-medium text-surface-600 dark:text-surface-400 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-lg transition-colors">
               Cancel
             </button>
             <button
