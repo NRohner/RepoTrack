@@ -27,6 +27,8 @@ export function IssueBoard() {
   const updateIssueInStore = useAppStore((s) => s.updateIssueInStore);
   const removeIssueFromStore = useAppStore((s) => s.removeIssueFromStore);
   const addToast = useAppStore((s) => s.addToast);
+  const showResolved = useAppStore((s) => s.showResolved);
+  const setShowResolved = useAppStore((s) => s.setShowResolved);
 
   const [activeTab, setActiveTab] = useState<ViewTab>("all");
   const [layout, setLayout] = useState<LayoutMode>("table");
@@ -62,6 +64,10 @@ export function IssueBoard() {
     }
     if (statusFilter) {
       result = result.filter((i) => i.status === statusFilter);
+    }
+    // Hide resolved issues in table view unless toggle is on or user explicitly filtered to a resolved status
+    if (!showResolved && layout === "table" && statusFilter !== "completed" && statusFilter !== "wont-fix") {
+      result = result.filter((i) => i.status !== "completed" && i.status !== "wont-fix");
     }
     if (severityFilter) {
       result = result.filter(
@@ -120,7 +126,7 @@ export function IssueBoard() {
       return 0;
     });
     return result;
-  }, [issues, activeTab, statusFilter, severityFilter, tagFilter, searchQuery, sortCol, sortDir]);
+  }, [issues, activeTab, statusFilter, severityFilter, tagFilter, searchQuery, sortCol, sortDir, showResolved, layout]);
 
   const handleSort = (col: string) => {
     if (sortCol === col) {
@@ -331,6 +337,27 @@ export function IssueBoard() {
             </button>
           </span>
         ))}
+
+        {/* Show resolved toggle (table view only) */}
+        {layout === "table" && (
+          <button
+            onClick={() => setShowResolved(!showResolved)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+              showResolved
+                ? "bg-accent-600/15 text-accent-500"
+                : "bg-surface-100 dark:bg-surface-800 text-surface-400 hover:text-surface-600 dark:hover:text-surface-300"
+            }`}
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {showResolved ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878l4.242 4.242M15.12 15.12L21 21" />
+              )}
+            </svg>
+            Show Completed
+          </button>
+        )}
 
         {/* Bulk actions */}
         {selectedIds.size > 0 && (

@@ -249,6 +249,7 @@ export interface UserPreferences {
   default_status_filter?: string;
   default_severity_filter?: string;
   selected_color_theme?: string;
+  show_resolved_issues?: string;
 }
 
 export type ColorPalette = Record<string, string>;
