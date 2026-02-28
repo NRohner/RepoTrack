@@ -5,10 +5,26 @@ export type Severity = "critical" | "high" | "medium" | "low";
 export const STATUSES = ["open", "in-progress", "completed", "wont-fix"] as const;
 export type IssueStatus = (typeof STATUSES)[number];
 
+export interface UserInfo {
+  display_name: string;
+  username: string;
+  provider: string; // "github" | "google" | "anon"
+  avatar_url?: string;
+}
+
+export interface HistoryEntry {
+  action: string;
+  from?: string;
+  to?: string;
+  user: UserInfo;
+  timestamp: string;
+}
+
 export interface Comment {
   id: string;
   text: string;
   created_at: string;
+  created_by?: UserInfo;
 }
 
 export interface Issue {
@@ -35,6 +51,8 @@ export interface Issue {
   linked_files: string[];
   time_estimate_hours?: number;
   time_spent_hours?: number;
+  created_by?: UserInfo;
+  history: HistoryEntry[];
 }
 
 export interface RepoTrackFile {
@@ -148,6 +166,7 @@ export interface ActivityEntry {
   issue_title: string;
   action: string;
   issue_type: string;
+  user_display_name: string;
 }
 
 export interface OldestIssue {

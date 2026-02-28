@@ -3,7 +3,7 @@ use rusqlite::Connection;
 use std::path::Path;
 use std::sync::Mutex;
 
-use crate::models::{ColorPalette, ColorTheme, ProjectInfo, UserPreferences};
+use crate::models::{ColorPalette, ColorTheme, ProjectInfo, UserInfo, UserPreferences};
 
 pub struct Database {
     conn: Mutex<Connection>,
@@ -58,6 +58,18 @@ impl Database {
                 created_at TEXT NOT NULL DEFAULT (datetime('now')),
                 updated_at TEXT NOT NULL DEFAULT (datetime('now'))
             );
+
+            CREATE TABLE IF NOT EXISTS auth_tokens (
+                provider TEXT PRIMARY KEY,
+                access_token TEXT NOT NULL,
+                refresh_token TEXT,
+                token_expiry TEXT,
+                user_display_name TEXT NOT NULL,
+                user_username TEXT NOT NULL,
+                user_avatar_url TEXT,
+                created_at TEXT NOT NULL DEFAULT (datetime('now')),
+                updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+            );
             ",
         )?;
 
@@ -77,6 +89,18 @@ impl Database {
             "UPDATE color_themes SET name = 'Default' WHERE id = 'default-indigo' AND name = 'Indigo'",
             [],
         )?;
+
+        // Migrate activity_log: add user_display_name column if missing
+        let has_user_col: bool = conn
+            .prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='activity_log'")?
+            .query_row([], |row| row.get::<_, String>(0))
+            .map(|sql| sql.contains("user_display_name"))
+            .unwrap_or(false);
+        if !has_user_col {
+            conn.execute_batch(
+                "ALTER TABLE activity_log ADD COLUMN user_display_name TEXT NOT NULL DEFAULT 'anon';",
+            )?;
+        }
 
         Ok(())
     }
@@ -152,11 +176,12 @@ impl Database {
         issue_title: &str,
         issue_type: &str,
         action: &str,
+        user_display_name: &str,
     ) -> Result<()> {
         let conn = self.conn.lock().map_err(|e| anyhow::anyhow!("{}", e))?;
         conn.execute(
-            "INSERT INTO activity_log (project_path, issue_id, issue_title, issue_type, action) VALUES (?1, ?2, ?3, ?4, ?5)",
-            rusqlite::params![project_path, issue_id, issue_title, issue_type, action],
+            "INSERT INTO activity_log (project_path, issue_id, issue_title, issue_type, action, user_display_name) VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
+            rusqlite::params![project_path, issue_id, issue_title, issue_type, action, user_display_name],
         )?;
         Ok(())
     }
@@ -168,7 +193,7 @@ impl Database {
     ) -> Result<Vec<crate::models::ActivityEntry>> {
         let conn = self.conn.lock().map_err(|e| anyhow::anyhow!("{}", e))?;
         let mut stmt = conn.prepare(
-            "SELECT issue_id, issue_title, action, issue_type, timestamp FROM activity_log WHERE project_path = ?1 ORDER BY timestamp DESC LIMIT ?2",
+            "SELECT issue_id, issue_title, action, issue_type, timestamp, user_display_name FROM activity_log WHERE project_path = ?1 ORDER BY timestamp DESC LIMIT ?2",
         )?;
         let entries = stmt.query_map(rusqlite::params![project_path, limit], |row| {
             Ok(crate::models::ActivityEntry {
@@ -177,6 +202,7 @@ impl Database {
                 action: row.get(2)?,
                 issue_type: row.get(3)?,
                 timestamp: row.get(4)?,
+                user_display_name: row.get(5)?,
             })
         })?;
         let mut result = Vec::new();
@@ -328,5 +354,88 @@ impl Database {
             return Err(anyhow::anyhow!("Theme not found or is a built-in theme"));
         }
         Ok(())
+    }
+
+    pub fn save_auth_token(
+        &self,
+        provider: &str,
+        access_token: &str,
+        refresh_token: Option<&str>,
+        token_expiry: Option<&str>,
+        display_name: &str,
+        username: &str,
+        avatar_url: Option<&str>,
+    ) -> Result<()> {
+        let conn = self.conn.lock().map_err(|e| anyhow::anyhow!("{}", e))?;
+        conn.execute(
+            "INSERT OR REPLACE INTO auth_tokens (provider, access_token, refresh_token, token_expiry, user_display_name, user_username, user_avatar_url, created_at, updated_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, datetime('now'), datetime('now'))",
+            rusqlite::params![provider, access_token, refresh_token, token_expiry, display_name, username, avatar_url],
+        )?;
+        Ok(())
+    }
+
+    pub fn get_auth_token(&self, provider: &str) -> Result<Option<UserInfo>> {
+        let conn = self.conn.lock().map_err(|e| anyhow::anyhow!("{}", e))?;
+        let result = conn.query_row(
+            "SELECT user_display_name, user_username, user_avatar_url FROM auth_tokens WHERE provider = ?1",
+            rusqlite::params![provider],
+            |row| {
+                Ok(UserInfo {
+                    display_name: row.get(0)?,
+                    username: row.get(1)?,
+                    provider: provider.to_string(),
+                    avatar_url: row.get(2)?,
+                })
+            },
+        );
+        match result {
+            Ok(info) => Ok(Some(info)),
+            Err(rusqlite::Error::QueryReturnedNoRows) => Ok(None),
+            Err(e) => Err(e.into()),
+        }
+    }
+
+    pub fn get_auth_access_token(&self, provider: &str) -> Result<Option<String>> {
+        let conn = self.conn.lock().map_err(|e| anyhow::anyhow!("{}", e))?;
+        let result = conn.query_row(
+            "SELECT access_token FROM auth_tokens WHERE provider = ?1",
+            rusqlite::params![provider],
+            |row| row.get::<_, String>(0),
+        );
+        match result {
+            Ok(token) => Ok(Some(token)),
+            Err(rusqlite::Error::QueryReturnedNoRows) => Ok(None),
+            Err(e) => Err(e.into()),
+        }
+    }
+
+    pub fn remove_auth_token(&self, provider: &str) -> Result<()> {
+        let conn = self.conn.lock().map_err(|e| anyhow::anyhow!("{}", e))?;
+        conn.execute(
+            "DELETE FROM auth_tokens WHERE provider = ?1",
+            rusqlite::params![provider],
+        )?;
+        Ok(())
+    }
+
+    pub fn get_any_auth_user(&self) -> Result<Option<UserInfo>> {
+        let conn = self.conn.lock().map_err(|e| anyhow::anyhow!("{}", e))?;
+        let result = conn.query_row(
+            "SELECT provider, user_display_name, user_username, user_avatar_url FROM auth_tokens ORDER BY updated_at DESC LIMIT 1",
+            [],
+            |row| {
+                Ok(UserInfo {
+                    provider: row.get(0)?,
+                    display_name: row.get(1)?,
+                    username: row.get(2)?,
+                    avatar_url: row.get(3)?,
+                })
+            },
+        );
+        match result {
+            Ok(info) => Ok(Some(info)),
+            Err(rusqlite::Error::QueryReturnedNoRows) => Ok(None),
+            Err(e) => Err(e.into()),
+        }
     }
 }
