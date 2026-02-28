@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { getVersion } from "@tauri-apps/api/app";
 import { useAppStore } from "@/lib/store";
 import * as api from "@/lib/api";
 import type { ProjectInfo } from "@/lib/types";
@@ -8,6 +9,7 @@ import { Modal } from "@/shared/components/Modal";
 export function ProjectSelector() {
   const [projects, setProjects] = useState<ProjectInfo[]>([]);
   const [loading, setLoading] = useState(true);
+  const [version, setVersion] = useState("");
   const [showNewProject, setShowNewProject] = useState(false);
   const [newProjectName, setNewProjectName] = useState("");
   const [selectedPath, setSelectedPath] = useState("");
@@ -28,6 +30,7 @@ export function ProjectSelector() {
 
   useEffect(() => {
     loadProjects();
+    getVersion().then(setVersion).catch(() => {});
   }, []);
 
   const handleOpenProject = async (path: string) => {
@@ -105,6 +108,9 @@ export function ProjectSelector() {
           <p className="text-surface-500 dark:text-surface-400 text-lg">
             File-backed issue &amp; feature tracking that lives in your repo
           </p>
+          {version && (
+            <p className="text-surface-400 dark:text-surface-500 text-xs mt-2">v{version}</p>
+          )}
         </div>
 
         {/* Action buttons */}
