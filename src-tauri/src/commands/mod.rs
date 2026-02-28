@@ -16,6 +16,8 @@ pub struct ActiveProject {
     pub data: RepoTrackFile,
 }
 
+pub struct RecentProjectPaths(pub Mutex<Vec<(String, String)>>);
+
 type CmdResult<T> = Result<T, String>;
 
 fn map_err<E: std::fmt::Display>(e: E) -> String {
@@ -489,5 +491,27 @@ pub fn delete_all_issues(issue_type: Option<String>, state: State<AppState>) -> 
 
     let rt_path = storage::repotrack_path(&project.path);
     storage::write_repotrack_file(&rt_path, &project.data).map_err(map_err)?;
+    Ok(())
+}
+
+#[tauri::command]
+pub fn update_recent_menu(
+    app: tauri::AppHandle,
+    state: State<'_, AppState>,
+    recent_state: State<'_, RecentProjectPaths>,
+) -> CmdResult<()> {
+    let projects = state.db.list_projects().map_err(map_err)?;
+    let recent: Vec<(String, String)> = projects
+        .iter()
+        .filter(|p| p.exists)
+        .take(10)
+        .map(|p| (p.name.clone(), p.path.clone()))
+        .collect();
+
+    *recent_state.0.lock().map_err(map_err)? = recent.clone();
+
+    let menu = crate::build_app_menu(&app, &recent).map_err(|e| e.to_string())?;
+    app.set_menu(menu).map_err(|e| e.to_string())?;
+
     Ok(())
 }
