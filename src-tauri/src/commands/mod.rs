@@ -9,6 +9,7 @@ use tauri::State;
 pub struct AppState {
     pub db: Database,
     pub active_project: Mutex<Option<ActiveProject>>,
+    pub current_user: Mutex<Option<UserInfo>>,
 }
 
 pub struct ActiveProject {
@@ -22,6 +23,15 @@ type CmdResult<T> = Result<T, String>;
 
 fn map_err<E: std::fmt::Display>(e: E) -> String {
     e.to_string()
+}
+
+fn get_current_user_info(state: &AppState) -> UserInfo {
+    state
+        .current_user
+        .lock()
+        .ok()
+        .and_then(|guard| guard.clone())
+        .unwrap_or_default()
 }
 
 #[tauri::command]
@@ -103,6 +113,21 @@ pub fn create_issue(request: CreateIssueRequest, state: State<AppState>) -> CmdR
     let id = project.data.next_id(&request.issue_type);
     let default_status = "open".to_string();
 
+    let user = get_current_user_info(&state);
+    let created_by = if user.provider != "anon" {
+        Some(user.clone())
+    } else {
+        None
+    };
+
+    let history_entry = HistoryEntry {
+        action: "created".to_string(),
+        from: None,
+        to: None,
+        user: user.clone(),
+        timestamp: now,
+    };
+
     let issue = Issue {
         id: id.clone(),
         title: request.title,
@@ -135,6 +160,8 @@ pub fn create_issue(request: CreateIssueRequest, state: State<AppState>) -> CmdR
         linked_files: request.linked_files,
         time_estimate_hours: request.time_estimate_hours,
         time_spent_hours: None,
+        created_by,
+        history: vec![history_entry],
     };
 
     project.data.issues.push(issue.clone());
@@ -144,13 +171,14 @@ pub fn create_issue(request: CreateIssueRequest, state: State<AppState>) -> CmdR
     storage::write_repotrack_file(&rt_path, &project.data).map_err(map_err)?;
 
     let type_str = format!("{:?}", request.issue_type).to_lowercase();
-    let _ = state.db.log_activity(&project.path, &id, &issue.title, &type_str, "created");
+    let _ = state.db.log_activity(&project.path, &id, &issue.title, &type_str, "created", &user.display_name);
 
     Ok(issue)
 }
 
 #[tauri::command]
 pub fn update_issue(request: UpdateIssueRequest, state: State<AppState>) -> CmdResult<Issue> {
+    let user = get_current_user_info(&state);
     let mut active = state.active_project.lock().map_err(map_err)?;
     let project = active.as_mut().ok_or("No project is open")?;
 
@@ -188,6 +216,24 @@ pub fn update_issue(request: UpdateIssueRequest, state: State<AppState>) -> CmdR
     if let Some(v) = request.votes { issue.votes = Some(v); }
     if let Some(ra) = request.resolved_at { issue.resolved_at = ra; }
 
+    // Push history entry for status change before cloning
+    let status_changed = if let Some(ref new_status) = request.status {
+        if *new_status != old_status {
+            issue.history.push(HistoryEntry {
+                action: "status_changed".to_string(),
+                from: Some(old_status.clone()),
+                to: Some(new_status.clone()),
+                user: user.clone(),
+                timestamp: now,
+            });
+            Some((old_status.clone(), new_status.clone()))
+        } else {
+            None
+        }
+    } else {
+        None
+    };
+
     issue.updated_at = now;
     project.data.updated_at = now;
 
@@ -195,12 +241,10 @@ pub fn update_issue(request: UpdateIssueRequest, state: State<AppState>) -> CmdR
     let rt_path = storage::repotrack_path(&project.path);
     storage::write_repotrack_file(&rt_path, &project.data).map_err(map_err)?;
 
-    if let Some(ref new_status) = request.status {
-        if *new_status != old_status {
-            let action = format!("status changed from {} to {}", old_status, new_status);
-            let type_str = format!("{:?}", result.issue_type).to_lowercase();
-            let _ = state.db.log_activity(&project.path, &result.id, &result.title, &type_str, &action);
-        }
+    if let Some((from, to)) = status_changed {
+        let action = format!("status changed from {} to {}", from, to);
+        let type_str = format!("{:?}", result.issue_type).to_lowercase();
+        let _ = state.db.log_activity(&project.path, &result.id, &result.title, &type_str, &action, &user.display_name);
     }
 
     Ok(result)
@@ -208,6 +252,7 @@ pub fn update_issue(request: UpdateIssueRequest, state: State<AppState>) -> CmdR
 
 #[tauri::command]
 pub fn delete_issue(id: String, state: State<AppState>) -> CmdResult<()> {
+    let user = get_current_user_info(&state);
     let mut active = state.active_project.lock().map_err(map_err)?;
     let project = active.as_mut().ok_or("No project is open")?;
 
@@ -220,13 +265,14 @@ pub fn delete_issue(id: String, state: State<AppState>) -> CmdResult<()> {
     storage::write_repotrack_file(&rt_path, &project.data).map_err(map_err)?;
 
     let type_str = format!("{:?}", removed.issue_type).to_lowercase();
-    let _ = state.db.log_activity(&project.path, &id, &removed.title, &type_str, "deleted");
+    let _ = state.db.log_activity(&project.path, &id, &removed.title, &type_str, "deleted", &user.display_name);
 
     Ok(())
 }
 
 #[tauri::command]
 pub fn bulk_update_issues(request: BulkUpdateRequest, state: State<AppState>) -> CmdResult<Vec<Issue>> {
+    let user = get_current_user_info(&state);
     let mut active = state.active_project.lock().map_err(map_err)?;
     let project = active.as_mut().ok_or("No project is open")?;
 
@@ -235,12 +281,22 @@ pub fn bulk_update_issues(request: BulkUpdateRequest, state: State<AppState>) ->
 
     for issue in project.data.issues.iter_mut() {
         if request.ids.contains(&issue.id) {
+            let old_status = issue.status.clone();
             if let Some(ref status) = request.status {
                 issue.status = status.clone();
                 if status == "completed" {
                     if issue.resolved_at.is_none() {
                         issue.resolved_at = Some(now);
                     }
+                }
+                if *status != old_status {
+                    issue.history.push(HistoryEntry {
+                        action: "status_changed".to_string(),
+                        from: Some(old_status),
+                        to: Some(status.clone()),
+                        user: user.clone(),
+                        timestamp: now,
+                    });
                 }
             }
             if let Some(ref sev) = request.severity { issue.severity = Some(sev.clone()); }
@@ -269,6 +325,7 @@ pub fn bulk_update_issues(request: BulkUpdateRequest, state: State<AppState>) ->
 
 #[tauri::command]
 pub fn add_comment(issue_id: String, text: String, state: State<AppState>) -> CmdResult<Comment> {
+    let user = get_current_user_info(&state);
     let mut active = state.active_project.lock().map_err(map_err)?;
     let project = active.as_mut().ok_or("No project is open")?;
 
@@ -277,13 +334,26 @@ pub fn add_comment(issue_id: String, text: String, state: State<AppState>) -> Cm
 
     let now = Utc::now();
     let comment_num = project.data.issues[idx].comments.len() + 1;
+    let created_by = if user.provider != "anon" {
+        Some(user.clone())
+    } else {
+        None
+    };
     let comment = Comment {
         id: format!("CMT-{:04}", comment_num),
         text,
         created_at: now,
+        created_by,
     };
 
     project.data.issues[idx].comments.push(comment.clone());
+    project.data.issues[idx].history.push(HistoryEntry {
+        action: "comment_added".to_string(),
+        from: None,
+        to: None,
+        user: user.clone(),
+        timestamp: now,
+    });
     project.data.issues[idx].updated_at = now;
     project.data.updated_at = now;
 
@@ -292,7 +362,7 @@ pub fn add_comment(issue_id: String, text: String, state: State<AppState>) -> Cm
 
     let type_str = format!("{:?}", project.data.issues[idx].issue_type).to_lowercase();
     let title = project.data.issues[idx].title.clone();
-    let _ = state.db.log_activity(&project.path, &issue_id, &title, &type_str, "comment added");
+    let _ = state.db.log_activity(&project.path, &issue_id, &title, &type_str, "comment added", &user.display_name);
 
     Ok(comment)
 }

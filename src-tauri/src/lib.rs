@@ -1,3 +1,4 @@
+pub mod auth;
 pub mod commands;
 pub mod db;
 pub mod models;
@@ -143,9 +144,13 @@ pub fn run() {
                 .map(|p| (p.name.clone(), p.path.clone()))
                 .collect();
 
+            // Restore user session from DB
+            let restored_user = db.get_any_auth_user().ok().flatten();
+
             app.manage(AppState {
                 db,
                 active_project: Mutex::new(None),
+                current_user: Mutex::new(restored_user),
             });
             app.manage(RecentProjectPaths(Mutex::new(recent.clone())));
 
@@ -212,6 +217,9 @@ pub fn run() {
             commands::create_color_theme,
             commands::update_color_theme,
             commands::delete_color_theme,
+            auth::sign_in,
+            auth::sign_out,
+            auth::get_current_user,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

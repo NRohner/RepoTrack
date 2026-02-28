@@ -5,6 +5,37 @@ use std::collections::HashMap;
 pub type ColorPalette = HashMap<String, String>;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct UserInfo {
+    pub display_name: String,
+    pub username: String,
+    pub provider: String, // "github", "google", "anon"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub avatar_url: Option<String>,
+}
+
+impl Default for UserInfo {
+    fn default() -> Self {
+        Self {
+            display_name: "anon".to_string(),
+            username: "anon".to_string(),
+            provider: "anon".to_string(),
+            avatar_url: None,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct HistoryEntry {
+    pub action: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub from: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub to: Option<String>,
+    pub user: UserInfo,
+    pub timestamp: DateTime<Utc>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ColorTheme {
     pub id: String,
     pub name: String,
@@ -38,6 +69,8 @@ pub struct Comment {
     pub id: String,
     pub text: String,
     pub created_at: DateTime<Utc>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub created_by: Option<UserInfo>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -82,6 +115,10 @@ pub struct Issue {
     pub time_estimate_hours: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub time_spent_hours: Option<f64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub created_by: Option<UserInfo>,
+    #[serde(default)]
+    pub history: Vec<HistoryEntry>,
 }
 
 pub const REPOTRACK_NOTICE: &str = "This file is managed by RepoTrack. Download it at https://github.com/NRohner/RepoTrack";
@@ -284,6 +321,12 @@ pub struct ActivityEntry {
     pub issue_title: String,
     pub action: String,
     pub issue_type: String,
+    #[serde(default = "default_anon")]
+    pub user_display_name: String,
+}
+
+fn default_anon() -> String {
+    "anon".to_string()
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
