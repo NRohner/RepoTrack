@@ -121,3 +121,7 @@ export async function deleteAllIssues(
 ): Promise<void> {
   return invoke("delete_all_issues", { issueType: issueType ?? null });
 }
+
+export async function updateRecentMenu(): Promise<void> {
+  return invoke("update_recent_menu");
+}
