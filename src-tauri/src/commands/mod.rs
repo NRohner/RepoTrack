@@ -495,6 +495,31 @@ pub fn delete_all_issues(issue_type: Option<String>, state: State<AppState>) -> 
 }
 
 #[tauri::command]
+pub fn list_color_themes(state: State<AppState>) -> CmdResult<Vec<ColorTheme>> {
+    state.db.list_color_themes().map_err(map_err)
+}
+
+#[tauri::command]
+pub fn get_color_theme(id: String, state: State<AppState>) -> CmdResult<ColorTheme> {
+    state.db.get_color_theme(&id).map_err(map_err)
+}
+
+#[tauri::command]
+pub fn create_color_theme(theme: ColorTheme, state: State<AppState>) -> CmdResult<()> {
+    state.db.create_color_theme(&theme).map_err(map_err)
+}
+
+#[tauri::command]
+pub fn update_color_theme(theme: ColorTheme, state: State<AppState>) -> CmdResult<()> {
+    state.db.update_color_theme(&theme).map_err(map_err)
+}
+
+#[tauri::command]
+pub fn delete_color_theme(id: String, state: State<AppState>) -> CmdResult<()> {
+    state.db.delete_color_theme(&id).map_err(map_err)
+}
+
+#[tauri::command]
 pub fn update_recent_menu(
     app: tauri::AppHandle,
     state: State<'_, AppState>,

@@ -10,6 +10,7 @@ import type {
   ProjectStats,
   UserPreferences,
   DirEntry,
+  ColorTheme,
 } from "./types";
 
 export async function listRecentProjects(): Promise<ProjectInfo[]> {
@@ -124,4 +125,24 @@ export async function deleteAllIssues(
 
 export async function updateRecentMenu(): Promise<void> {
   return invoke("update_recent_menu");
+}
+
+export async function listColorThemes(): Promise<ColorTheme[]> {
+  return invoke("list_color_themes");
+}
+
+export async function getColorTheme(id: string): Promise<ColorTheme> {
+  return invoke("get_color_theme", { id });
+}
+
+export async function createColorTheme(theme: ColorTheme): Promise<void> {
+  return invoke("create_color_theme", { theme });
+}
+
+export async function updateColorTheme(theme: ColorTheme): Promise<void> {
+  return invoke("update_color_theme", { theme });
+}
+
+export async function deleteColorTheme(id: string): Promise<void> {
+  return invoke("delete_color_theme", { id });
 }

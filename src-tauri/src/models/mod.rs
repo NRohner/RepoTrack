@@ -1,5 +1,19 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+
+pub type ColorPalette = HashMap<String, String>;
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ColorTheme {
+    pub id: String,
+    pub name: String,
+    pub is_builtin: bool,
+    pub accent_palette: ColorPalette,
+    pub surface_palette: ColorPalette,
+    pub created_at: String,
+    pub updated_at: String,
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -316,6 +330,7 @@ pub struct UserPreferences {
     pub default_layout: String,
     pub default_status_filter: Option<String>,
     pub default_severity_filter: Option<String>,
+    pub selected_color_theme: Option<String>,
 }
 
 impl Default for UserPreferences {
@@ -326,6 +341,7 @@ impl Default for UserPreferences {
             default_layout: "table".to_string(),
             default_status_filter: None,
             default_severity_filter: None,
+            selected_color_theme: None,
         }
     }
 }
