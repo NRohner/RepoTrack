@@ -3,6 +3,50 @@
   "version": "0.1.0",
   "project_name": "RepoTrack",
   "created_at": "2026-02-27T20:53:18.961609Z",
-  "updated_at": "2026-02-27T20:53:18.961609Z",
-  "issues": []
+  "updated_at": "2026-02-28T20:33:28.451732Z",
+  "issues": [
+    {
+      "id": "IMP-0001",
+      "title": "The home page looks a little boring",
+      "description": "Add some sort of gradient grid to it to make it a bit more visually interesting.",
+      "type": "improvement",
+      "severity": "low",
+      "status": "open",
+      "tags": [],
+      "created_at": "2026-02-28T20:23:21.598035Z",
+      "updated_at": "2026-02-28T20:23:21.598035Z",
+      "comments": [],
+      "linked_files": []
+    },
+    {
+      "id": "FEAT-0001",
+      "title": "Github OAuth to Atribut bugs to users.",
+      "description": "",
+      "type": "feature",
+      "priority": "high",
+      "status": "open",
+      "tags": [],
+      "created_at": "2026-02-28T20:32:45.433634Z",
+      "updated_at": "2026-02-28T20:32:45.433634Z",
+      "votes": 0,
+      "roadmap_quarter": "Backlog",
+      "comments": [],
+      "linked_files": []
+    },
+    {
+      "id": "FEAT-0002",
+      "title": "Comments section on all issue types",
+      "description": "Users can explain what they are doing, how progress is going, etc with a comments feed.",
+      "type": "feature",
+      "priority": "medium",
+      "status": "open",
+      "tags": [],
+      "created_at": "2026-02-28T20:33:28.451732Z",
+      "updated_at": "2026-02-28T20:33:28.451732Z",
+      "votes": 0,
+      "roadmap_quarter": "Backlog",
+      "comments": [],
+      "linked_files": []
+    }
+  ]
 }
