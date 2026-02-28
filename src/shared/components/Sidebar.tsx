@@ -1,5 +1,5 @@
 import { useRef, useLayoutEffect, useState, useCallback } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAppStore } from "@/lib/store";
 
 const navItems = [
@@ -45,7 +45,9 @@ const navItems = [
 export function Sidebar() {
   const activeProject = useAppStore((s) => s.activeProject);
   const setActiveProject = useAppStore((s) => s.setActiveProject);
+  const currentUser = useAppStore((s) => s.currentUser);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const navRef = useRef<HTMLElement>(null);
   const linkRefs = useRef<Map<string, HTMLAnchorElement>>(new Map());
@@ -135,6 +137,32 @@ export function Sidebar() {
           </NavLink>
         ))}
       </nav>
+
+      {/* User indicator */}
+      <div className="px-4 py-3 border-t border-surface-200 dark:border-surface-800">
+        {currentUser ? (
+          <div className="flex items-center gap-2">
+            {currentUser.avatar_url ? (
+              <img src={currentUser.avatar_url} alt="" className="w-7 h-7 rounded-full shrink-0" />
+            ) : (
+              <div className="w-7 h-7 rounded-full bg-accent-600/20 flex items-center justify-center text-accent-500 text-xs font-bold shrink-0">
+                {currentUser.display_name.charAt(0).toUpperCase()}
+              </div>
+            )}
+            <div className="min-w-0">
+              <p className="text-xs font-medium dark:text-white truncate">{currentUser.display_name}</p>
+              <p className="text-[10px] text-surface-400 capitalize">{currentUser.provider}</p>
+            </div>
+          </div>
+        ) : (
+          <button
+            onClick={() => navigate("/settings")}
+            className="text-xs text-accent-500 hover:text-accent-400 font-medium transition-colors"
+          >
+            Sign In
+          </button>
+        )}
+      </div>
     </div>
   );
 }

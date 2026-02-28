@@ -174,6 +174,9 @@ export function OverviewDashboard({ stats }: Props) {
                   <div className="flex-1 min-w-0">
                     <span className="font-mono text-accent-500 text-xs">{entry.issue_id}</span>{" "}
                     <span className="dark:text-surface-300">{entry.action}</span>
+                    {entry.user_display_name && entry.user_display_name !== "anon" && (
+                      <span className="text-surface-400"> by {entry.user_display_name}</span>
+                    )}
                     <p className="text-xs text-surface-400 truncate">{entry.issue_title}</p>
                   </div>
                   <span className="text-xs text-surface-400 shrink-0">
