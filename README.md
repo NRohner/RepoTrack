@@ -15,6 +15,10 @@ Instead of storing data in a centralized database, each project's issues and fea
 - **Export** — CSV and Markdown export with native save dialogs
 - **Cross-Platform** — macOS, Windows, and Linux via Tauri
 
+## Do You Just Want The App?
+- Download the Mac .app file or the Windows .msi installer here: https://github.com/NRohner/RepoTrack/releases/tag/v0.1.0
+
+
 ## Quick Start
 
 ### Prerequisites
