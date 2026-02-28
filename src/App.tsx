@@ -24,8 +24,9 @@ export default function App() {
     const loadPreferences = async () => {
       try {
         const prefs = await api.getPreferences();
-        const { setTheme, setActiveColorTheme } = useAppStore.getState();
+        const { setTheme, setActiveColorTheme, setShowResolved } = useAppStore.getState();
         setTheme(prefs.theme as "light" | "dark" | "system");
+        setShowResolved(prefs.show_resolved_issues === "true");
 
         const themeId = prefs.selected_color_theme || "default-indigo";
         try {

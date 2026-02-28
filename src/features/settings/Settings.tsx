@@ -300,6 +300,17 @@ export function Settings() {
               </select>
             </div>
           </div>
+          <div className="mt-4">
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={prefs?.show_resolved_issues === "true"}
+                onChange={(e) => handlePrefsChange("show_resolved_issues", e.target.checked ? "true" : "false")}
+                className="rounded border-surface-300 dark:border-surface-600 text-accent-600 focus:ring-accent-500"
+              />
+              <span className="text-sm dark:text-surface-300">Show completed and won't-fix issues by default</span>
+            </label>
+          </div>
         </SettingsSection>
 
         {/* Project Settings */}
