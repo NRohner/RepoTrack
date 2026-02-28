@@ -1,5 +1,6 @@
 {
-  "version": "1.0",
+  "_repotrack": "This file is managed by RepoTrack. Download it at https://github.com/NRohner/RepoTrack",
+  "version": "0.1.0",
   "project_name": "CloudSync Pro",
   "created_at": "2026-01-15T10:00:00Z",
   "updated_at": "2026-02-27T14:30:00Z",
@@ -11,10 +12,13 @@
       "type": "bug",
       "severity": "critical",
       "status": "in-progress",
-      "tags": ["upload", "backend", "storage"],
+      "tags": [
+        "upload",
+        "backend",
+        "storage"
+      ],
       "created_at": "2026-01-18T09:15:00Z",
       "updated_at": "2026-02-25T11:00:00Z",
-      "resolved_at": null,
       "steps_to_reproduce": "1. Log in to CloudSync Pro\n2. Navigate to file upload\n3. Select a file > 100MB\n4. Click upload\n5. Wait for progress bar to complete",
       "expected_behavior": "File should be uploaded and visible in storage dashboard.",
       "actual_behavior": "Progress bar completes but file is not saved. No error message displayed.",
@@ -31,7 +35,10 @@
           "created_at": "2026-02-01T09:00:00Z"
         }
       ],
-      "linked_files": ["src/services/upload.ts", "server/routes/files.rs"],
+      "linked_files": [
+        "src/services/upload.ts",
+        "server/routes/files.rs"
+      ],
       "time_estimate_hours": 16.0,
       "time_spent_hours": 8.0
     },
@@ -42,10 +49,13 @@
       "type": "bug",
       "severity": "high",
       "status": "open",
-      "tags": ["frontend", "mobile", "auth"],
+      "tags": [
+        "frontend",
+        "mobile",
+        "auth"
+      ],
       "created_at": "2026-01-22T08:00:00Z",
       "updated_at": "2026-02-20T16:00:00Z",
-      "resolved_at": null,
       "steps_to_reproduce": "1. Open app on iOS Safari\n2. Navigate to login page\n3. Tap login button",
       "expected_behavior": "Login modal should open on first tap.",
       "actual_behavior": "Requires two taps. First tap only focuses the button.",
@@ -57,7 +67,9 @@
           "created_at": "2026-01-23T10:00:00Z"
         }
       ],
-      "linked_files": ["src/components/LoginButton.tsx"],
+      "linked_files": [
+        "src/components/LoginButton.tsx"
+      ],
       "time_estimate_hours": 2.0,
       "time_spent_hours": 0.5
     },
@@ -68,18 +80,24 @@
       "type": "bug",
       "severity": "medium",
       "status": "open",
-      "tags": ["frontend", "dashboard", "charts", "firefox"],
+      "tags": [
+        "frontend",
+        "dashboard",
+        "charts",
+        "firefox"
+      ],
       "created_at": "2026-01-25T11:30:00Z",
       "updated_at": "2026-02-15T09:00:00Z",
-      "resolved_at": null,
       "steps_to_reproduce": "1. Open app in Firefox 121\n2. Navigate to Dashboard\n3. Observe blank chart areas",
       "expected_behavior": "Charts render correctly as they do in Chrome/Safari.",
       "actual_behavior": "Blank white rectangles where charts should be.",
       "environment": "Firefox 121, Ubuntu 22.04",
       "comments": [],
-      "linked_files": ["src/features/dashboard/ChartContainer.tsx"],
+      "linked_files": [
+        "src/features/dashboard/ChartContainer.tsx"
+      ],
       "time_estimate_hours": 4.0,
-      "time_spent_hours": 0
+      "time_spent_hours": 0.0
     },
     {
       "id": "BUG-0004",
@@ -88,7 +106,11 @@
       "type": "bug",
       "severity": "high",
       "status": "completed",
-      "tags": ["sync", "permissions", "backend"],
+      "tags": [
+        "sync",
+        "permissions",
+        "backend"
+      ],
       "created_at": "2026-01-28T14:00:00Z",
       "updated_at": "2026-02-10T16:30:00Z",
       "resolved_at": "2026-02-10T16:30:00Z",
@@ -103,7 +125,10 @@
           "created_at": "2026-02-08T11:00:00Z"
         }
       ],
-      "linked_files": ["src/services/sync.ts", "server/ws/permissions.rs"],
+      "linked_files": [
+        "src/services/sync.ts",
+        "server/ws/permissions.rs"
+      ],
       "time_estimate_hours": 8.0,
       "time_spent_hours": 6.0
     },
@@ -114,10 +139,14 @@
       "type": "bug",
       "severity": "critical",
       "status": "open",
-      "tags": ["frontend", "performance", "collaboration", "memory"],
+      "tags": [
+        "frontend",
+        "performance",
+        "collaboration",
+        "memory"
+      ],
       "created_at": "2026-02-01T10:00:00Z",
       "updated_at": "2026-02-26T09:00:00Z",
-      "resolved_at": null,
       "steps_to_reproduce": "1. Open a shared document\n2. Make edits continuously for 2+ hours\n3. Monitor memory usage in Chrome DevTools",
       "expected_behavior": "Memory usage should remain stable under 500MB.",
       "actual_behavior": "Memory grows linearly, reaching 2GB+ after 2 hours.",
@@ -129,7 +158,10 @@
           "created_at": "2026-02-15T14:00:00Z"
         }
       ],
-      "linked_files": ["src/features/editor/CRDTEngine.ts", "src/features/editor/OperationLog.ts"],
+      "linked_files": [
+        "src/features/editor/CRDTEngine.ts",
+        "src/features/editor/OperationLog.ts"
+      ],
       "time_estimate_hours": 24.0,
       "time_spent_hours": 4.0
     },
@@ -140,7 +172,10 @@
       "type": "bug",
       "severity": "medium",
       "status": "completed",
-      "tags": ["search", "backend"],
+      "tags": [
+        "search",
+        "backend"
+      ],
       "created_at": "2026-02-03T09:30:00Z",
       "updated_at": "2026-02-18T13:00:00Z",
       "resolved_at": "2026-02-18T13:00:00Z",
@@ -149,7 +184,9 @@
       "actual_behavior": "Trashed files appear in search results with no indication they are deleted.",
       "environment": "All platforms",
       "comments": [],
-      "linked_files": ["server/search/indexer.rs"],
+      "linked_files": [
+        "server/search/indexer.rs"
+      ],
       "time_estimate_hours": 3.0,
       "time_spent_hours": 2.5
     },
@@ -160,18 +197,23 @@
       "type": "bug",
       "severity": "low",
       "status": "open",
-      "tags": ["auth", "settings", "notifications"],
+      "tags": [
+        "auth",
+        "settings",
+        "notifications"
+      ],
       "created_at": "2026-02-05T15:00:00Z",
       "updated_at": "2026-02-20T10:00:00Z",
-      "resolved_at": null,
       "steps_to_reproduce": "1. Change notification preferences\n2. Log out\n3. Log back in\n4. Check notification preferences",
       "expected_behavior": "Preferences should persist across sessions.",
       "actual_behavior": "All preferences reset to defaults.",
       "environment": "All platforms",
       "comments": [],
-      "linked_files": ["src/features/settings/NotificationSettings.tsx"],
+      "linked_files": [
+        "src/features/settings/NotificationSettings.tsx"
+      ],
       "time_estimate_hours": 2.0,
-      "time_spent_hours": 0
+      "time_spent_hours": 0.0
     },
     {
       "id": "BUG-0008",
@@ -180,18 +222,23 @@
       "type": "bug",
       "severity": "medium",
       "status": "open",
-      "tags": ["frontend", "preview", "pdf"],
+      "tags": [
+        "frontend",
+        "preview",
+        "pdf"
+      ],
       "created_at": "2026-02-08T11:00:00Z",
       "updated_at": "2026-02-22T14:00:00Z",
-      "resolved_at": null,
       "steps_to_reproduce": "1. Upload a password-protected PDF\n2. Click to preview",
       "expected_behavior": "Should prompt for password before rendering.",
       "actual_behavior": "Shows blank white pages with no password prompt.",
       "environment": "Chrome 122, Edge 122",
       "comments": [],
-      "linked_files": ["src/features/preview/PDFViewer.tsx"],
+      "linked_files": [
+        "src/features/preview/PDFViewer.tsx"
+      ],
       "time_estimate_hours": 6.0,
-      "time_spent_hours": 0
+      "time_spent_hours": 0.0
     },
     {
       "id": "BUG-0009",
@@ -200,10 +247,13 @@
       "type": "bug",
       "severity": "high",
       "status": "in-progress",
-      "tags": ["backend", "api", "rate-limiting"],
+      "tags": [
+        "backend",
+        "api",
+        "rate-limiting"
+      ],
       "created_at": "2026-02-10T09:00:00Z",
       "updated_at": "2026-02-26T11:00:00Z",
-      "resolved_at": null,
       "steps_to_reproduce": "1. Select 50+ files\n2. Move all to a new folder\n3. Observe 429 errors after ~20 files",
       "expected_behavior": "Batch operations should count as a single logical request.",
       "actual_behavior": "Each file move counts separately, hitting the 30 req/min limit.",
@@ -215,7 +265,10 @@
           "created_at": "2026-02-24T10:00:00Z"
         }
       ],
-      "linked_files": ["server/middleware/rate_limiter.rs", "server/routes/batch.rs"],
+      "linked_files": [
+        "server/middleware/rate_limiter.rs",
+        "server/routes/batch.rs"
+      ],
       "time_estimate_hours": 8.0,
       "time_spent_hours": 3.0
     },
@@ -226,7 +279,11 @@
       "type": "bug",
       "severity": "medium",
       "status": "completed",
-      "tags": ["desktop", "upload", "electron"],
+      "tags": [
+        "desktop",
+        "upload",
+        "electron"
+      ],
       "created_at": "2026-02-12T13:00:00Z",
       "updated_at": "2026-02-19T15:00:00Z",
       "resolved_at": "2026-02-19T15:00:00Z",
@@ -241,7 +298,9 @@
           "created_at": "2026-02-19T15:00:00Z"
         }
       ],
-      "linked_files": ["electron/main.ts"],
+      "linked_files": [
+        "electron/main.ts"
+      ],
       "time_estimate_hours": 2.0,
       "time_spent_hours": 1.5
     },
@@ -252,18 +311,24 @@
       "type": "bug",
       "severity": "low",
       "status": "open",
-      "tags": ["frontend", "accessibility", "linux", "keyboard"],
+      "tags": [
+        "frontend",
+        "accessibility",
+        "linux",
+        "keyboard"
+      ],
       "created_at": "2026-02-14T10:30:00Z",
       "updated_at": "2026-02-21T09:00:00Z",
-      "resolved_at": null,
       "steps_to_reproduce": "1. Open app on Ubuntu with GNOME\n2. Press Ctrl+D (app: duplicate, GNOME: bookmark)\n3. Observe GNOME bookmark dialog appears instead",
       "expected_behavior": "App shortcuts should not conflict with common OS shortcuts.",
       "actual_behavior": "OS shortcuts take priority, preventing app functionality.",
       "environment": "Ubuntu 22.04, GNOME 44",
       "comments": [],
-      "linked_files": ["src/hooks/useKeyboardShortcuts.ts"],
+      "linked_files": [
+        "src/hooks/useKeyboardShortcuts.ts"
+      ],
       "time_estimate_hours": 4.0,
-      "time_spent_hours": 0
+      "time_spent_hours": 0.0
     },
     {
       "id": "BUG-0012",
@@ -272,7 +337,11 @@
       "type": "bug",
       "severity": "high",
       "status": "completed",
-      "tags": ["auth", "security", "backend"],
+      "tags": [
+        "auth",
+        "security",
+        "backend"
+      ],
       "created_at": "2026-02-16T08:00:00Z",
       "updated_at": "2026-02-22T17:00:00Z",
       "resolved_at": "2026-02-22T17:00:00Z",
@@ -287,7 +356,9 @@
           "created_at": "2026-02-22T17:00:00Z"
         }
       ],
-      "linked_files": ["server/auth/two_factor.rs"],
+      "linked_files": [
+        "server/auth/two_factor.rs"
+      ],
       "time_estimate_hours": 3.0,
       "time_spent_hours": 2.0
     },
@@ -298,10 +369,13 @@
       "type": "feature",
       "priority": "high",
       "status": "in-progress",
-      "tags": ["ui", "accessibility", "theme"],
+      "tags": [
+        "ui",
+        "accessibility",
+        "theme"
+      ],
       "created_at": "2026-01-20T10:00:00Z",
       "updated_at": "2026-02-26T16:00:00Z",
-      "resolved_at": null,
       "use_case": "Users working in low-light environments experience eye strain with the current all-white UI. Developers and power users who spend hours in the app are particularly affected.",
       "acceptance_criteria": "- [x] All pages render correctly in dark mode\n- [x] User preference is persisted\n- [ ] System preference is respected by default\n- [ ] Smooth transition animation between modes",
       "votes": 47,
@@ -313,7 +387,10 @@
           "created_at": "2026-02-05T10:00:00Z"
         }
       ],
-      "linked_files": ["src/styles/theme.css", "src/hooks/useTheme.ts"],
+      "linked_files": [
+        "src/styles/theme.css",
+        "src/hooks/useTheme.ts"
+      ],
       "time_estimate_hours": 24.0,
       "time_spent_hours": 16.0
     },
@@ -324,10 +401,13 @@
       "type": "feature",
       "priority": "critical",
       "status": "open",
-      "tags": ["collaboration", "editor", "real-time"],
+      "tags": [
+        "collaboration",
+        "editor",
+        "real-time"
+      ],
       "created_at": "2026-01-22T14:00:00Z",
       "updated_at": "2026-02-24T10:00:00Z",
-      "resolved_at": null,
       "use_case": "Teams working on shared documents need to see each other's changes in real time without having to refresh or manually merge changes.",
       "acceptance_criteria": "- [ ] Multiple cursors visible in real time\n- [ ] Automatic conflict resolution using CRDT\n- [ ] Presence indicators showing who is viewing/editing\n- [ ] Offline support with sync on reconnect\n- [ ] Undo/redo works correctly in collaborative mode",
       "votes": 89,
@@ -344,7 +424,10 @@
           "created_at": "2026-02-20T15:00:00Z"
         }
       ],
-      "linked_files": ["src/features/editor/", "server/collaboration/"],
+      "linked_files": [
+        "src/features/editor/",
+        "server/collaboration/"
+      ],
       "time_estimate_hours": 120.0,
       "time_spent_hours": 20.0
     },
@@ -355,10 +438,13 @@
       "type": "feature",
       "priority": "high",
       "status": "open",
-      "tags": ["security", "encryption", "privacy"],
+      "tags": [
+        "security",
+        "encryption",
+        "privacy"
+      ],
       "created_at": "2026-01-25T09:00:00Z",
       "updated_at": "2026-02-23T11:00:00Z",
-      "resolved_at": null,
       "use_case": "Enterprise customers and privacy-conscious users need assurance that their files cannot be accessed by anyone, including the service provider.",
       "acceptance_criteria": "- [ ] Files encrypted with AES-256-GCM before upload\n- [ ] Key management using user's master password\n- [ ] Sharing encrypted files generates ephemeral keys\n- [ ] Zero-knowledge proof that server cannot decrypt\n- [ ] Performance: < 10% overhead for encryption/decryption",
       "votes": 73,
@@ -366,7 +452,7 @@
       "comments": [],
       "linked_files": [],
       "time_estimate_hours": 80.0,
-      "time_spent_hours": 0
+      "time_spent_hours": 0.0
     },
     {
       "id": "FEAT-0004",
@@ -375,10 +461,13 @@
       "type": "feature",
       "priority": "high",
       "status": "open",
-      "tags": ["mobile", "ios", "android"],
+      "tags": [
+        "mobile",
+        "ios",
+        "android"
+      ],
       "created_at": "2026-01-28T13:00:00Z",
       "updated_at": "2026-02-20T09:00:00Z",
-      "resolved_at": null,
       "use_case": "Users need access to their files and collaborative features from mobile devices. Currently the web app is usable on mobile but doesn't provide the best experience.",
       "acceptance_criteria": "- [ ] Native iOS app with file browsing and preview\n- [ ] Native Android app with file browsing and preview\n- [ ] Offline mode with automatic sync\n- [ ] Push notifications for collaboration events\n- [ ] Camera integration for document scanning",
       "votes": 112,
@@ -392,7 +481,7 @@
       ],
       "linked_files": [],
       "time_estimate_hours": 400.0,
-      "time_spent_hours": 0
+      "time_spent_hours": 0.0
     },
     {
       "id": "FEAT-0005",
@@ -401,18 +490,23 @@
       "type": "feature",
       "priority": "medium",
       "status": "open",
-      "tags": ["storage", "versioning", "recovery"],
+      "tags": [
+        "storage",
+        "versioning",
+        "recovery"
+      ],
       "created_at": "2026-02-01T10:00:00Z",
       "updated_at": "2026-02-25T14:00:00Z",
-      "resolved_at": null,
       "use_case": "Users accidentally overwrite or delete files and need to recover previous versions. Also useful for tracking who changed what and when.",
       "acceptance_criteria": "- [ ] View version history for any file\n- [ ] Preview any historical version\n- [ ] Restore to a previous version\n- [ ] Compare two versions side-by-side\n- [ ] Configurable retention period (30/90/365 days)",
       "votes": 56,
       "roadmap_quarter": "Q2 2026",
       "comments": [],
-      "linked_files": ["server/storage/versioning.rs"],
+      "linked_files": [
+        "server/storage/versioning.rs"
+      ],
       "time_estimate_hours": 60.0,
-      "time_spent_hours": 0
+      "time_spent_hours": 0.0
     },
     {
       "id": "FEAT-0006",
@@ -421,7 +515,11 @@
       "type": "feature",
       "priority": "medium",
       "status": "completed",
-      "tags": ["search", "backend", "ux"],
+      "tags": [
+        "search",
+        "backend",
+        "ux"
+      ],
       "created_at": "2026-02-03T11:00:00Z",
       "updated_at": "2026-02-20T16:00:00Z",
       "resolved_at": "2026-02-20T16:00:00Z",
@@ -436,7 +534,9 @@
           "created_at": "2026-02-20T16:00:00Z"
         }
       ],
-      "linked_files": ["server/search/"],
+      "linked_files": [
+        "server/search/"
+      ],
       "time_estimate_hours": 40.0,
       "time_spent_hours": 35.0
     },
@@ -447,10 +547,13 @@
       "type": "feature",
       "priority": "low",
       "status": "open",
-      "tags": ["integrations", "api", "webhooks"],
+      "tags": [
+        "integrations",
+        "api",
+        "webhooks"
+      ],
       "created_at": "2026-02-05T14:00:00Z",
       "updated_at": "2026-02-18T09:00:00Z",
-      "resolved_at": null,
       "use_case": "Power users and teams want to automate workflows triggered by file events. For example, auto-posting to Slack when a shared document is updated.",
       "acceptance_criteria": "- [ ] Configure webhook endpoints in settings\n- [ ] Select which events trigger the webhook\n- [ ] Webhook delivery with retry logic\n- [ ] Webhook logs for debugging\n- [ ] Pre-built templates for Slack, Discord, Teams",
       "votes": 23,
@@ -458,7 +561,7 @@
       "comments": [],
       "linked_files": [],
       "time_estimate_hours": 30.0,
-      "time_spent_hours": 0
+      "time_spent_hours": 0.0
     },
     {
       "id": "FEAT-0008",
@@ -467,10 +570,13 @@
       "type": "feature",
       "priority": "medium",
       "status": "open",
-      "tags": ["admin", "analytics", "dashboard"],
+      "tags": [
+        "admin",
+        "analytics",
+        "dashboard"
+      ],
       "created_at": "2026-02-08T10:00:00Z",
       "updated_at": "2026-02-24T15:00:00Z",
-      "resolved_at": null,
       "use_case": "Organization admins need visibility into how their team uses CloudSync Pro, including storage quotas, most active users, and sharing patterns.",
       "acceptance_criteria": "- [ ] Storage usage breakdown by user\n- [ ] Active user metrics (DAU/WAU/MAU)\n- [ ] Sharing analytics\n- [ ] Billing management\n- [ ] User management (invite, remove, role assignment)",
       "votes": 31,
@@ -478,7 +584,7 @@
       "comments": [],
       "linked_files": [],
       "time_estimate_hours": 50.0,
-      "time_spent_hours": 0
+      "time_spent_hours": 0.0
     },
     {
       "id": "FEAT-0009",
@@ -487,10 +593,13 @@
       "type": "feature",
       "priority": "low",
       "status": "open",
-      "tags": ["ai", "ml", "organization"],
+      "tags": [
+        "ai",
+        "ml",
+        "organization"
+      ],
       "created_at": "2026-02-10T09:00:00Z",
       "updated_at": "2026-02-19T11:00:00Z",
-      "resolved_at": null,
       "use_case": "Users with thousands of files struggle to maintain organized folder structures. AI can suggest better organization and identify duplicates.",
       "acceptance_criteria": "- [ ] Suggest folder moves based on file content similarity\n- [ ] Auto-tag files based on content analysis\n- [ ] Detect and flag duplicate files\n- [ ] Learning from user's organizational patterns\n- [ ] Privacy: all analysis happens client-side or with E2E encryption",
       "votes": 45,
@@ -498,7 +607,7 @@
       "comments": [],
       "linked_files": [],
       "time_estimate_hours": 80.0,
-      "time_spent_hours": 0
+      "time_spent_hours": 0.0
     },
     {
       "id": "FEAT-0010",
@@ -507,10 +616,13 @@
       "type": "feature",
       "priority": "medium",
       "status": "open",
-      "tags": ["enterprise", "branding", "ui"],
+      "tags": [
+        "enterprise",
+        "branding",
+        "ui"
+      ],
       "created_at": "2026-02-12T13:00:00Z",
       "updated_at": "2026-02-25T10:00:00Z",
-      "resolved_at": null,
       "use_case": "Enterprise customers want their employees to see company branding when using CloudSync Pro, reinforcing that it's a sanctioned tool.",
       "acceptance_criteria": "- [ ] Upload custom logo\n- [ ] Configure primary and secondary brand colors\n- [ ] Custom domain support (files.company.com)\n- [ ] Custom email templates with branding\n- [ ] White-label option for resellers",
       "votes": 18,
@@ -518,7 +630,7 @@
       "comments": [],
       "linked_files": [],
       "time_estimate_hours": 40.0,
-      "time_spent_hours": 0
+      "time_spent_hours": 0.0
     },
     {
       "id": "IMP-0001",
@@ -527,10 +639,13 @@
       "type": "improvement",
       "severity": "high",
       "status": "in-progress",
-      "tags": ["performance", "frontend", "ux"],
+      "tags": [
+        "performance",
+        "frontend",
+        "ux"
+      ],
       "created_at": "2026-02-06T09:00:00Z",
       "updated_at": "2026-02-25T14:00:00Z",
-      "resolved_at": null,
       "comments": [
         {
           "id": "CMT-0001",
@@ -538,7 +653,9 @@
           "created_at": "2026-02-20T11:00:00Z"
         }
       ],
-      "linked_files": ["src/features/files/FileList.tsx"],
+      "linked_files": [
+        "src/features/files/FileList.tsx"
+      ],
       "time_estimate_hours": 12.0,
       "time_spent_hours": 6.0
     },
@@ -549,14 +666,19 @@
       "type": "improvement",
       "severity": "medium",
       "status": "open",
-      "tags": ["ux", "error-handling", "frontend"],
+      "tags": [
+        "ux",
+        "error-handling",
+        "frontend"
+      ],
       "created_at": "2026-02-14T11:00:00Z",
       "updated_at": "2026-02-21T09:00:00Z",
-      "resolved_at": null,
       "comments": [],
-      "linked_files": ["src/lib/errorHandler.ts"],
+      "linked_files": [
+        "src/lib/errorHandler.ts"
+      ],
       "time_estimate_hours": 8.0,
-      "time_spent_hours": 0
+      "time_spent_hours": 0.0
     },
     {
       "id": "TASK-0001",
@@ -565,14 +687,19 @@
       "type": "task",
       "severity": "low",
       "status": "open",
-      "tags": ["maintenance", "dependencies"],
+      "tags": [
+        "maintenance",
+        "dependencies"
+      ],
       "created_at": "2026-02-18T09:00:00Z",
       "updated_at": "2026-02-18T09:00:00Z",
-      "resolved_at": null,
       "comments": [],
-      "linked_files": ["package.json", "Cargo.toml"],
+      "linked_files": [
+        "package.json",
+        "Cargo.toml"
+      ],
       "time_estimate_hours": 4.0,
-      "time_spent_hours": 0
+      "time_spent_hours": 0.0
     },
     {
       "id": "TASK-0002",
@@ -581,10 +708,12 @@
       "type": "task",
       "severity": "medium",
       "status": "in-progress",
-      "tags": ["testing", "quality"],
+      "tags": [
+        "testing",
+        "quality"
+      ],
       "created_at": "2026-02-20T10:00:00Z",
       "updated_at": "2026-02-26T16:00:00Z",
-      "resolved_at": null,
       "comments": [
         {
           "id": "CMT-0001",
@@ -592,7 +721,9 @@
           "created_at": "2026-02-24T14:00:00Z"
         }
       ],
-      "linked_files": ["tests/integration/sharing.test.ts"],
+      "linked_files": [
+        "tests/integration/sharing.test.ts"
+      ],
       "time_estimate_hours": 12.0,
       "time_spent_hours": 5.0
     }
