@@ -2,7 +2,7 @@
   "version": "1.0.0",
   "project_name": "Acme Web Platform",
   "created_at": "2025-09-15T10:00:00Z",
-  "updated_at": "2026-02-27T16:00:00Z",
+  "updated_at": "2026-02-28T00:31:29.928681Z",
   "issues": [
     {
       "id": "BUG-001",
@@ -11,20 +11,34 @@
       "type": "bug",
       "severity": "critical",
       "status": "in-progress",
-      "tags": ["auth", "frontend", "regression"],
+      "tags": [
+        "auth",
+        "frontend",
+        "regression"
+      ],
       "created_at": "2026-02-27T14:30:00Z",
-      "updated_at": "2026-02-27T15:45:00Z",
-      "resolved_at": null,
+      "updated_at": "2026-02-28T00:31:29.928681Z",
       "steps_to_reproduce": "1. Navigate to /login\n2. Leave email field empty\n3. Click Sign In",
       "expected_behavior": "Validation error shown inline",
       "actual_behavior": "White screen with React error boundary",
       "environment": "Chrome 124, macOS 15.3, React 19",
       "comments": [
-        { "id": "c001", "text": "Confirmed on Firefox too. The email validation regex is throwing on null input.", "created_at": "2026-02-27T15:00:00Z" },
-        { "id": "c002", "text": "Working on a fix — adding null check before regex test.", "created_at": "2026-02-27T15:30:00Z" }
+        {
+          "id": "c001",
+          "text": "Confirmed on Firefox too. The email validation regex is throwing on null input.",
+          "created_at": "2026-02-27T15:00:00Z"
+        },
+        {
+          "id": "c002",
+          "text": "Working on a fix — adding null check before regex test.",
+          "created_at": "2026-02-27T15:30:00Z"
+        }
       ],
-      "linked_files": ["src/features/auth/LoginForm.tsx", "src/lib/validation.ts"],
-      "time_estimate_hours": 1,
+      "linked_files": [
+        "src/features/auth/LoginForm.tsx",
+        "src/lib/validation.ts"
+      ],
+      "time_estimate_hours": 1.0,
       "time_spent_hours": 0.5
     },
     {
@@ -34,19 +48,28 @@
       "type": "bug",
       "severity": "high",
       "status": "open",
-      "tags": ["dashboard", "charts", "frontend"],
+      "tags": [
+        "dashboard",
+        "charts",
+        "frontend"
+      ],
       "created_at": "2026-02-27T10:15:00Z",
       "updated_at": "2026-02-27T12:00:00Z",
-      "resolved_at": null,
       "steps_to_reproduce": "1. Hard refresh the app\n2. Navigate to Dashboard\n3. Observe blank charts",
       "expected_behavior": "Charts render with data on first load",
       "actual_behavior": "Charts are blank until tab switch",
       "environment": "All browsers, production build",
       "comments": [
-        { "id": "c003", "text": "Might be related to the useEffect cleanup we added last sprint.", "created_at": "2026-02-27T11:00:00Z" }
+        {
+          "id": "c003",
+          "text": "Might be related to the useEffect cleanup we added last sprint.",
+          "created_at": "2026-02-27T11:00:00Z"
+        }
       ],
-      "linked_files": ["src/features/dashboard/OverviewDashboard.tsx"],
-      "time_estimate_hours": 3
+      "linked_files": [
+        "src/features/dashboard/OverviewDashboard.tsx"
+      ],
+      "time_estimate_hours": 3.0
     },
     {
       "id": "BUG-003",
@@ -55,17 +78,23 @@
       "type": "bug",
       "severity": "high",
       "status": "open",
-      "tags": ["upload", "backend", "ux"],
+      "tags": [
+        "upload",
+        "backend",
+        "ux"
+      ],
       "created_at": "2026-02-26T09:30:00Z",
       "updated_at": "2026-02-26T14:00:00Z",
-      "resolved_at": null,
       "steps_to_reproduce": "1. Go to file upload\n2. Select a file > 10MB\n3. Click upload",
       "expected_behavior": "Error message: File too large (max 10MB)",
       "actual_behavior": "Spinner runs indefinitely",
       "environment": "All browsers",
       "comments": [],
-      "linked_files": ["src/features/upload/FileUpload.tsx", "src-tauri/src/api/upload.rs"],
-      "time_estimate_hours": 2
+      "linked_files": [
+        "src/features/upload/FileUpload.tsx",
+        "src-tauri/src/api/upload.rs"
+      ],
+      "time_estimate_hours": 2.0
     },
     {
       "id": "BUG-004",
@@ -74,7 +103,11 @@
       "type": "bug",
       "severity": "medium",
       "status": "completed",
-      "tags": ["settings", "dark-mode", "persistence"],
+      "tags": [
+        "settings",
+        "dark-mode",
+        "persistence"
+      ],
       "created_at": "2026-02-20T11:00:00Z",
       "updated_at": "2026-02-22T16:30:00Z",
       "resolved_at": "2026-02-22T16:30:00Z",
@@ -83,11 +116,18 @@
       "actual_behavior": "Reverts to light mode",
       "environment": "macOS, Windows",
       "comments": [
-        { "id": "c004", "text": "Fixed by writing to preferences.json on theme change.", "created_at": "2026-02-22T16:30:00Z" }
+        {
+          "id": "c004",
+          "text": "Fixed by writing to preferences.json on theme change.",
+          "created_at": "2026-02-22T16:30:00Z"
+        }
       ],
-      "linked_files": ["src/features/settings/Settings.tsx", "src-tauri/src/preferences.rs"],
+      "linked_files": [
+        "src/features/settings/Settings.tsx",
+        "src-tauri/src/preferences.rs"
+      ],
       "time_estimate_hours": 1.5,
-      "time_spent_hours": 1
+      "time_spent_hours": 1.0
     },
     {
       "id": "BUG-005",
@@ -96,12 +136,17 @@
       "type": "bug",
       "severity": "low",
       "status": "open",
-      "tags": ["frontend", "table", "ui"],
+      "tags": [
+        "frontend",
+        "table",
+        "ui"
+      ],
       "created_at": "2026-02-25T08:45:00Z",
       "updated_at": "2026-02-25T08:45:00Z",
-      "resolved_at": null,
       "comments": [],
-      "linked_files": ["src/features/issues/IssueBoard.tsx"],
+      "linked_files": [
+        "src/features/issues/IssueBoard.tsx"
+      ],
       "time_estimate_hours": 0.5
     },
     {
@@ -111,15 +156,24 @@
       "type": "bug",
       "severity": "medium",
       "status": "open",
-      "tags": ["notifications", "real-time", "sidebar"],
+      "tags": [
+        "notifications",
+        "real-time",
+        "sidebar"
+      ],
       "created_at": "2026-02-24T13:20:00Z",
       "updated_at": "2026-02-24T15:00:00Z",
-      "resolved_at": null,
       "comments": [
-        { "id": "c005", "text": "We should consider using a WebSocket or polling approach.", "created_at": "2026-02-24T14:00:00Z" }
+        {
+          "id": "c005",
+          "text": "We should consider using a WebSocket or polling approach.",
+          "created_at": "2026-02-24T14:00:00Z"
+        }
       ],
-      "linked_files": ["src/shared/components/Sidebar.tsx"],
-      "time_estimate_hours": 4
+      "linked_files": [
+        "src/shared/components/Sidebar.tsx"
+      ],
+      "time_estimate_hours": 4.0
     },
     {
       "id": "BUG-007",
@@ -128,15 +182,25 @@
       "type": "bug",
       "severity": "medium",
       "status": "completed",
-      "tags": ["export", "csv", "backend"],
+      "tags": [
+        "export",
+        "csv",
+        "backend"
+      ],
       "created_at": "2026-02-18T10:00:00Z",
       "updated_at": "2026-02-19T09:15:00Z",
       "resolved_at": "2026-02-19T09:15:00Z",
       "comments": [
-        { "id": "c006", "text": "Added HTML entity decoding in the export pipeline.", "created_at": "2026-02-19T09:15:00Z" }
+        {
+          "id": "c006",
+          "text": "Added HTML entity decoding in the export pipeline.",
+          "created_at": "2026-02-19T09:15:00Z"
+        }
       ],
-      "linked_files": ["src-tauri/src/api/export.rs"],
-      "time_estimate_hours": 1,
+      "linked_files": [
+        "src-tauri/src/api/export.rs"
+      ],
+      "time_estimate_hours": 1.0,
       "time_spent_hours": 0.75
     },
     {
@@ -146,13 +210,18 @@
       "type": "bug",
       "severity": "low",
       "status": "open",
-      "tags": ["kanban", "drag-drop", "animation"],
+      "tags": [
+        "kanban",
+        "drag-drop",
+        "animation"
+      ],
       "created_at": "2026-02-23T16:45:00Z",
       "updated_at": "2026-02-23T16:45:00Z",
-      "resolved_at": null,
       "comments": [],
-      "linked_files": ["src/features/issues/KanbanBoard.tsx"],
-      "time_estimate_hours": 2
+      "linked_files": [
+        "src/features/issues/KanbanBoard.tsx"
+      ],
+      "time_estimate_hours": 2.0
     },
     {
       "id": "BUG-009",
@@ -161,18 +230,32 @@
       "type": "bug",
       "severity": "critical",
       "status": "in-progress",
-      "tags": ["performance", "memory", "core"],
+      "tags": [
+        "performance",
+        "memory",
+        "core"
+      ],
       "created_at": "2026-02-21T07:30:00Z",
       "updated_at": "2026-02-27T09:00:00Z",
-      "resolved_at": null,
       "environment": "All platforms, noticeable after 10+ switches",
       "comments": [
-        { "id": "c007", "text": "Found 3 intervals not being cleared in useEffect cleanups.", "created_at": "2026-02-26T11:00:00Z" },
-        { "id": "c008", "text": "Also found stale WebSocket connections. Working on cleanup.", "created_at": "2026-02-27T09:00:00Z" }
+        {
+          "id": "c007",
+          "text": "Found 3 intervals not being cleared in useEffect cleanups.",
+          "created_at": "2026-02-26T11:00:00Z"
+        },
+        {
+          "id": "c008",
+          "text": "Also found stale WebSocket connections. Working on cleanup.",
+          "created_at": "2026-02-27T09:00:00Z"
+        }
       ],
-      "linked_files": ["src/lib/store.ts", "src/App.tsx"],
-      "time_estimate_hours": 6,
-      "time_spent_hours": 3
+      "linked_files": [
+        "src/lib/store.ts",
+        "src/App.tsx"
+      ],
+      "time_estimate_hours": 6.0,
+      "time_spent_hours": 3.0
     },
     {
       "id": "BUG-010",
@@ -181,15 +264,22 @@
       "type": "bug",
       "severity": "low",
       "status": "wont-fix",
-      "tags": ["search", "ux"],
+      "tags": [
+        "search",
+        "ux"
+      ],
       "created_at": "2026-02-15T12:00:00Z",
       "updated_at": "2026-02-16T10:00:00Z",
       "resolved_at": "2026-02-16T10:00:00Z",
       "comments": [
-        { "id": "c009", "text": "Nice to have but not worth the complexity right now. Marking as wont-fix for this cycle.", "created_at": "2026-02-16T10:00:00Z" }
+        {
+          "id": "c009",
+          "text": "Nice to have but not worth the complexity right now. Marking as wont-fix for this cycle.",
+          "created_at": "2026-02-16T10:00:00Z"
+        }
       ],
       "linked_files": [],
-      "time_estimate_hours": 4
+      "time_estimate_hours": 4.0
     },
     {
       "id": "BUG-011",
@@ -198,14 +288,19 @@
       "type": "bug",
       "severity": "low",
       "status": "open",
-      "tags": ["windows", "css", "scrollbar"],
+      "tags": [
+        "windows",
+        "css",
+        "scrollbar"
+      ],
       "created_at": "2026-02-22T14:00:00Z",
       "updated_at": "2026-02-22T14:00:00Z",
-      "resolved_at": null,
       "environment": "Windows 11, Chrome and Edge",
       "comments": [],
-      "linked_files": ["src/index.css"],
-      "time_estimate_hours": 1
+      "linked_files": [
+        "src/index.css"
+      ],
+      "time_estimate_hours": 1.0
     },
     {
       "id": "BUG-012",
@@ -214,15 +309,24 @@
       "type": "bug",
       "severity": "medium",
       "status": "open",
-      "tags": ["frontend", "state", "bulk-actions"],
+      "tags": [
+        "frontend",
+        "state",
+        "bulk-actions"
+      ],
       "created_at": "2026-02-27T08:00:00Z",
       "updated_at": "2026-02-27T08:30:00Z",
-      "resolved_at": null,
       "comments": [
-        { "id": "c010", "text": "The tab counts are derived from the store, but the bulk update fetches fresh data. Need to make sure store is updated.", "created_at": "2026-02-27T08:30:00Z" }
+        {
+          "id": "c010",
+          "text": "The tab counts are derived from the store, but the bulk update fetches fresh data. Need to make sure store is updated.",
+          "created_at": "2026-02-27T08:30:00Z"
+        }
       ],
-      "linked_files": ["src/features/issues/IssueBoard.tsx"],
-      "time_estimate_hours": 1
+      "linked_files": [
+        "src/features/issues/IssueBoard.tsx"
+      ],
+      "time_estimate_hours": 1.0
     },
     {
       "id": "FEAT-001",
@@ -231,20 +335,33 @@
       "type": "feature",
       "priority": "high",
       "status": "open",
-      "tags": ["ux", "keyboard", "productivity"],
+      "tags": [
+        "ux",
+        "keyboard",
+        "productivity"
+      ],
       "created_at": "2026-01-10T09:00:00Z",
       "updated_at": "2026-02-20T14:00:00Z",
-      "resolved_at": null,
       "use_case": "Power users who prefer keyboard navigation want to avoid reaching for the mouse for common operations.",
       "acceptance_criteria": "- [ ] Cmd/Ctrl+K opens command palette\n- [ ] N creates new issue\n- [ ] J/K navigates issue list\n- [ ] Esc closes modals\n- [ ] ? shows shortcut help overlay",
       "votes": 42,
       "roadmap_quarter": "Q1 2026",
       "comments": [
-        { "id": "c011", "text": "This would be amazing! I spend so much time clicking around.", "created_at": "2026-01-15T10:00:00Z" },
-        { "id": "c012", "text": "We should use the same patterns as Linear and GitHub.", "created_at": "2026-02-05T11:00:00Z" }
+        {
+          "id": "c011",
+          "text": "This would be amazing! I spend so much time clicking around.",
+          "created_at": "2026-01-15T10:00:00Z"
+        },
+        {
+          "id": "c012",
+          "text": "We should use the same patterns as Linear and GitHub.",
+          "created_at": "2026-02-05T11:00:00Z"
+        }
       ],
-      "linked_files": ["src/App.tsx"],
-      "time_estimate_hours": 16
+      "linked_files": [
+        "src/App.tsx"
+      ],
+      "time_estimate_hours": 16.0
     },
     {
       "id": "FEAT-002",
@@ -253,21 +370,35 @@
       "type": "feature",
       "priority": "critical",
       "status": "in-progress",
-      "tags": ["integration", "git", "automation"],
+      "tags": [
+        "integration",
+        "git",
+        "automation"
+      ],
       "created_at": "2025-11-20T08:00:00Z",
       "updated_at": "2026-02-25T17:00:00Z",
-      "resolved_at": null,
       "use_case": "Teams using git want to see which commits relate to which issues without manual tracking.",
       "acceptance_criteria": "- [ ] Parse commit messages for issue IDs\n- [ ] Show linked commits in issue detail\n- [ ] Support GitHub and GitLab webhooks\n- [ ] Auto-update issue status on merge",
       "votes": 87,
       "roadmap_quarter": "Q1 2026",
       "comments": [
-        { "id": "c013", "text": "GitHub webhook parsing is done. Working on the UI now.", "created_at": "2026-02-20T10:00:00Z" },
-        { "id": "c014", "text": "GitLab support will come in a follow-up.", "created_at": "2026-02-25T17:00:00Z" }
+        {
+          "id": "c013",
+          "text": "GitHub webhook parsing is done. Working on the UI now.",
+          "created_at": "2026-02-20T10:00:00Z"
+        },
+        {
+          "id": "c014",
+          "text": "GitLab support will come in a follow-up.",
+          "created_at": "2026-02-25T17:00:00Z"
+        }
       ],
-      "linked_files": ["src-tauri/src/api/git.rs", "src/features/issues/IssueDetail.tsx"],
-      "time_estimate_hours": 40,
-      "time_spent_hours": 24
+      "linked_files": [
+        "src-tauri/src/api/git.rs",
+        "src/features/issues/IssueDetail.tsx"
+      ],
+      "time_estimate_hours": 40.0,
+      "time_spent_hours": 24.0
     },
     {
       "id": "FEAT-003",
@@ -276,17 +407,19 @@
       "type": "feature",
       "priority": "medium",
       "status": "open",
-      "tags": ["templates", "customization"],
+      "tags": [
+        "templates",
+        "customization"
+      ],
       "created_at": "2025-12-05T14:00:00Z",
       "updated_at": "2026-01-30T11:00:00Z",
-      "resolved_at": null,
       "use_case": "Teams with specific workflows need tailored issue templates.",
       "acceptance_criteria": "- [ ] Template editor in settings\n- [ ] Support for required fields\n- [ ] Markdown template support\n- [ ] Per-type templates (bug, feature, etc.)",
       "votes": 23,
       "roadmap_quarter": "Q2 2026",
       "comments": [],
       "linked_files": [],
-      "time_estimate_hours": 24
+      "time_estimate_hours": 24.0
     },
     {
       "id": "FEAT-004",
@@ -295,16 +428,18 @@
       "type": "feature",
       "priority": "medium",
       "status": "open",
-      "tags": ["notifications", "email"],
+      "tags": [
+        "notifications",
+        "email"
+      ],
       "created_at": "2026-01-05T10:30:00Z",
       "updated_at": "2026-01-05T10:30:00Z",
-      "resolved_at": null,
       "use_case": "Distributed teams need async notifications.",
       "votes": 15,
       "roadmap_quarter": "Q3 2026",
       "comments": [],
       "linked_files": [],
-      "time_estimate_hours": 32
+      "time_estimate_hours": 32.0
     },
     {
       "id": "FEAT-005",
@@ -313,19 +448,25 @@
       "type": "feature",
       "priority": "high",
       "status": "open",
-      "tags": ["workflow", "dependencies"],
+      "tags": [
+        "workflow",
+        "dependencies"
+      ],
       "created_at": "2025-12-15T16:00:00Z",
       "updated_at": "2026-02-10T09:00:00Z",
-      "resolved_at": null,
       "use_case": "Project managers need to visualize task dependencies for sprint planning.",
       "acceptance_criteria": "- [ ] Add blocked/blocks fields to issues\n- [ ] Visual indicator on blocked issues\n- [ ] Dependency graph view\n- [ ] Warning when completing an issue that blocks others",
       "votes": 56,
       "roadmap_quarter": "Q1 2026",
       "comments": [
-        { "id": "c015", "text": "This is critical for our sprint planning. Would love to see a DAG visualization.", "created_at": "2026-01-20T10:00:00Z" }
+        {
+          "id": "c015",
+          "text": "This is critical for our sprint planning. Would love to see a DAG visualization.",
+          "created_at": "2026-01-20T10:00:00Z"
+        }
       ],
       "linked_files": [],
-      "time_estimate_hours": 30
+      "time_estimate_hours": 30.0
     },
     {
       "id": "FEAT-006",
@@ -334,7 +475,11 @@
       "type": "feature",
       "priority": "low",
       "status": "completed",
-      "tags": ["markdown", "editor", "ux"],
+      "tags": [
+        "markdown",
+        "editor",
+        "ux"
+      ],
       "created_at": "2025-10-20T11:00:00Z",
       "updated_at": "2026-02-01T15:00:00Z",
       "resolved_at": "2026-02-01T15:00:00Z",
@@ -342,11 +487,17 @@
       "votes": 34,
       "roadmap_quarter": "Q1 2026",
       "comments": [
-        { "id": "c016", "text": "Shipped! Using react-markdown with GFM support.", "created_at": "2026-02-01T15:00:00Z" }
+        {
+          "id": "c016",
+          "text": "Shipped! Using react-markdown with GFM support.",
+          "created_at": "2026-02-01T15:00:00Z"
+        }
       ],
-      "linked_files": ["src/features/issues/IssueDetail.tsx"],
-      "time_estimate_hours": 8,
-      "time_spent_hours": 6
+      "linked_files": [
+        "src/features/issues/IssueDetail.tsx"
+      ],
+      "time_estimate_hours": 8.0,
+      "time_spent_hours": 6.0
     },
     {
       "id": "FEAT-007",
@@ -355,19 +506,26 @@
       "type": "feature",
       "priority": "high",
       "status": "open",
-      "tags": ["multi-project", "search", "dashboard"],
+      "tags": [
+        "multi-project",
+        "search",
+        "dashboard"
+      ],
       "created_at": "2026-01-25T13:00:00Z",
       "updated_at": "2026-02-15T10:00:00Z",
-      "resolved_at": null,
       "use_case": "Users with 5+ projects need a birds-eye view without switching between them.",
       "acceptance_criteria": "- [ ] Aggregated stats dashboard\n- [ ] Cross-project search\n- [ ] Project health indicators\n- [ ] Quick-switch between projects",
       "votes": 31,
       "roadmap_quarter": "Q2 2026",
       "comments": [
-        { "id": "c017", "text": "Love this idea. Would be great for managing microservices.", "created_at": "2026-02-01T09:00:00Z" }
+        {
+          "id": "c017",
+          "text": "Love this idea. Would be great for managing microservices.",
+          "created_at": "2026-02-01T09:00:00Z"
+        }
       ],
       "linked_files": [],
-      "time_estimate_hours": 40
+      "time_estimate_hours": 40.0
     },
     {
       "id": "FEAT-008",
@@ -376,16 +534,18 @@
       "type": "feature",
       "priority": "medium",
       "status": "open",
-      "tags": ["time-tracking", "productivity"],
+      "tags": [
+        "time-tracking",
+        "productivity"
+      ],
       "created_at": "2026-02-05T09:00:00Z",
       "updated_at": "2026-02-05T09:00:00Z",
-      "resolved_at": null,
       "use_case": "Freelancers and teams billing by the hour want integrated time tracking.",
       "votes": 19,
       "roadmap_quarter": "Q3 2026",
       "comments": [],
       "linked_files": [],
-      "time_estimate_hours": 20
+      "time_estimate_hours": 20.0
     },
     {
       "id": "FEAT-009",
@@ -394,20 +554,31 @@
       "type": "feature",
       "priority": "critical",
       "status": "open",
-      "tags": ["api", "ci-cd", "automation"],
+      "tags": [
+        "api",
+        "ci-cd",
+        "automation"
+      ],
       "created_at": "2025-11-01T08:00:00Z",
       "updated_at": "2026-02-18T14:00:00Z",
-      "resolved_at": null,
       "use_case": "DevOps engineers want to auto-create issues when builds fail or tests break.",
       "acceptance_criteria": "- [ ] REST API with CRUD for issues\n- [ ] API key authentication\n- [ ] Webhook support\n- [ ] CLI tool for scripting",
       "votes": 73,
       "roadmap_quarter": "Q2 2026",
       "comments": [
-        { "id": "c018", "text": "This would let us auto-create bugs from our GitHub Actions failures.", "created_at": "2026-01-10T09:00:00Z" },
-        { "id": "c019", "text": "Tauri's sidecar approach could work well here.", "created_at": "2026-02-18T14:00:00Z" }
+        {
+          "id": "c018",
+          "text": "This would let us auto-create bugs from our GitHub Actions failures.",
+          "created_at": "2026-01-10T09:00:00Z"
+        },
+        {
+          "id": "c019",
+          "text": "Tauri's sidecar approach could work well here.",
+          "created_at": "2026-02-18T14:00:00Z"
+        }
       ],
       "linked_files": [],
-      "time_estimate_hours": 48
+      "time_estimate_hours": 48.0
     },
     {
       "id": "FEAT-010",
@@ -416,16 +587,19 @@
       "type": "feature",
       "priority": "high",
       "status": "open",
-      "tags": ["team", "assignment", "collaboration"],
+      "tags": [
+        "team",
+        "assignment",
+        "collaboration"
+      ],
       "created_at": "2026-02-10T11:00:00Z",
       "updated_at": "2026-02-10T11:00:00Z",
-      "resolved_at": null,
       "use_case": "Teams need to know who is responsible for which issues.",
       "votes": 45,
       "roadmap_quarter": "Q2 2026",
       "comments": [],
       "linked_files": [],
-      "time_estimate_hours": 20
+      "time_estimate_hours": 20.0
     },
     {
       "id": "IMP-001",
@@ -434,16 +608,25 @@
       "type": "improvement",
       "severity": "high",
       "status": "in-progress",
-      "tags": ["performance", "table", "virtualization"],
+      "tags": [
+        "performance",
+        "table",
+        "virtualization"
+      ],
       "created_at": "2026-02-12T10:00:00Z",
       "updated_at": "2026-02-26T16:00:00Z",
-      "resolved_at": null,
       "comments": [
-        { "id": "c020", "text": "Testing with @tanstack/react-virtual. Initial results are promising — 60fps with 2000 rows.", "created_at": "2026-02-26T16:00:00Z" }
+        {
+          "id": "c020",
+          "text": "Testing with @tanstack/react-virtual. Initial results are promising — 60fps with 2000 rows.",
+          "created_at": "2026-02-26T16:00:00Z"
+        }
       ],
-      "linked_files": ["src/features/issues/IssueBoard.tsx"],
-      "time_estimate_hours": 8,
-      "time_spent_hours": 5
+      "linked_files": [
+        "src/features/issues/IssueBoard.tsx"
+      ],
+      "time_estimate_hours": 8.0,
+      "time_spent_hours": 5.0
     },
     {
       "id": "IMP-002",
@@ -452,15 +635,25 @@
       "type": "improvement",
       "severity": "low",
       "status": "completed",
-      "tags": ["kanban", "ui", "visual"],
+      "tags": [
+        "kanban",
+        "ui",
+        "visual"
+      ],
       "created_at": "2026-02-08T14:30:00Z",
       "updated_at": "2026-02-14T11:00:00Z",
       "resolved_at": "2026-02-14T11:00:00Z",
       "comments": [
-        { "id": "c021", "text": "Done! Using the STATUS_COLORS mapping for the left border.", "created_at": "2026-02-14T11:00:00Z" }
+        {
+          "id": "c021",
+          "text": "Done! Using the STATUS_COLORS mapping for the left border.",
+          "created_at": "2026-02-14T11:00:00Z"
+        }
       ],
-      "linked_files": ["src/features/issues/KanbanBoard.tsx"],
-      "time_estimate_hours": 2,
+      "linked_files": [
+        "src/features/issues/KanbanBoard.tsx"
+      ],
+      "time_estimate_hours": 2.0,
       "time_spent_hours": 1.5
     },
     {
@@ -470,13 +663,18 @@
       "type": "improvement",
       "severity": "medium",
       "status": "open",
-      "tags": ["refactor", "dx", "code-quality"],
+      "tags": [
+        "refactor",
+        "dx",
+        "code-quality"
+      ],
       "created_at": "2026-02-17T08:00:00Z",
       "updated_at": "2026-02-17T08:00:00Z",
-      "resolved_at": null,
       "comments": [],
-      "linked_files": ["src/lib/api.ts"],
-      "time_estimate_hours": 3
+      "linked_files": [
+        "src/lib/api.ts"
+      ],
+      "time_estimate_hours": 3.0
     },
     {
       "id": "IMP-004",
@@ -485,16 +683,26 @@
       "type": "improvement",
       "severity": "low",
       "status": "completed",
-      "tags": ["animation", "ux", "transitions"],
+      "tags": [
+        "animation",
+        "ux",
+        "transitions"
+      ],
       "created_at": "2026-01-28T15:00:00Z",
       "updated_at": "2026-02-03T10:00:00Z",
       "resolved_at": "2026-02-03T10:00:00Z",
       "comments": [
-        { "id": "c022", "text": "Using framer-motion's AnimatePresence. Looks great!", "created_at": "2026-02-03T10:00:00Z" }
+        {
+          "id": "c022",
+          "text": "Using framer-motion's AnimatePresence. Looks great!",
+          "created_at": "2026-02-03T10:00:00Z"
+        }
       ],
-      "linked_files": ["src/App.tsx"],
-      "time_estimate_hours": 4,
-      "time_spent_hours": 3
+      "linked_files": [
+        "src/App.tsx"
+      ],
+      "time_estimate_hours": 4.0,
+      "time_spent_hours": 3.0
     },
     {
       "id": "IMP-005",
@@ -503,13 +711,19 @@
       "type": "improvement",
       "severity": "medium",
       "status": "open",
-      "tags": ["build", "optimization", "tauri"],
+      "tags": [
+        "build",
+        "optimization",
+        "tauri"
+      ],
       "created_at": "2026-02-20T09:00:00Z",
       "updated_at": "2026-02-20T09:00:00Z",
-      "resolved_at": null,
       "comments": [],
-      "linked_files": ["src-tauri/Cargo.toml", "src-tauri/tauri.conf.json"],
-      "time_estimate_hours": 3
+      "linked_files": [
+        "src-tauri/Cargo.toml",
+        "src-tauri/tauri.conf.json"
+      ],
+      "time_estimate_hours": 3.0
     },
     {
       "id": "IMP-006",
@@ -518,13 +732,19 @@
       "type": "improvement",
       "severity": "low",
       "status": "open",
-      "tags": ["refactor", "dates", "dx"],
+      "tags": [
+        "refactor",
+        "dates",
+        "dx"
+      ],
       "created_at": "2026-02-23T10:00:00Z",
       "updated_at": "2026-02-23T10:00:00Z",
-      "resolved_at": null,
       "comments": [],
-      "linked_files": ["src/features/issues/IssueBoard.tsx", "src/features/issues/KanbanBoard.tsx"],
-      "time_estimate_hours": 2
+      "linked_files": [
+        "src/features/issues/IssueBoard.tsx",
+        "src/features/issues/KanbanBoard.tsx"
+      ],
+      "time_estimate_hours": 2.0
     },
     {
       "id": "TASK-001",
@@ -533,16 +753,26 @@
       "type": "task",
       "severity": "high",
       "status": "in-progress",
-      "tags": ["testing", "api", "coverage"],
+      "tags": [
+        "testing",
+        "api",
+        "coverage"
+      ],
       "created_at": "2026-02-15T09:00:00Z",
       "updated_at": "2026-02-27T11:00:00Z",
-      "resolved_at": null,
       "comments": [
-        { "id": "c023", "text": "Create and Read tests done. Working on Update and Delete.", "created_at": "2026-02-27T11:00:00Z" }
+        {
+          "id": "c023",
+          "text": "Create and Read tests done. Working on Update and Delete.",
+          "created_at": "2026-02-27T11:00:00Z"
+        }
       ],
-      "linked_files": ["src-tauri/src/api/mod.rs", "src-tauri/tests/api_tests.rs"],
-      "time_estimate_hours": 8,
-      "time_spent_hours": 4
+      "linked_files": [
+        "src-tauri/src/api/mod.rs",
+        "src-tauri/tests/api_tests.rs"
+      ],
+      "time_estimate_hours": 8.0,
+      "time_spent_hours": 4.0
     },
     {
       "id": "TASK-002",
@@ -551,16 +781,26 @@
       "type": "task",
       "severity": "high",
       "status": "completed",
-      "tags": ["ci", "github-actions", "devops"],
+      "tags": [
+        "ci",
+        "github-actions",
+        "devops"
+      ],
       "created_at": "2026-01-20T10:00:00Z",
       "updated_at": "2026-02-02T14:00:00Z",
       "resolved_at": "2026-02-02T14:00:00Z",
       "comments": [
-        { "id": "c024", "text": "Pipeline is green! Runs in ~4 minutes.", "created_at": "2026-02-02T14:00:00Z" }
+        {
+          "id": "c024",
+          "text": "Pipeline is green! Runs in ~4 minutes.",
+          "created_at": "2026-02-02T14:00:00Z"
+        }
       ],
-      "linked_files": [".github/workflows/ci.yml"],
-      "time_estimate_hours": 6,
-      "time_spent_hours": 5
+      "linked_files": [
+        ".github/workflows/ci.yml"
+      ],
+      "time_estimate_hours": 6.0,
+      "time_spent_hours": 5.0
     },
     {
       "id": "TASK-003",
@@ -569,13 +809,18 @@
       "type": "task",
       "severity": "medium",
       "status": "open",
-      "tags": ["maintenance", "dependencies", "security"],
+      "tags": [
+        "maintenance",
+        "dependencies",
+        "security"
+      ],
       "created_at": "2026-02-25T09:00:00Z",
       "updated_at": "2026-02-25T09:00:00Z",
-      "resolved_at": null,
       "comments": [],
-      "linked_files": ["package.json"],
-      "time_estimate_hours": 2
+      "linked_files": [
+        "package.json"
+      ],
+      "time_estimate_hours": 2.0
     },
     {
       "id": "TASK-004",
@@ -584,13 +829,19 @@
       "type": "task",
       "severity": "medium",
       "status": "open",
-      "tags": ["docs", "contributing", "onboarding"],
+      "tags": [
+        "docs",
+        "contributing",
+        "onboarding"
+      ],
       "created_at": "2026-02-18T11:00:00Z",
       "updated_at": "2026-02-18T11:00:00Z",
-      "resolved_at": null,
       "comments": [],
-      "linked_files": ["CONTRIBUTING.md", "src/lib/api.ts"],
-      "time_estimate_hours": 4
+      "linked_files": [
+        "CONTRIBUTING.md",
+        "src/lib/api.ts"
+      ],
+      "time_estimate_hours": 4.0
     },
     {
       "id": "TASK-005",
@@ -599,13 +850,16 @@
       "type": "task",
       "severity": "high",
       "status": "open",
-      "tags": ["testing", "e2e", "playwright"],
+      "tags": [
+        "testing",
+        "e2e",
+        "playwright"
+      ],
       "created_at": "2026-02-22T08:00:00Z",
       "updated_at": "2026-02-22T08:00:00Z",
-      "resolved_at": null,
       "comments": [],
       "linked_files": [],
-      "time_estimate_hours": 16
+      "time_estimate_hours": 16.0
     },
     {
       "id": "TASK-006",
@@ -614,15 +868,25 @@
       "type": "task",
       "severity": "medium",
       "status": "completed",
-      "tags": ["migration", "zustand", "state"],
+      "tags": [
+        "migration",
+        "zustand",
+        "state"
+      ],
       "created_at": "2026-02-10T15:00:00Z",
       "updated_at": "2026-02-11T09:30:00Z",
       "resolved_at": "2026-02-11T09:30:00Z",
       "comments": [
-        { "id": "c025", "text": "Migrated. The new API is cleaner. No breaking changes in our usage patterns.", "created_at": "2026-02-11T09:30:00Z" }
+        {
+          "id": "c025",
+          "text": "Migrated. The new API is cleaner. No breaking changes in our usage patterns.",
+          "created_at": "2026-02-11T09:30:00Z"
+        }
       ],
-      "linked_files": ["src/lib/store.ts"],
-      "time_estimate_hours": 2,
+      "linked_files": [
+        "src/lib/store.ts"
+      ],
+      "time_estimate_hours": 2.0,
       "time_spent_hours": 1.5
     },
     {
@@ -632,13 +896,18 @@
       "type": "bug",
       "severity": "medium",
       "status": "open",
-      "tags": ["dates", "timezone", "comments"],
+      "tags": [
+        "dates",
+        "timezone",
+        "comments"
+      ],
       "created_at": "2026-02-26T18:00:00Z",
       "updated_at": "2026-02-26T18:00:00Z",
-      "resolved_at": null,
       "comments": [],
-      "linked_files": ["src/features/issues/IssueDetail.tsx"],
-      "time_estimate_hours": 1
+      "linked_files": [
+        "src/features/issues/IssueDetail.tsx"
+      ],
+      "time_estimate_hours": 1.0
     },
     {
       "id": "BUG-014",
@@ -647,12 +916,17 @@
       "type": "bug",
       "severity": "high",
       "status": "open",
-      "tags": ["ux", "forms", "data-loss"],
+      "tags": [
+        "ux",
+        "forms",
+        "data-loss"
+      ],
       "created_at": "2026-02-27T13:00:00Z",
       "updated_at": "2026-02-27T13:00:00Z",
-      "resolved_at": null,
       "comments": [],
-      "linked_files": ["src/features/issues/NewIssueForm.tsx"],
+      "linked_files": [
+        "src/features/issues/NewIssueForm.tsx"
+      ],
       "time_estimate_hours": 1.5
     },
     {
@@ -662,19 +936,29 @@
       "type": "feature",
       "priority": "medium",
       "status": "in-progress",
-      "tags": ["dark-mode", "accessibility", "design"],
+      "tags": [
+        "dark-mode",
+        "accessibility",
+        "design"
+      ],
       "created_at": "2026-02-14T09:00:00Z",
       "updated_at": "2026-02-27T10:00:00Z",
-      "resolved_at": null,
       "use_case": "Users in dark environments need better readability and visual hierarchy.",
       "votes": 28,
       "roadmap_quarter": "Q1 2026",
       "comments": [
-        { "id": "c026", "text": "Updated the surface color scale. Need to check all components.", "created_at": "2026-02-27T10:00:00Z" }
+        {
+          "id": "c026",
+          "text": "Updated the surface color scale. Need to check all components.",
+          "created_at": "2026-02-27T10:00:00Z"
+        }
       ],
-      "linked_files": ["tailwind.config.js", "src/index.css"],
-      "time_estimate_hours": 12,
-      "time_spent_hours": 6
+      "linked_files": [
+        "tailwind.config.js",
+        "src/index.css"
+      ],
+      "time_estimate_hours": 12.0,
+      "time_spent_hours": 6.0
     },
     {
       "id": "FEAT-012",
@@ -683,15 +967,18 @@
       "type": "feature",
       "priority": "low",
       "status": "open",
-      "tags": ["export", "migration", "interoperability"],
+      "tags": [
+        "export",
+        "migration",
+        "interoperability"
+      ],
       "created_at": "2026-02-19T14:00:00Z",
       "updated_at": "2026-02-19T14:00:00Z",
-      "resolved_at": null,
       "votes": 8,
       "roadmap_quarter": "Q4 2026",
       "comments": [],
       "linked_files": [],
-      "time_estimate_hours": 12
+      "time_estimate_hours": 12.0
     },
     {
       "id": "IMP-007",
@@ -700,13 +987,16 @@
       "type": "improvement",
       "severity": "low",
       "status": "open",
-      "tags": ["ui", "empty-states", "polish"],
+      "tags": [
+        "ui",
+        "empty-states",
+        "polish"
+      ],
       "created_at": "2026-02-24T10:00:00Z",
       "updated_at": "2026-02-24T10:00:00Z",
-      "resolved_at": null,
       "comments": [],
       "linked_files": [],
-      "time_estimate_hours": 6
+      "time_estimate_hours": 6.0
     },
     {
       "id": "FEAT-013",
@@ -715,16 +1005,19 @@
       "type": "feature",
       "priority": "medium",
       "status": "open",
-      "tags": ["import", "csv", "migration"],
+      "tags": [
+        "import",
+        "csv",
+        "migration"
+      ],
       "created_at": "2026-02-01T11:00:00Z",
       "updated_at": "2026-02-01T11:00:00Z",
-      "resolved_at": null,
       "use_case": "Teams with existing spreadsheets of bugs want to import them without re-entering each one.",
       "votes": 21,
       "roadmap_quarter": "Q2 2026",
       "comments": [],
       "linked_files": [],
-      "time_estimate_hours": 16
+      "time_estimate_hours": 16.0
     },
     {
       "id": "TASK-007",
@@ -733,13 +1026,18 @@
       "type": "task",
       "severity": "high",
       "status": "open",
-      "tags": ["monitoring", "sentry", "error-tracking"],
+      "tags": [
+        "monitoring",
+        "sentry",
+        "error-tracking"
+      ],
       "created_at": "2026-02-26T09:00:00Z",
       "updated_at": "2026-02-26T09:00:00Z",
-      "resolved_at": null,
       "comments": [],
-      "linked_files": ["src/main.tsx"],
-      "time_estimate_hours": 3
+      "linked_files": [
+        "src/main.tsx"
+      ],
+      "time_estimate_hours": 3.0
     },
     {
       "id": "FEAT-014",
@@ -748,16 +1046,19 @@
       "type": "feature",
       "priority": "medium",
       "status": "open",
-      "tags": ["kanban", "customization", "workflow"],
+      "tags": [
+        "kanban",
+        "customization",
+        "workflow"
+      ],
       "created_at": "2026-02-13T10:00:00Z",
       "updated_at": "2026-02-13T10:00:00Z",
-      "resolved_at": null,
       "use_case": "Teams with review stages, QA steps, or deployment phases need more columns.",
       "votes": 37,
       "roadmap_quarter": "Q3 2026",
       "comments": [],
       "linked_files": [],
-      "time_estimate_hours": 20
+      "time_estimate_hours": 20.0
     },
     {
       "id": "BUG-015",
@@ -766,14 +1067,19 @@
       "type": "bug",
       "severity": "medium",
       "status": "open",
-      "tags": ["ui", "z-index", "responsive"],
+      "tags": [
+        "ui",
+        "z-index",
+        "responsive"
+      ],
       "created_at": "2026-02-27T07:00:00Z",
       "updated_at": "2026-02-27T07:00:00Z",
-      "resolved_at": null,
       "environment": "1366x768 resolution, all browsers",
       "comments": [],
-      "linked_files": ["src/features/issues/NewIssueForm.tsx"],
-      "time_estimate_hours": 1
+      "linked_files": [
+        "src/features/issues/NewIssueForm.tsx"
+      ],
+      "time_estimate_hours": 1.0
     }
   ]
 }
