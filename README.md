@@ -51,13 +51,15 @@ RepoTrack supports optional sign-in with GitHub and Google so that issues, comme
    - **Application type**: Desktop app
    - **Name**: `RepoTrack Desktop`
 4. Copy the **Client ID** and paste it into `src-tauri/src/auth/config.rs` as `GOOGLE_CLIENT_ID`
+5. Copy the **Client Secret** — this goes in your `.env` file (see below)
 
-**3. GitHub Client Secret**
+**3. Client Secrets**
 
-The GitHub Client Secret must **not** be committed to git. Create a `.env` file in the project root (already in `.gitignore`):
+The client secrets must **not** be committed to git. Create a `.env` file in the project root (already in `.gitignore`):
 
-```bash
-echo 'GITHUB_CLIENT_SECRET=your_github_client_secret_here' > .env
+```
+GITHUB_CLIENT_SECRET=your_github_client_secret_here
+GOOGLE_CLIENT_SECRET=your_google_client_secret_here
 ```
 
 The build script reads `.env` automatically at compile time — no need to export anything.
