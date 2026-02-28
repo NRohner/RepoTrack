@@ -27,6 +27,41 @@ Instead of storing data in a centralized database, each project's issues and fea
 - **Node.js 20+** — Install from [nodejs.org](https://nodejs.org)
 - **Platform-specific Tauri dependencies** — See [Tauri Prerequisites](https://tauri.app/start/prerequisites/)
 
+### OAuth Setup (Optional)
+
+RepoTrack supports optional sign-in with GitHub and Google so that issues, comments, and status changes are attributed to the signed-in user. If you don't configure OAuth, everything works normally — actions are attributed to "anon".
+
+**1. GitHub OAuth App**
+
+1. Go to [GitHub Developer Settings → OAuth Apps](https://github.com/settings/developers)
+2. Click **"New OAuth App"**
+3. Fill in:
+   - **Application name**: `RepoTrack`
+   - **Homepage URL**: any URL (e.g., your repo URL)
+   - **Authorization callback URL**: `http://127.0.0.1/callback`
+4. Click **"Register application"**
+5. Copy the **Client ID** and paste it into `src-tauri/src/auth/config.rs` as `GITHUB_CLIENT_ID`
+6. Click **"Generate a new client secret"**, copy it — this goes in your environment (see below)
+
+**2. Google OAuth App**
+
+1. Go to [Google Cloud Console → Auth Platform](https://console.cloud.google.com/)
+2. Create a new project (or select an existing one)
+3. Create an OAuth client:
+   - **Application type**: Desktop app
+   - **Name**: `RepoTrack Desktop`
+4. Copy the **Client ID** and paste it into `src-tauri/src/auth/config.rs` as `GOOGLE_CLIENT_ID`
+
+**3. GitHub Client Secret**
+
+The GitHub Client Secret must **not** be committed to git. Create a `.env` file in the project root (already in `.gitignore`):
+
+```bash
+echo 'GITHUB_CLIENT_SECRET=your_github_client_secret_here' > .env
+```
+
+The build script reads `.env` automatically at compile time — no need to export anything.
+
 ### Development
 
 ```bash
@@ -181,6 +216,8 @@ src-tauri/
 │   ├── main.rs              # Entry point
 │   ├── lib.rs               # Tauri app setup, plugin registration
 │   ├── commands/mod.rs       # All Tauri command handlers
+│   ├── auth/mod.rs           # OAuth sign-in flow (GitHub, Google)
+│   ├── auth/config.rs        # OAuth client IDs and URLs
 │   ├── storage/mod.rs        # JSON file read/write operations
 │   ├── db/mod.rs             # SQLite setup and queries
 │   ├── models/mod.rs         # Shared types with serde derives

@@ -349,9 +349,9 @@ export function NewIssueForm({ defaultType, onClose, existingTags }: NewIssueFor
 
         {/* Footer */}
         <div className="px-6 py-4 border-t border-surface-200 dark:border-surface-800 flex justify-between items-center shrink-0">
-          <p className="text-xs text-surface-400">
-            Ctrl+Enter to submit
-          </p>
+          <div className="text-xs text-surface-400">
+            <p>Creating as: <span className="font-medium dark:text-surface-300">{useAppStore.getState().currentUser?.display_name || "anon"}</span></p>
+          </div>
           <div className="flex gap-3">
             <button onClick={handleClose} className="px-4 py-2 text-sm font-medium text-surface-600 dark:text-surface-400 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-lg transition-colors">
               Cancel

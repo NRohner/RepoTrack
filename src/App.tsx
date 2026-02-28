@@ -19,7 +19,7 @@ export default function App() {
   const activeProject = useAppStore((s) => s.activeProject);
   const navigate = useNavigate();
 
-  // Load persisted preferences on startup
+  // Load persisted preferences and current user on startup
   useEffect(() => {
     const loadPreferences = async () => {
       try {
@@ -39,7 +39,16 @@ export default function App() {
         // Use defaults on error
       }
     };
+    const loadCurrentUser = async () => {
+      try {
+        const user = await api.getCurrentUser();
+        useAppStore.getState().setCurrentUser(user);
+      } catch {
+        // Not signed in
+      }
+    };
     loadPreferences();
+    loadCurrentUser();
   }, []);
 
   useEffect(() => {
