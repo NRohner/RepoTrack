@@ -161,3 +161,22 @@ body.dark {
 .animate-vote-pulse {
   animation: vote-pulse 0.3s ease-out;
 }
+
+/* Grid background for start page */
+.grid-bg {
+  background-image:
+    linear-gradient(var(--surface-300) 1px, transparent 1px),
+    linear-gradient(90deg, var(--surface-300) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.4) 15%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,1) 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.4) 15%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,1) 100%);
+  opacity: 0.35;
+}
+
+.dark .grid-bg {
+  background-image:
+    linear-gradient(var(--surface-700) 1px, transparent 1px),
+    linear-gradient(90deg, var(--surface-700) 1px, transparent 1px);
+  opacity: 0.3;
+}
+
