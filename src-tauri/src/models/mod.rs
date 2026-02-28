@@ -84,8 +84,12 @@ pub struct Issue {
     pub time_spent_hours: Option<f64>,
 }
 
+pub const REPOTRACK_NOTICE: &str = "This file is managed by RepoTrack. Download it at https://github.com/NRohner/RepoTrack";
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RepoTrackFile {
+    #[serde(default = "default_notice")]
+    pub _repotrack: String,
     pub version: String,
     pub project_name: String,
     pub created_at: DateTime<Utc>,
@@ -93,11 +97,16 @@ pub struct RepoTrackFile {
     pub issues: Vec<Issue>,
 }
 
+fn default_notice() -> String {
+    REPOTRACK_NOTICE.to_string()
+}
+
 impl RepoTrackFile {
     pub fn new(project_name: String) -> Self {
         let now = Utc::now();
         Self {
-            version: "1.0".to_string(),
+            _repotrack: REPOTRACK_NOTICE.to_string(),
+            version: env!("CARGO_PKG_VERSION").to_string(),
             project_name,
             created_at: now,
             updated_at: now,
