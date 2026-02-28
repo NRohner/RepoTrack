@@ -3,7 +3,7 @@ use rusqlite::Connection;
 use std::path::Path;
 use std::sync::Mutex;
 
-use crate::models::{ProjectInfo, UserPreferences};
+use crate::models::{ColorPalette, ColorTheme, ProjectInfo, UserPreferences};
 
 pub struct Database {
     conn: Mutex<Connection>,
@@ -48,8 +48,30 @@ impl Database {
                 timestamp TEXT NOT NULL DEFAULT (datetime('now')),
                 FOREIGN KEY (project_path) REFERENCES projects(path)
             );
+
+            CREATE TABLE IF NOT EXISTS color_themes (
+                id TEXT PRIMARY KEY,
+                name TEXT NOT NULL,
+                is_builtin INTEGER NOT NULL DEFAULT 0,
+                accent_palette TEXT NOT NULL,
+                surface_palette TEXT NOT NULL,
+                created_at TEXT NOT NULL DEFAULT (datetime('now')),
+                updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+            );
             ",
         )?;
+
+        // Seed default Indigo theme
+        conn.execute(
+            "INSERT OR IGNORE INTO color_themes (id, name, is_builtin, accent_palette, surface_palette) VALUES (?1, ?2, 1, ?3, ?4)",
+            rusqlite::params![
+                "default-indigo",
+                "Indigo",
+                r##"{"50":"#eef2ff","100":"#e0e7ff","200":"#c7d2fe","300":"#a5b4fc","400":"#818cf8","500":"#6366f1","600":"#4f46e5","700":"#4338ca","800":"#3730a3","900":"#312e81","950":"#1e1b4b"}"##,
+                r##"{"50":"#f8fafc","100":"#f1f5f9","200":"#e2e8f0","300":"#cbd5e1","400":"#94a3b8","500":"#64748b","600":"#475569","700":"#334155","800":"#1e293b","900":"#0f172a","950":"#0a0a14"}"##,
+            ],
+        )?;
+
         Ok(())
     }
 
@@ -173,6 +195,7 @@ impl Database {
                 "default_layout" => prefs.default_layout = value,
                 "default_status_filter" => prefs.default_status_filter = Some(value),
                 "default_severity_filter" => prefs.default_severity_filter = Some(value),
+                "selected_color_theme" => prefs.selected_color_theme = Some(value),
                 _ => {}
             }
         }
@@ -203,6 +226,100 @@ impl Database {
                 "INSERT OR REPLACE INTO preferences (key, value) VALUES ('default_severity_filter', ?1)",
                 rusqlite::params![v],
             )?;
+        }
+        if let Some(ref v) = prefs.selected_color_theme {
+            conn.execute(
+                "INSERT OR REPLACE INTO preferences (key, value) VALUES ('selected_color_theme', ?1)",
+                rusqlite::params![v],
+            )?;
+        }
+        Ok(())
+    }
+
+    pub fn list_color_themes(&self) -> Result<Vec<ColorTheme>> {
+        let conn = self.conn.lock().map_err(|e| anyhow::anyhow!("{}", e))?;
+        let mut stmt = conn.prepare(
+            "SELECT id, name, is_builtin, accent_palette, surface_palette, created_at, updated_at FROM color_themes ORDER BY is_builtin DESC, name ASC",
+        )?;
+        let themes = stmt.query_map([], |row| {
+            let accent_json: String = row.get(3)?;
+            let surface_json: String = row.get(4)?;
+            let accent_palette: ColorPalette = serde_json::from_str(&accent_json).unwrap_or_default();
+            let surface_palette: ColorPalette = serde_json::from_str(&surface_json).unwrap_or_default();
+            Ok(ColorTheme {
+                id: row.get(0)?,
+                name: row.get(1)?,
+                is_builtin: row.get::<_, i32>(2)? != 0,
+                accent_palette,
+                surface_palette,
+                created_at: row.get(5)?,
+                updated_at: row.get(6)?,
+            })
+        })?;
+        let mut result = Vec::new();
+        for t in themes {
+            result.push(t?);
+        }
+        Ok(result)
+    }
+
+    pub fn get_color_theme(&self, id: &str) -> Result<ColorTheme> {
+        let conn = self.conn.lock().map_err(|e| anyhow::anyhow!("{}", e))?;
+        let theme = conn.query_row(
+            "SELECT id, name, is_builtin, accent_palette, surface_palette, created_at, updated_at FROM color_themes WHERE id = ?1",
+            rusqlite::params![id],
+            |row| {
+                let accent_json: String = row.get(3)?;
+                let surface_json: String = row.get(4)?;
+                let accent_palette: ColorPalette = serde_json::from_str(&accent_json).unwrap_or_default();
+                let surface_palette: ColorPalette = serde_json::from_str(&surface_json).unwrap_or_default();
+                Ok(ColorTheme {
+                    id: row.get(0)?,
+                    name: row.get(1)?,
+                    is_builtin: row.get::<_, i32>(2)? != 0,
+                    accent_palette,
+                    surface_palette,
+                    created_at: row.get(5)?,
+                    updated_at: row.get(6)?,
+                })
+            },
+        )?;
+        Ok(theme)
+    }
+
+    pub fn create_color_theme(&self, theme: &ColorTheme) -> Result<()> {
+        let conn = self.conn.lock().map_err(|e| anyhow::anyhow!("{}", e))?;
+        let accent_json = serde_json::to_string(&theme.accent_palette)?;
+        let surface_json = serde_json::to_string(&theme.surface_palette)?;
+        conn.execute(
+            "INSERT INTO color_themes (id, name, is_builtin, accent_palette, surface_palette) VALUES (?1, ?2, 0, ?3, ?4)",
+            rusqlite::params![theme.id, theme.name, accent_json, surface_json],
+        )?;
+        Ok(())
+    }
+
+    pub fn update_color_theme(&self, theme: &ColorTheme) -> Result<()> {
+        let conn = self.conn.lock().map_err(|e| anyhow::anyhow!("{}", e))?;
+        let accent_json = serde_json::to_string(&theme.accent_palette)?;
+        let surface_json = serde_json::to_string(&theme.surface_palette)?;
+        let rows = conn.execute(
+            "UPDATE color_themes SET name = ?1, accent_palette = ?2, surface_palette = ?3, updated_at = datetime('now') WHERE id = ?4 AND is_builtin = 0",
+            rusqlite::params![theme.name, accent_json, surface_json, theme.id],
+        )?;
+        if rows == 0 {
+            return Err(anyhow::anyhow!("Theme not found or is a built-in theme"));
+        }
+        Ok(())
+    }
+
+    pub fn delete_color_theme(&self, id: &str) -> Result<()> {
+        let conn = self.conn.lock().map_err(|e| anyhow::anyhow!("{}", e))?;
+        let rows = conn.execute(
+            "DELETE FROM color_themes WHERE id = ?1 AND is_builtin = 0",
+            rusqlite::params![id],
+        )?;
+        if rows == 0 {
+            return Err(anyhow::anyhow!("Theme not found or is a built-in theme"));
         }
         Ok(())
     }

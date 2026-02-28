@@ -207,6 +207,11 @@ pub fn run() {
             commands::reload_project,
             commands::delete_all_issues,
             commands::update_recent_menu,
+            commands::list_color_themes,
+            commands::get_color_theme,
+            commands::create_color_theme,
+            commands::update_color_theme,
+            commands::delete_color_theme,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

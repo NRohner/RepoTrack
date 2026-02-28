@@ -229,6 +229,19 @@ export interface UserPreferences {
   default_layout: string;
   default_status_filter?: string;
   default_severity_filter?: string;
+  selected_color_theme?: string;
+}
+
+export type ColorPalette = Record<string, string>;
+
+export interface ColorTheme {
+  id: string;
+  name: string;
+  is_builtin: boolean;
+  accent_palette: ColorPalette;
+  surface_palette: ColorPalette;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface DirEntry {

@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { listen } from "@tauri-apps/api/event";
 import { useAppStore } from "./lib/store";
 import * as api from "./lib/api";
+import { applyColorTheme } from "./lib/theme";
 import { Sidebar } from "./shared/components/Sidebar";
 import { ToastContainer } from "./shared/components/Toast";
 import { ProjectSelector } from "./features/projects/ProjectSelector";
@@ -17,6 +18,29 @@ export default function App() {
   const setResolvedTheme = useAppStore((s) => s.setResolvedTheme);
   const activeProject = useAppStore((s) => s.activeProject);
   const navigate = useNavigate();
+
+  // Load persisted preferences on startup
+  useEffect(() => {
+    const loadPreferences = async () => {
+      try {
+        const prefs = await api.getPreferences();
+        const { setTheme, setActiveColorTheme } = useAppStore.getState();
+        setTheme(prefs.theme as "light" | "dark" | "system");
+
+        const themeId = prefs.selected_color_theme || "default-indigo";
+        try {
+          const colorTheme = await api.getColorTheme(themeId);
+          setActiveColorTheme(colorTheme);
+          applyColorTheme(colorTheme);
+        } catch {
+          // Fall back to default if selected theme not found
+        }
+      } catch {
+        // Use defaults on error
+      }
+    };
+    loadPreferences();
+  }, []);
 
   useEffect(() => {
     if (theme === "system") {
