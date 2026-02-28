@@ -1,19 +1,70 @@
 import { useState, useEffect } from "react";
 import { useAppStore } from "@/lib/store";
 import * as api from "@/lib/api";
-import type { UserPreferences } from "@/lib/types";
+import type { UserPreferences, ColorTheme } from "@/lib/types";
+import { applyColorTheme, resetColorTheme } from "@/lib/theme";
 import { Modal } from "@/shared/components/Modal";
 import { SegmentedControl } from "@/shared/components/SegmentedControl";
+import { ThemeCard } from "./ThemeCard";
+import { ThemeBuilderModal } from "./ThemeBuilderModal";
 
 export function Settings() {
-  const { theme, setTheme, activeProject, activeProjectPath, addToast } = useAppStore();
+  const { theme, setTheme, activeProject, activeProjectPath, addToast, activeColorTheme, setActiveColorTheme } = useAppStore();
   const [prefs, setPrefs] = useState<UserPreferences | null>(null);
   const [projectName, setProjectName] = useState(activeProject?.project_name || "");
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
+  const [colorThemes, setColorThemes] = useState<ColorTheme[]>([]);
+  const [showBuilderModal, setShowBuilderModal] = useState(false);
 
   useEffect(() => {
     api.getPreferences().then(setPrefs).catch(console.error);
+    api.listColorThemes().then(setColorThemes).catch(console.error);
   }, []);
+
+  const handleSelectColorTheme = async (selected: ColorTheme) => {
+    try {
+      applyColorTheme(selected);
+      setActiveColorTheme(selected);
+      if (prefs) {
+        const updated = { ...prefs, selected_color_theme: selected.id };
+        setPrefs(updated);
+        await api.updatePreferences(updated);
+      }
+    } catch (e: any) {
+      addToast({ type: "error", message: e.toString() });
+    }
+  };
+
+  const handleDeleteColorTheme = async (themeToDelete: ColorTheme) => {
+    try {
+      await api.deleteColorTheme(themeToDelete.id);
+      setColorThemes((prev) => prev.filter((t) => t.id !== themeToDelete.id));
+      // If the deleted theme was active, reset to default
+      if (activeColorTheme?.id === themeToDelete.id) {
+        const defaultTheme = colorThemes.find((t) => t.id === "default-indigo");
+        if (defaultTheme) {
+          applyColorTheme(defaultTheme);
+          setActiveColorTheme(defaultTheme);
+          if (prefs) {
+            const updated = { ...prefs, selected_color_theme: defaultTheme.id };
+            setPrefs(updated);
+            await api.updatePreferences(updated);
+          }
+        } else {
+          resetColorTheme();
+          setActiveColorTheme(null);
+        }
+      }
+      addToast({ type: "success", message: "Theme deleted" });
+    } catch (e: any) {
+      addToast({ type: "error", message: e.toString() });
+    }
+  };
+
+  const handleThemeCreated = (newTheme: ColorTheme) => {
+    setColorThemes((prev) => [...prev, newTheme]);
+    addToast({ type: "success", message: `Theme "${newTheme.name}" created` });
+  };
 
   const handleThemeChange = async (newTheme: "light" | "dark" | "system") => {
     setTheme(newTheme);
@@ -118,6 +169,30 @@ export function Settings() {
             value={theme}
             onChange={handleThemeChange}
           />
+        </SettingsSection>
+
+        {/* Color Theme */}
+        <SettingsSection title="Color Theme" description="Choose or import a color theme for accents and surfaces">
+          <div className="grid grid-cols-2 gap-3">
+            {colorThemes.map((ct) => (
+              <ThemeCard
+                key={ct.id}
+                theme={ct}
+                isActive={activeColorTheme?.id === ct.id}
+                onSelect={() => handleSelectColorTheme(ct)}
+                onDelete={ct.is_builtin ? undefined : () => handleDeleteColorTheme(ct)}
+              />
+            ))}
+          </div>
+          <button
+            onClick={() => setShowBuilderModal(true)}
+            className="mt-4 flex items-center gap-2 px-4 py-2 bg-accent-600 hover:bg-accent-700 text-white rounded-lg text-sm font-medium transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+            </svg>
+            Theme Builder
+          </button>
         </SettingsSection>
 
         {/* Default View */}
@@ -268,6 +343,12 @@ export function Settings() {
           </div>
         </div>
       </Modal>
+
+      <ThemeBuilderModal
+        open={showBuilderModal}
+        onClose={() => setShowBuilderModal(false)}
+        onCreated={handleThemeCreated}
+      />
     </div>
   );
 }
