@@ -1,10 +1,18 @@
-use crate::models::RepoTrackFile;
+use crate::models::{RepoTrackFile, REPOTRACK_NOTICE};
 use anyhow::Result;
 use std::path::{Path, PathBuf};
 
 pub fn read_repotrack_file(path: &Path) -> Result<RepoTrackFile> {
     let content = std::fs::read_to_string(path)?;
-    let data: RepoTrackFile = serde_json::from_str(&content)?;
+    let mut data: RepoTrackFile = serde_json::from_str(&content)?;
+    let needs_update = !content.contains("\"_repotrack\"")
+        || data._repotrack != REPOTRACK_NOTICE
+        || data.version != env!("CARGO_PKG_VERSION");
+    if needs_update {
+        data._repotrack = REPOTRACK_NOTICE.to_string();
+        data.version = env!("CARGO_PKG_VERSION").to_string();
+        write_repotrack_file(path, &data)?;
+    }
     Ok(data)
 }
 
