@@ -46,7 +46,9 @@ pub fn open_project(path: String, state: State<AppState>) -> CmdResult<RepoTrack
         return Err(format!("No repotrack.json found at {}", path));
     }
     let data = storage::read_repotrack_file(&rt_path).map_err(map_err)?;
-    state.db.update_last_opened(&path).map_err(map_err)?;
+
+    // Ensure the project exists in the database (upsert), then update last_opened
+    state.db.add_project(&data.project_name, &path).map_err(map_err)?;
 
     let mut active = state.active_project.lock().map_err(map_err)?;
     *active = Some(ActiveProject {
