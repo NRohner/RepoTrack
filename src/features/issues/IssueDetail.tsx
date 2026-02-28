@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import * as api from "@/lib/api";
@@ -17,6 +17,13 @@ interface IssueDetailProps {
 
 export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailProps) {
   const addToast = useAppStore((s) => s.addToast);
+  const [closing, setClosing] = useState(false);
+
+  const handleClose = useCallback(() => {
+    setClosing(true);
+    setTimeout(onClose, 250);
+  }, [onClose]);
+
   const [editing, setEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(issue.title);
   const [editDesc, setEditDesc] = useState(issue.description);
@@ -129,11 +136,11 @@ export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailP
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
-        onClick={onClose}
+        className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-40 ${closing ? "animate-backdrop-out" : "animate-backdrop-in"}`}
+        onClick={handleClose}
       />
       {/* Panel */}
-      <div className="fixed inset-y-0 right-0 w-full max-w-2xl bg-white dark:bg-surface-900 shadow-2xl z-50 flex flex-col overflow-hidden border-l border-surface-200 dark:border-surface-800">
+      <div className={`fixed inset-y-0 right-0 w-full max-w-2xl bg-white dark:bg-surface-900 shadow-2xl z-50 flex flex-col overflow-hidden border-l border-surface-200 dark:border-surface-800 ${closing ? "animate-slide-out-right" : "animate-slide-in-right"}`}>
         {/* Header */}
         <div className="px-6 py-4 border-b border-surface-200 dark:border-surface-800 flex items-start justify-between shrink-0">
           <div className="flex-1 min-w-0">
@@ -186,7 +193,7 @@ export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailP
             </div>
           </div>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-surface-400 transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

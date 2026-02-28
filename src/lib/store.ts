@@ -26,6 +26,9 @@ interface AppStore {
   currentUser: UserInfo | null;
   setCurrentUser: (user: UserInfo | null) => void;
 
+  showResolved: boolean;
+  setShowResolved: (show: boolean) => void;
+
   toasts: Toast[];
   addToast: (toast: Omit<Toast, "id">) => void;
   removeToast: (id: string) => void;
@@ -77,6 +80,9 @@ export const useAppStore = create<AppStore>((set) => ({
 
   currentUser: null,
   setCurrentUser: (user) => set({ currentUser: user }),
+
+  showResolved: false,
+  setShowResolved: (show) => set({ showResolved: show }),
 
   toasts: [],
   addToast: (toast) =>
