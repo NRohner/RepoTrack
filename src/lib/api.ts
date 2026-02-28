@@ -11,6 +11,7 @@ import type {
   UserPreferences,
   DirEntry,
   ColorTheme,
+  UserInfo,
 } from "./types";
 
 export async function listRecentProjects(): Promise<ProjectInfo[]> {
@@ -145,4 +146,17 @@ export async function updateColorTheme(theme: ColorTheme): Promise<void> {
 
 export async function deleteColorTheme(id: string): Promise<void> {
   return invoke("delete_color_theme", { id });
+}
+
+// Auth
+export async function signIn(provider: string): Promise<UserInfo> {
+  return invoke("sign_in", { provider });
+}
+
+export async function signOut(provider: string): Promise<void> {
+  return invoke("sign_out", { provider });
+}
+
+export async function getCurrentUser(): Promise<UserInfo | null> {
+  return invoke("get_current_user");
 }

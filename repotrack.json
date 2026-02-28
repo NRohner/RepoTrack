@@ -3,6 +3,154 @@
   "version": "0.1.0",
   "project_name": "RepoTrack",
   "created_at": "2026-02-27T20:53:18.961609Z",
-  "updated_at": "2026-02-27T20:53:18.961609Z",
-  "issues": []
+  "updated_at": "2026-02-28T22:20:05.439475Z",
+  "issues": [
+    {
+      "id": "IMP-0001",
+      "title": "The home page looks a little boring",
+      "description": "Add some sort of gradient grid to it to make it a bit more visually interesting.",
+      "type": "improvement",
+      "severity": "low",
+      "status": "completed",
+      "tags": [],
+      "created_at": "2026-02-28T20:23:21.598035Z",
+      "updated_at": "2026-02-28T20:46:06.836390Z",
+      "resolved_at": "2026-02-28T20:46:06.836390Z",
+      "comments": [],
+      "linked_files": [],
+      "history": []
+    },
+    {
+      "id": "FEAT-0001",
+      "title": "Github OAuth to Atribut bugs to users.",
+      "description": "",
+      "type": "feature",
+      "priority": "high",
+      "status": "completed",
+      "tags": [],
+      "created_at": "2026-02-28T20:32:45.433634Z",
+      "updated_at": "2026-02-28T22:15:43.799840Z",
+      "resolved_at": "2026-02-28T21:53:15.963078Z",
+      "votes": 0,
+      "roadmap_quarter": "Q1 2026",
+      "comments": [],
+      "linked_files": [],
+      "history": [
+        {
+          "action": "status_changed",
+          "from": "open",
+          "to": "completed",
+          "user": {
+            "display_name": "Nick",
+            "username": "NRohner",
+            "provider": "github",
+            "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+          },
+          "timestamp": "2026-02-28T21:53:15.963078Z"
+        }
+      ]
+    },
+    {
+      "id": "FEAT-0003",
+      "title": "Add History to issues",
+      "description": "Just a log of how its status has changed over time. Basically, when it was created, when its status was updated and what it was updated to and who by, and when it was closed and who by.",
+      "type": "feature",
+      "priority": "high",
+      "status": "completed",
+      "tags": [],
+      "created_at": "2026-02-28T20:50:21.281268Z",
+      "updated_at": "2026-02-28T22:15:48.815049Z",
+      "resolved_at": "2026-02-28T21:59:40.913105Z",
+      "votes": 0,
+      "roadmap_quarter": "Q1 2026",
+      "comments": [],
+      "linked_files": [],
+      "history": [
+        {
+          "action": "status_changed",
+          "from": "open",
+          "to": "completed",
+          "user": {
+            "display_name": "Nick",
+            "username": "NRohner",
+            "provider": "github",
+            "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+          },
+          "timestamp": "2026-02-28T21:59:40.913105Z"
+        }
+      ]
+    },
+    {
+      "id": "IMP-0002",
+      "title": "Completed should be hidden by default",
+      "description": "There should be a toggle check button to show completed",
+      "type": "improvement",
+      "severity": "medium",
+      "status": "completed",
+      "tags": [],
+      "created_at": "2026-02-28T20:56:50.915313Z",
+      "updated_at": "2026-02-28T22:20:01.540289Z",
+      "resolved_at": "2026-02-28T22:20:01.540289Z",
+      "comments": [],
+      "linked_files": [],
+      "history": [
+        {
+          "action": "status_changed",
+          "from": "open",
+          "to": "completed",
+          "user": {
+            "display_name": "Nick",
+            "username": "NRohner",
+            "provider": "github",
+            "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+          },
+          "timestamp": "2026-02-28T22:20:01.540289Z"
+        }
+      ]
+    },
+    {
+      "id": "IMP-0003",
+      "title": "Add animation when viewing an issue",
+      "description": "Match the animation that happens when creating a new issue.",
+      "type": "improvement",
+      "severity": "medium",
+      "status": "completed",
+      "tags": [],
+      "created_at": "2026-02-28T21:52:15.166335Z",
+      "updated_at": "2026-02-28T22:20:05.439475Z",
+      "resolved_at": "2026-02-28T22:20:05.439475Z",
+      "comments": [],
+      "linked_files": [],
+      "created_by": {
+        "display_name": "Nick",
+        "username": "NRohner",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+      },
+      "history": [
+        {
+          "action": "created",
+          "user": {
+            "display_name": "Nick",
+            "username": "NRohner",
+            "provider": "github",
+            "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+          },
+          "timestamp": "2026-02-28T21:52:15.166335Z"
+        },
+        {
+          "action": "status_changed",
+          "from": "open",
+          "to": "completed",
+          "user": {
+            "display_name": "Nick",
+            "username": "NRohner",
+            "provider": "github",
+            "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+          },
+          "timestamp": "2026-02-28T22:20:05.439475Z"
+        }
+      ]
+    }
+  ]
 }

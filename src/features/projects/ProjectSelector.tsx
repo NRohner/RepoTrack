@@ -95,8 +95,11 @@ export function ProjectSelector() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-8">
-      <div className="max-w-3xl w-full">
+    <div className="min-h-screen flex flex-col items-center justify-center p-8 relative overflow-hidden">
+      {/* Grid background — fades in from top to bottom via CSS mask */}
+      <div className="absolute inset-0 pointer-events-none grid-bg" />
+
+      <div className="max-w-3xl w-full relative z-10">
         {/* Header */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-accent-600 rounded-2xl mb-6 shadow-lg shadow-accent-600/25">

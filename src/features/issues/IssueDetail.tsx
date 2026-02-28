@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import * as api from "@/lib/api";
@@ -17,6 +17,13 @@ interface IssueDetailProps {
 
 export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailProps) {
   const addToast = useAppStore((s) => s.addToast);
+  const [closing, setClosing] = useState(false);
+
+  const handleClose = useCallback(() => {
+    setClosing(true);
+    setTimeout(onClose, 250);
+  }, [onClose]);
+
   const [editing, setEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(issue.title);
   const [editDesc, setEditDesc] = useState(issue.description);
@@ -129,11 +136,11 @@ export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailP
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
-        onClick={onClose}
+        className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-40 ${closing ? "animate-backdrop-out" : "animate-backdrop-in"}`}
+        onClick={handleClose}
       />
       {/* Panel */}
-      <div className="fixed inset-y-0 right-0 w-full max-w-2xl bg-white dark:bg-surface-900 shadow-2xl z-50 flex flex-col overflow-hidden border-l border-surface-200 dark:border-surface-800">
+      <div className={`fixed inset-y-0 right-0 w-full max-w-2xl bg-white dark:bg-surface-900 shadow-2xl z-50 flex flex-col overflow-hidden border-l border-surface-200 dark:border-surface-800 ${closing ? "animate-slide-out-right" : "animate-slide-in-right"}`}>
         {/* Header */}
         <div className="px-6 py-4 border-b border-surface-200 dark:border-surface-800 flex items-start justify-between shrink-0">
           <div className="flex-1 min-w-0">
@@ -186,7 +193,7 @@ export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailP
             </div>
           </div>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-surface-400 transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -298,6 +305,15 @@ export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailP
           {/* Metadata sidebar */}
           <div className="grid grid-cols-2 gap-4 p-4 bg-surface-50 dark:bg-surface-800/50 rounded-xl">
             <div>
+              <p className="text-xs text-surface-400 mb-0.5">Created by</p>
+              <p className="text-xs dark:text-surface-300 font-medium">
+                {issue.created_by?.display_name || "anon"}
+                {issue.created_by?.provider && issue.created_by.provider !== "anon" && (
+                  <span className="ml-1 text-surface-400 capitalize">({issue.created_by.provider})</span>
+                )}
+              </p>
+            </div>
+            <div>
               <p className="text-xs text-surface-400 mb-0.5">Tags</p>
               <div className="flex flex-wrap gap-1">
                 {issue.tags.length > 0 ? issue.tags.map((t) => (
@@ -342,7 +358,10 @@ export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailP
               {issue.comments.map((comment) => (
                 <div key={comment.id} className="p-3 bg-surface-50 dark:bg-surface-800/50 rounded-lg">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-mono text-surface-400">{comment.id}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-mono text-surface-400">{comment.id}</span>
+                      <span className="text-xs font-medium dark:text-surface-300">{comment.created_by?.display_name || "anon"}</span>
+                    </div>
                     <span className="text-xs text-surface-400">{formatDate(comment.created_at)}</span>
                   </div>
                   <div className="prose prose-sm dark:prose-invert max-w-none">
@@ -371,6 +390,37 @@ export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailP
               </button>
             </div>
           </div>
+
+          {/* History timeline */}
+          {issue.history && issue.history.length > 0 && (
+            <div>
+              <h3 className="text-sm font-semibold text-surface-400 uppercase tracking-wider mb-3">
+                History ({issue.history.length})
+              </h3>
+              <div className="space-y-2">
+                {issue.history.map((entry, i) => (
+                  <div key={i} className="flex items-start gap-2 text-xs">
+                    <div className="w-1.5 h-1.5 rounded-full bg-surface-400 mt-1.5 shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <span className="font-medium dark:text-surface-300">
+                        {entry.user.display_name}
+                      </span>{" "}
+                      <span className="text-surface-400">
+                        {entry.action === "created" && "created this issue"}
+                        {entry.action === "status_changed" && (
+                          <>changed status from <span className="font-medium text-surface-500 dark:text-surface-300">{entry.from}</span> to <span className="font-medium text-surface-500 dark:text-surface-300">{entry.to}</span></>
+                        )}
+                        {entry.action === "comment_added" && "added a comment"}
+                      </span>
+                    </div>
+                    <span className="text-surface-400 shrink-0">
+                      {formatDate(entry.timestamp)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Danger zone */}
           <div className="pt-4 border-t border-surface-200 dark:border-surface-800">

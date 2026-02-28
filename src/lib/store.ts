@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { Issue, RepoTrackFile, ColorTheme } from "./types";
+import type { Issue, RepoTrackFile, ColorTheme, UserInfo } from "./types";
 
 interface AppStore {
   theme: "light" | "dark" | "system";
@@ -22,6 +22,12 @@ interface AppStore {
 
   activeColorTheme: ColorTheme | null;
   setActiveColorTheme: (theme: ColorTheme | null) => void;
+
+  currentUser: UserInfo | null;
+  setCurrentUser: (user: UserInfo | null) => void;
+
+  showResolved: boolean;
+  setShowResolved: (show: boolean) => void;
 
   toasts: Toast[];
   addToast: (toast: Omit<Toast, "id">) => void;
@@ -71,6 +77,12 @@ export const useAppStore = create<AppStore>((set) => ({
 
   activeColorTheme: null,
   setActiveColorTheme: (theme) => set({ activeColorTheme: theme }),
+
+  currentUser: null,
+  setCurrentUser: (user) => set({ currentUser: user }),
+
+  showResolved: false,
+  setShowResolved: (show) => set({ showResolved: show }),
 
   toasts: [],
   addToast: (toast) =>
