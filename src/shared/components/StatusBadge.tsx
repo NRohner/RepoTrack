@@ -1,19 +1,24 @@
-import { STATUS_COLORS } from "@/lib/types";
-
 interface StatusBadgeProps {
   status: string;
   onClick?: () => void;
   className?: string;
 }
 
+const STATUS_BG: Record<string, string> = {
+  open: "bg-blue-500/15 text-blue-500 border-blue-500/30",
+  "in-progress": "bg-yellow-500/15 text-yellow-500 border-yellow-500/30",
+  completed: "bg-green-500/15 text-green-500 border-green-500/30",
+  "wont-fix": "bg-gray-500/15 text-gray-400 border-gray-500/30",
+};
+
 export function StatusBadge({ status, onClick, className = "" }: StatusBadgeProps) {
-  const colorClass = STATUS_COLORS[status] || "bg-gray-500";
+  const colorClass = STATUS_BG[status] || "bg-gray-500/15 text-gray-400 border-gray-500/30";
   const label = status.replace(/-/g, " ");
 
   return (
     <span
       onClick={onClick}
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-white capitalize transition-all
+      className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold capitalize border whitespace-nowrap transition-all
         ${colorClass} ${onClick ? "cursor-pointer hover:opacity-80 active:scale-95" : ""} ${className}`}
     >
       {label}
