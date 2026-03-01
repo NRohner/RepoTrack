@@ -4,6 +4,8 @@ A cross-platform desktop application for lightweight issue and feature request t
 
 Instead of storing data in a centralized database, each project's issues and feature requests are written to a `.repotrack/` directory at the root of your project repo. Each issue lives in its own directory with an `issue.json` file, making diffs clean and merges painless. All interaction happens through a polished, modern GUI.
 
+![RepoTrack Issue Board](readme_resources/RepoTrackImg1.png)
+
 ## Features
 
 - **Directory-Based Storage** — Each issue gets its own directory under `.repotrack/issues/`, version-controlled with git for clean diffs and easy merges
