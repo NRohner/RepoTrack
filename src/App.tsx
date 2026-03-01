@@ -95,7 +95,7 @@ export default function App() {
               addToast({
                 type: "error",
                 message:
-                  "No repotrack.json found in the selected directory",
+                  "No RepoTrack project found in the selected directory. Use the project selector to create one.",
               });
             }
           }
