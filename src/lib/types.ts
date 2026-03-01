@@ -27,8 +27,17 @@ export interface Comment {
   created_by?: UserInfo;
 }
 
+export interface Attachment {
+  id: string;
+  filename: string;
+  size_bytes: number;
+  created_at: string;
+  created_by?: UserInfo;
+}
+
 export interface Issue {
   id: string;
+  uuid: string;
   title: string;
   description: string;
   type: IssueType;
@@ -48,6 +57,7 @@ export interface Issue {
   votes?: number;
   roadmap_quarter?: string;
   comments: Comment[];
+  attachments: Attachment[];
   linked_files: string[];
   time_estimate_hours?: number;
   time_spent_hours?: number;
@@ -61,6 +71,7 @@ export interface RepoTrackFile {
   created_at: string;
   updated_at: string;
   issues: Issue[];
+  storage_format?: "legacy" | "directory";
 }
 
 export interface ProjectInfo {

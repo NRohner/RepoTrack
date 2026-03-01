@@ -1,9 +1,10 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { open as dialogOpen } from "@tauri-apps/plugin-dialog";
 import * as api from "@/lib/api";
 import { useAppStore } from "@/lib/store";
-import type { Issue, Severity, IssueType } from "@/lib/types";
+import type { Issue, Severity, IssueType, Attachment } from "@/lib/types";
 import { STATUSES, SEVERITIES } from "@/lib/types";
 import { StatusBadge, SeverityBadge } from "@/shared/components/StatusBadge";
 import { TypeIcon } from "@/shared/components/TypeIcon";
@@ -15,9 +16,49 @@ interface IssueDetailProps {
   onDelete: (id: string) => void;
 }
 
+const IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "gif", "webp", "svg"];
+
+function isImageFile(filename: string): boolean {
+  const ext = filename.split(".").pop()?.toLowerCase() ?? "";
+  return IMAGE_EXTENSIONS.includes(ext);
+}
+
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function AttachmentThumbnail({ issueId, attachment, onClick }: { issueId: string; attachment: Attachment; onClick: () => void }) {
+  const [dataUrl, setDataUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isImageFile(attachment.filename)) return;
+    let cancelled = false;
+    api.getAttachmentData(issueId, attachment.id).then((url) => {
+      if (!cancelled) setDataUrl(url);
+    }).catch(() => {});
+    return () => { cancelled = true; };
+  }, [issueId, attachment.id, attachment.filename]);
+
+  if (!dataUrl) return null;
+
+  return (
+    <img
+      src={dataUrl}
+      alt={attachment.filename}
+      className="max-h-32 rounded mb-2 cursor-pointer hover:opacity-80 transition-opacity object-contain"
+      onClick={onClick}
+    />
+  );
+}
+
 export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailProps) {
   const addToast = useAppStore((s) => s.addToast);
+  const activeProject = useAppStore((s) => s.activeProject);
   const [closing, setClosing] = useState(false);
+  const [lightboxAttachment, setLightboxAttachment] = useState<Attachment | null>(null);
+  const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
 
   const handleClose = useCallback(() => {
     setClosing(true);
@@ -116,6 +157,60 @@ export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailP
       await api.deleteIssue(issue.id);
       onDelete(issue.id);
       addToast({ type: "success", message: "Issue deleted" });
+    } catch (e: any) {
+      addToast({ type: "error", message: e.toString() });
+    }
+  };
+
+  const [attachDelConfirm, setAttachDelConfirm] = useState<string | null>(null);
+
+  const handleAttachFiles = async () => {
+    try {
+      const selected = await dialogOpen({ multiple: true });
+      if (!selected) return;
+      const paths = Array.isArray(selected) ? selected : [selected];
+      for (const filePath of paths) {
+        const attachment = await api.addAttachment(issue.id, filePath);
+        const updatedAttachments = [...(issue.attachments || []), attachment];
+        onUpdate({ ...issue, attachments: updatedAttachments });
+        // Update issue reference for subsequent iterations
+        issue = { ...issue, attachments: updatedAttachments };
+      }
+      addToast({ type: "success", message: `${paths.length} file(s) attached` });
+    } catch (e: any) {
+      addToast({ type: "error", message: e.toString() });
+    }
+  };
+
+  const handleRemoveAttachment = async (attachmentId: string) => {
+    try {
+      await api.removeAttachment(issue.id, attachmentId);
+      const updatedAttachments = (issue.attachments || []).filter((a) => a.id !== attachmentId);
+      onUpdate({ ...issue, attachments: updatedAttachments });
+      setAttachDelConfirm(null);
+      addToast({ type: "success", message: "Attachment removed" });
+    } catch (e: any) {
+      addToast({ type: "error", message: e.toString() });
+    }
+  };
+
+  const handleOpenAttachment = async (attachmentId: string) => {
+    try {
+      await api.openAttachment(issue.id, attachmentId);
+    } catch (e: any) {
+      addToast({ type: "error", message: e.toString() });
+    }
+  };
+
+  const handlePreviewAttachment = async (attachment: Attachment) => {
+    if (!isImageFile(attachment.filename)) {
+      handleOpenAttachment(attachment.id);
+      return;
+    }
+    try {
+      const dataUrl = await api.getAttachmentData(issue.id, attachment.id);
+      setLightboxAttachment(attachment);
+      setLightboxUrl(dataUrl);
     } catch (e: any) {
       addToast({ type: "error", message: e.toString() });
     }
@@ -349,6 +444,83 @@ export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailP
             )}
           </div>
 
+          {/* Attachments */}
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold text-surface-400 uppercase tracking-wider">
+                Attachments ({(issue.attachments || []).length})
+              </h3>
+              {activeProject?.storage_format === "directory" ? (
+                <button
+                  onClick={handleAttachFiles}
+                  className="text-xs text-accent-500 hover:text-accent-400 font-medium flex items-center gap-1"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                  </svg>
+                  Attach File
+                </button>
+              ) : null}
+            </div>
+            {activeProject?.storage_format !== "directory" ? (
+              <p className="text-xs text-surface-400 italic">Upgrade to directory format to attach files</p>
+            ) : (issue.attachments || []).length === 0 ? (
+              <p className="text-xs text-surface-400">No attachments</p>
+            ) : (
+              <div className="space-y-2">
+                {(issue.attachments || []).map((att) => (
+                  <div key={att.id} className="p-2 bg-surface-50 dark:bg-surface-800/50 rounded-lg">
+                    <AttachmentThumbnail
+                      issueId={issue.id}
+                      attachment={att}
+                      onClick={() => handlePreviewAttachment(att)}
+                    />
+                    <div className="flex items-center gap-2">
+                      <svg className="w-3.5 h-3.5 text-surface-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                      </svg>
+                      <button
+                        onClick={() => handlePreviewAttachment(att)}
+                        className="text-xs text-accent-500 hover:text-accent-400 font-medium truncate"
+                        title={att.filename}
+                      >
+                        {att.filename}
+                      </button>
+                      <span className="text-xs text-surface-400 shrink-0">{formatFileSize(att.size_bytes)}</span>
+                      <div className="ml-auto shrink-0">
+                        {attachDelConfirm === att.id ? (
+                          <span className="flex items-center gap-1">
+                            <button
+                              onClick={() => setAttachDelConfirm(null)}
+                              className="text-xs text-surface-400 hover:text-surface-600"
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              onClick={() => handleRemoveAttachment(att.id)}
+                              className="text-xs text-red-500 hover:text-red-400 font-medium"
+                            >
+                              Remove
+                            </button>
+                          </span>
+                        ) : (
+                          <button
+                            onClick={() => setAttachDelConfirm(att.id)}
+                            className="p-0.5 rounded hover:bg-surface-200 dark:hover:bg-surface-700 text-surface-400 hover:text-red-500 transition-colors"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
           {/* Comments */}
           <div>
             <h3 className="text-sm font-semibold text-surface-400 uppercase tracking-wider mb-3">
@@ -411,6 +583,12 @@ export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailP
                           <>changed status from <span className="font-medium text-surface-500 dark:text-surface-300">{entry.from}</span> to <span className="font-medium text-surface-500 dark:text-surface-300">{entry.to}</span></>
                         )}
                         {entry.action === "comment_added" && "added a comment"}
+                        {entry.action === "attachment_added" && (
+                          <>attached <span className="font-medium text-surface-500 dark:text-surface-300">{entry.to}</span></>
+                        )}
+                        {entry.action === "attachment_removed" && (
+                          <>removed attachment <span className="font-medium text-surface-500 dark:text-surface-300">{entry.from}</span></>
+                        )}
                       </span>
                     </div>
                     <span className="text-surface-400 shrink-0">
@@ -441,6 +619,41 @@ export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailP
           </div>
         </div>
       </div>
+
+      {/* Image Lightbox */}
+      {lightboxAttachment && lightboxUrl && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-sm animate-backdrop-in"
+          onClick={() => { setLightboxAttachment(null); setLightboxUrl(null); }}
+        >
+          <div className="relative max-w-[90vw] max-h-[90vh] flex flex-col items-center" onClick={(e) => e.stopPropagation()}>
+            {/* Close button */}
+            <button
+              onClick={() => { setLightboxAttachment(null); setLightboxUrl(null); }}
+              className="absolute -top-10 right-0 p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <img
+              src={lightboxUrl}
+              alt={lightboxAttachment.filename}
+              className="max-w-full max-h-[85vh] rounded-lg shadow-2xl object-contain"
+            />
+            <div className="mt-3 flex items-center gap-3">
+              <p className="text-sm text-white/80">{lightboxAttachment.filename}</p>
+              <span className="text-xs text-white/50">{formatFileSize(lightboxAttachment.size_bytes)}</span>
+              <button
+                onClick={() => handleOpenAttachment(lightboxAttachment.id)}
+                className="text-xs text-accent-400 hover:text-accent-300 font-medium"
+              >
+                Open in System App
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
