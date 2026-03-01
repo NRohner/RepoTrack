@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { open as dialogOpen } from "@tauri-apps/plugin-dialog";
 import * as api from "@/lib/api";
 import { useAppStore } from "@/lib/store";
 import type { IssueType, Severity, CreateIssueRequest } from "@/lib/types";
@@ -49,6 +50,8 @@ Describe the user problem...
 export function NewIssueForm({ defaultType, onClose, existingTags }: NewIssueFormProps) {
   const addIssueToStore = useAppStore((s) => s.addIssueToStore);
   const addToast = useAppStore((s) => s.addToast);
+  const activeProject = useAppStore((s) => s.activeProject);
+  const updateIssueInStore = useAppStore((s) => s.updateIssueInStore);
   const [closing, setClosing] = useState(false);
 
   const handleClose = useCallback(() => {
@@ -73,6 +76,7 @@ export function NewIssueForm({ defaultType, onClose, existingTags }: NewIssueFor
   const [linkedFiles, setLinkedFiles] = useState<string[]>([]);
   const [fileInput, setFileInput] = useState("");
   const [timeEstimate, setTimeEstimate] = useState<string>("");
+  const [queuedAttachments, setQueuedAttachments] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [showTagSuggestions, setShowTagSuggestions] = useState(false);
 
@@ -107,8 +111,22 @@ export function NewIssueForm({ defaultType, onClose, existingTags }: NewIssueFor
         linked_files: linkedFiles,
         time_estimate_hours: timeEstimate ? parseFloat(timeEstimate) : undefined,
       };
-      const issue = await api.createIssue(request);
+      let issue = await api.createIssue(request);
       addIssueToStore(issue);
+
+      // Attach queued files
+      if (queuedAttachments.length > 0) {
+        for (const filePath of queuedAttachments) {
+          try {
+            const att = await api.addAttachment(issue.id, filePath);
+            issue = { ...issue, attachments: [...(issue.attachments || []), att] };
+          } catch (attErr: any) {
+            addToast({ type: "error", message: `Failed to attach file: ${attErr.toString()}` });
+          }
+        }
+        updateIssueInStore(issue);
+      }
+
       addToast({ type: "success", message: `${issue.id} created` });
       onClose();
     } catch (e: any) {
@@ -318,6 +336,49 @@ export function NewIssueForm({ defaultType, onClose, existingTags }: NewIssueFor
                 </select>
               </div>
             </>
+          )}
+
+          {/* Attach Files (directory format only) */}
+          {activeProject?.storage_format === "directory" && (
+            <div>
+              <label className="block text-sm font-medium dark:text-surface-300 mb-1">Attach Files</label>
+              <div className="flex flex-wrap gap-1 mb-2">
+                {queuedAttachments.map((f) => {
+                  const name = f.split("/").pop() || f;
+                  return (
+                    <span key={f} className="inline-flex items-center gap-1 px-2 py-0.5 bg-accent-600/10 text-accent-500 rounded text-xs font-mono">
+                      <svg className="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                      </svg>
+                      {name}
+                      <button onClick={() => setQueuedAttachments(queuedAttachments.filter((q) => q !== f))} className="hover:text-red-500"><IoClose className="w-3.5 h-3.5" /></button>
+                    </span>
+                  );
+                })}
+              </div>
+              <button
+                type="button"
+                onClick={async () => {
+                  try {
+                    const selected = await dialogOpen({ multiple: true });
+                    if (!selected) return;
+                    const paths = Array.isArray(selected) ? selected : [selected];
+                    setQueuedAttachments((prev) => {
+                      const newPaths = paths.filter((p) => !prev.includes(p));
+                      return [...prev, ...newPaths];
+                    });
+                  } catch (e: any) {
+                    addToast({ type: "error", message: e.toString() });
+                  }
+                }}
+                className="px-3 py-2 bg-surface-100 dark:bg-surface-800 hover:bg-surface-200 dark:hover:bg-surface-700 rounded-lg text-sm transition-colors dark:text-white flex items-center gap-1.5"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                </svg>
+                Choose Files
+              </button>
+            </div>
           )}
 
           {/* Linked Files */}

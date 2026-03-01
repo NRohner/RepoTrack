@@ -7,6 +7,7 @@ import type {
   UpdateIssueRequest,
   BulkUpdateRequest,
   Comment,
+  Attachment,
   ProjectStats,
   UserPreferences,
   DirEntry,
@@ -128,6 +129,10 @@ export async function updateRecentMenu(): Promise<void> {
   return invoke("update_recent_menu");
 }
 
+export async function migrateProject(): Promise<RepoTrackFile> {
+  return invoke("migrate_project");
+}
+
 export async function listColorThemes(): Promise<ColorTheme[]> {
   return invoke("list_color_themes");
 }
@@ -146,6 +151,35 @@ export async function updateColorTheme(theme: ColorTheme): Promise<void> {
 
 export async function deleteColorTheme(id: string): Promise<void> {
   return invoke("delete_color_theme", { id });
+}
+
+// Attachments
+export async function addAttachment(
+  issueId: string,
+  sourcePath: string
+): Promise<Attachment> {
+  return invoke("add_attachment", { issueId, sourcePath });
+}
+
+export async function removeAttachment(
+  issueId: string,
+  attachmentId: string
+): Promise<void> {
+  return invoke("remove_attachment", { issueId, attachmentId });
+}
+
+export async function getAttachmentData(
+  issueId: string,
+  attachmentId: string
+): Promise<string> {
+  return invoke("get_attachment_data", { issueId, attachmentId });
+}
+
+export async function openAttachment(
+  issueId: string,
+  attachmentId: string
+): Promise<void> {
+  return invoke("open_attachment", { issueId, attachmentId });
 }
 
 // Auth
