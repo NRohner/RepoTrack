@@ -5,10 +5,11 @@
   "description": "Just a basic red underline of a word if it is spelled wrong. Ability to right click a word that is spelled wrong to get spellcheck suggestions.",
   "type": "feature",
   "priority": "medium",
-  "status": "open",
+  "status": "completed",
   "tags": [],
   "created_at": "2026-03-02T16:23:39.226052Z",
-  "updated_at": "2026-03-02T16:23:39.226052Z",
+  "updated_at": "2026-03-02T19:07:41.904592Z",
+  "resolved_at": "2026-03-02T19:07:41.904592Z",
   "acceptance_criteria": "- [ ] Words underline red if they are spelled wrong\n- [ ] Users can right click a word that is spelled wrong to get suggestions for the correct spelling.",
   "votes": 0,
   "roadmap_quarter": "Backlog",
@@ -31,6 +32,18 @@
         "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
       },
       "timestamp": "2026-03-02T16:23:39.226052Z"
+    },
+    {
+      "action": "status_changed",
+      "from": "open",
+      "to": "completed",
+      "user": {
+        "display_name": "Nick",
+        "username": "NRohner",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+      },
+      "timestamp": "2026-03-02T19:07:41.904592Z"
     }
   ]
 }
