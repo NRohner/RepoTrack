@@ -305,7 +305,7 @@ export function GitGraph({ commits, selectedHash, onSelectCommit, unpushedHashes
               className={`absolute right-0 flex items-center cursor-pointer transition-colors ${
                 selectedHash === pos.commit.hash
                   ? "bg-accent-600/10"
-                  : "hover:bg-surface-100 dark:hover:bg-surface-800/50"
+                  : "hover:bg-surface-100 dark:hover:bg-surface-800"
               }`}
               style={{
                 height: ROW_HEIGHT,
