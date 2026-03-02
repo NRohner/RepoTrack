@@ -302,7 +302,7 @@ export function GitGraph({ commits, selectedHash, onSelectCommit, unpushedHashes
           return (
             <div
               key={pos.commit.hash}
-              className={`absolute left-0 right-0 flex items-center cursor-pointer transition-colors ${
+              className={`absolute right-0 flex items-center cursor-pointer transition-colors ${
                 selectedHash === pos.commit.hash
                   ? "bg-accent-600/10"
                   : "hover:bg-surface-100 dark:hover:bg-surface-800/50"
@@ -310,7 +310,8 @@ export function GitGraph({ commits, selectedHash, onSelectCommit, unpushedHashes
               style={{
                 height: ROW_HEIGHT,
                 top: rowY - ROW_HEIGHT / 2,
-                paddingLeft: graphWidth + 8,
+                left: graphWidth,
+                paddingLeft: 8,
               }}
               onClick={() => onSelectCommit(pos.commit)}
             >
