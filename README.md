@@ -19,9 +19,28 @@ Instead of storing data in a centralized database, each project's issues and fea
 - **Legacy Migration** — One-click migration from the old single-file `repotrack.json` format to the new directory format
 - **Cross-Platform** — macOS, Windows, and Linux via Tauri
 
-## Do You Just Want The App?
-- Download the Mac .dmg or Windows .msi installer from the latest release: https://github.com/NRohner/RepoTrack/releases/tag/v0.4.0
-- For Windows users - Windows Defender will flag the app if you use the MSI installer. This is normal and can be safely ignored. Just click "More info" and then "Run anyway" to proceed.
+## Do You Just Want the App?
+
+Download the Mac `.dmg` or Windows `.msi` installer from the [latest release](https://github.com/NRohner/RepoTrack/releases/tag/v0.3.1).
+
+### Windows
+
+Windows Defender may flag the app when using the MSI installer. This is expected — the app is not currently code-signed. Click **"More info"** → **"Run anyway"** to proceed.
+
+### Mac
+
+macOS Gatekeeper will likely block the app after installation with an error that says:
+
+> "RepoTrack" is damaged and can't be opened. You should move it to the Trash.
+
+The app is not actually damaged. This happens because it is not currently signed with an Apple Developer certificate. To bypass this, run the following command in Terminal:
+
+```bash
+# Adjust the path if your app is installed elsewhere
+xattr -cr /Applications/RepoTrack.app
+```
+
+After that, the app should open normally.
 
 
 ## Quick Start 
