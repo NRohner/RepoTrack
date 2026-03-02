@@ -21,7 +21,7 @@ Instead of storing data in a centralized database, each project's issues and fea
 
 ## Do You Just Want the App?
 
-Download the Mac `.dmg` or Windows `.msi` installer from the [latest release](https://github.com/NRohner/RepoTrack/releases/tag/v0.3.1).
+Download the Mac `.dmg` or Windows `.msi` installer from the [latest release](https://github.com/NRohner/RepoTrack/releases/tag/v0.4.0).
 
 ### Windows
 
