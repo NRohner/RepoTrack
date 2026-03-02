@@ -110,6 +110,10 @@ export function GitTab() {
   };
 
   const handlePush = async () => {
+    if (!status || status.unpushed_hashes.length === 0) {
+      addToast({ type: "warning", message: "No changes to push" });
+      return;
+    }
     setPushing(true);
     try {
       await api.gitPush();
@@ -381,9 +385,17 @@ export function GitTab() {
                 <button
                   onClick={handleCommitAndPush}
                   disabled={committing || pushing || !commitMessage.trim()}
-                  className="px-4 py-2 bg-accent-600 hover:bg-accent-700 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition-all"
+                  className="px-4 py-2 bg-accent-600 hover:bg-accent-700 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition-all flex items-center gap-2"
                 >
-                  {committing || pushing ? "..." : "Commit & Push"}
+                  {committing || pushing ? (
+                    <>
+                      <svg className="w-3.5 h-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity="0.3" />
+                        <path d="M12 2a10 10 0 019.95 9" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                      </svg>
+                      {pushing ? "Pushing..." : "Committing..."}
+                    </>
+                  ) : "Commit & Push"}
                 </button>
               </div>
             </>
