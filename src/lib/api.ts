@@ -206,6 +206,10 @@ export async function gitCommitRepotrack(message: string): Promise<GitCommitInfo
   return invoke("git_commit_repotrack", { message });
 }
 
+export async function gitUndoCommit(): Promise<void> {
+  return invoke("git_undo_commit");
+}
+
 export async function gitPush(): Promise<void> {
   return invoke("git_push");
 }

@@ -2,10 +2,12 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import * as api from "@/lib/api";
 import { useAppStore } from "@/lib/store";
 import type { GitStatus, GitBranch, GitCommitInfo } from "@/lib/types";
+import { Modal } from "@/shared/components/Modal";
 import { GitGraph } from "./GitGraph";
 
 export function GitTab() {
   const addToast = useAppStore((s) => s.addToast);
+  const setGitHasChanges = useAppStore((s) => s.setGitHasChanges);
 
   const [status, setStatus] = useState<GitStatus | null>(null);
   const [branches, setBranches] = useState<GitBranch[]>([]);
@@ -18,6 +20,8 @@ export function GitTab() {
   const [spinKey, setSpinKey] = useState(0);
   const refreshRef = useRef<SVGSVGElement>(null);
   const [showBranchDropdown, setShowBranchDropdown] = useState(false);
+  const [showUndoModal, setShowUndoModal] = useState(false);
+  const [undoing, setUndoing] = useState(false);
 
   const refresh = useCallback(async () => {
     try {
@@ -45,6 +49,10 @@ export function GitTab() {
     try {
       const s = await api.gitGetStatus();
       setStatus(s);
+      setGitHasChanges(
+        s.is_git_repo &&
+          (s.repotrack_has_changes || s.unpushed_hashes.length > 0)
+      );
       if (s.is_git_repo) {
         const [b, c] = await Promise.all([
           api.gitGetBranches(),
@@ -58,7 +66,7 @@ export function GitTab() {
     } finally {
       setLoading(false);
     }
-  }, [addToast]);
+  }, [addToast, setGitHasChanges]);
 
   useEffect(() => {
     loadData();
@@ -123,6 +131,30 @@ export function GitTab() {
       addToast({ type: "error", message: e.toString() });
     } finally {
       setPushing(false);
+    }
+  };
+
+  const canUndoSelected =
+    selectedCommit != null &&
+    commits.length > 0 &&
+    selectedCommit.hash === commits[0].hash &&
+    !selectedCommit.is_merge &&
+    selectedCommit.parent_hashes.length > 0 &&
+    status != null &&
+    status.unpushed_hashes.includes(selectedCommit.hash);
+
+  const handleUndoCommit = async () => {
+    setUndoing(true);
+    try {
+      await api.gitUndoCommit();
+      setSelectedCommit(null);
+      setShowUndoModal(false);
+      addToast({ type: "success", message: "Commit undone — changes kept staged" });
+      await loadData();
+    } catch (e: any) {
+      addToast({ type: "error", message: e.toString() });
+    } finally {
+      setUndoing(false);
     }
   };
 
@@ -336,9 +368,47 @@ export function GitTab() {
                   )}
                 </div>
               </div>
+              {canUndoSelected && (
+                <button
+                  onClick={() => setShowUndoModal(true)}
+                  className="w-full px-3 py-2 rounded-lg text-sm font-medium bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors"
+                >
+                  Undo Commit
+                </button>
+              )}
             </div>
           )}
         </div>
+
+        {/* Undo commit confirmation modal */}
+        <Modal open={showUndoModal} onClose={() => setShowUndoModal(false)} title="Undo Commit" size="sm">
+          <div className="space-y-4">
+            <p className="text-sm text-surface-500 dark:text-surface-400">
+              This will undo the following commit. Your changes will be kept as staged files.
+            </p>
+            {selectedCommit && (
+              <div className="p-3 rounded-lg bg-surface-100 dark:bg-surface-800 space-y-1">
+                <p className="text-sm font-medium dark:text-white">{selectedCommit.message}</p>
+                <p className="text-xs font-mono text-surface-400">{selectedCommit.short_hash}</p>
+              </div>
+            )}
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setShowUndoModal(false)}
+                className="px-4 py-2 rounded-lg text-sm font-medium bg-surface-100 dark:bg-surface-800 hover:bg-surface-200 dark:hover:bg-surface-700 dark:text-white transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleUndoCommit}
+                disabled={undoing}
+                className="px-4 py-2 rounded-lg text-sm font-medium bg-red-600 hover:bg-red-700 text-white transition-colors disabled:opacity-50"
+              >
+                {undoing ? "Undoing..." : "Undo Commit"}
+              </button>
+            </div>
+          </div>
+        </Modal>
 
         {/* Bottom panel: .repotrack changes + commit form */}
         <div className="shrink-0 border-t border-surface-200 dark:border-surface-800 p-4 space-y-3 bg-white dark:bg-surface-950">
