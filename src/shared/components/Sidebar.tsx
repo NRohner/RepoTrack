@@ -31,6 +31,17 @@ const navItems = [
     ),
   },
   {
+    path: "/git",
+    label: "Git",
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <circle cx="18" cy="18" r="3" strokeWidth={1.5} />
+        <circle cx="6" cy="6" r="3" strokeWidth={1.5} />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 9v3a3 3 0 003 3h6" />
+      </svg>
+    ),
+  },
+  {
     path: "/settings",
     label: "Settings",
     icon: (

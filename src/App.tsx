@@ -11,6 +11,7 @@ import { IssueBoard } from "./features/issues/IssueBoard";
 import { Dashboard } from "./features/dashboard/Dashboard";
 import { Roadmap } from "./features/roadmap/Roadmap";
 import { Settings } from "./features/settings/Settings";
+import { GitTab } from "./features/git/GitTab";
 
 export default function App() {
   const theme = useAppStore((s) => s.theme);
@@ -198,6 +199,7 @@ export default function App() {
           <Route path="/issues" element={<IssueBoard />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/roadmap" element={<Roadmap />} />
+          <Route path="/git" element={<GitTab />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<Navigate to="/issues" replace />} />
         </Routes>
