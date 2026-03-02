@@ -5,13 +5,25 @@
   "description": "Different from delete. We should have this.",
   "type": "feature",
   "priority": "medium",
-  "status": "open",
+  "status": "wont-fix",
   "tags": [],
   "created_at": "2026-03-01T21:34:41.827144Z",
-  "updated_at": "2026-03-01T21:34:41.827144Z",
+  "updated_at": "2026-03-02T03:39:29.816892Z",
   "votes": 0,
   "roadmap_quarter": "Backlog",
-  "comments": [],
+  "comments": [
+    {
+      "id": "CMT-0001",
+      "text": "Actually,  the “Won’t Fix” status already acomplishes what we are looking for here. Marking something as not being worked on and removing it from all views but still maintaing a record of it just in case.",
+      "created_at": "2026-03-02T03:39:22.584406Z",
+      "created_by": {
+        "display_name": "Nick",
+        "username": "NRohner",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+      }
+    }
+  ],
   "attachments": [],
   "linked_files": [],
   "created_by": {
@@ -30,6 +42,28 @@
         "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
       },
       "timestamp": "2026-03-01T21:34:41.827144Z"
+    },
+    {
+      "action": "comment_added",
+      "user": {
+        "display_name": "Nick",
+        "username": "NRohner",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+      },
+      "timestamp": "2026-03-02T03:39:22.584406Z"
+    },
+    {
+      "action": "status_changed",
+      "from": "open",
+      "to": "wont-fix",
+      "user": {
+        "display_name": "Nick",
+        "username": "NRohner",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+      },
+      "timestamp": "2026-03-02T03:39:29.816892Z"
     }
   ]
 }

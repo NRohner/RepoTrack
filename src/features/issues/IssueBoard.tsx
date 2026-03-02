@@ -86,7 +86,8 @@ export function IssueBoard() {
         (i) =>
           i.title.toLowerCase().includes(q) ||
           i.description.toLowerCase().includes(q) ||
-          i.id.toLowerCase().includes(q)
+          i.id.toLowerCase().includes(q) ||
+          i.tags.some((t) => t.toLowerCase().includes(q))
       );
     }
     result.sort((a, b) => {
