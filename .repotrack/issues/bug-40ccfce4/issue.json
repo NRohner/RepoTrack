@@ -2,15 +2,33 @@
   "id": "BUG-0002",
   "uuid": "40ccfce4",
   "title": "“Not Provided” Text Is different Formats",
-  "description": "When a bug is created but no fields are filled out, the “Not Provided” message shows up differently for each section. Instead, it should have one standard format/apperance.",
+  "description": "When a bug is created but no fields are filled out, the “Not Provided” message shows up differently for each section. Instead, it should have one standard format/apperance. Refer to the screenshot attached to see how the format differs. I prefer the basic italics version with no “*” shown.",
   "type": "bug",
   "severity": "medium",
-  "status": "open",
+  "status": "completed",
   "tags": [],
   "created_at": "2026-03-01T21:37:07.914369Z",
-  "updated_at": "2026-03-01T21:37:07.914369Z",
+  "updated_at": "2026-03-02T03:29:54.859392Z",
+  "resolved_at": "2026-03-02T03:29:54.859392Z",
+  "steps_to_reproduce": "",
+  "expected_behavior": "",
+  "actual_behavior": "",
+  "environment": "",
   "comments": [],
-  "attachments": [],
+  "attachments": [
+    {
+      "id": "att-0001",
+      "filename": "Screenshot 2026-03-01 at 10.23.54 PM.png",
+      "size_bytes": 45641,
+      "created_at": "2026-03-02T03:24:09.627477Z",
+      "created_by": {
+        "display_name": "Nick",
+        "username": "NRohner",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+      }
+    }
+  ],
   "linked_files": [],
   "created_by": {
     "display_name": "Nick",
@@ -28,6 +46,29 @@
         "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
       },
       "timestamp": "2026-03-01T21:37:07.914369Z"
+    },
+    {
+      "action": "attachment_added",
+      "to": "Screenshot 2026-03-01 at 10.23.54 PM.png",
+      "user": {
+        "display_name": "Nick",
+        "username": "NRohner",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+      },
+      "timestamp": "2026-03-02T03:24:09.627477Z"
+    },
+    {
+      "action": "status_changed",
+      "from": "open",
+      "to": "completed",
+      "user": {
+        "display_name": "Nick",
+        "username": "NRohner",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+      },
+      "timestamp": "2026-03-02T03:29:54.859392Z"
     }
   ]
 }
