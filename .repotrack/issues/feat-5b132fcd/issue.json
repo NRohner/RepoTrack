@@ -1,0 +1,35 @@
+{
+  "id": "FEAT-0006",
+  "uuid": "5b132fcd",
+  "title": "Deeper Git Integration",
+  "description": "## Git Integration Features\n1. A seperate Git tab that has a git graph and some of the other git controls\n2. Ability to select your branch\n3. Ability to commit and push to your branch. **IMPORTANT** This should only commit and push files within the .repotrack directory. The purpose of this is only to update the state of the repotrack archive within the git repo, not to push larger code changes. This is only so if you come into repotrack to add or update some issues, you don’t then need to go to terminal, github desktop, or your code editor to push those new repotrack items to the git repo.",
+  "type": "feature",
+  "priority": "high",
+  "status": "open",
+  "tags": [],
+  "created_at": "2026-03-02T16:47:46.836504Z",
+  "updated_at": "2026-03-02T16:47:46.836504Z",
+  "votes": 0,
+  "roadmap_quarter": "Backlog",
+  "comments": [],
+  "attachments": [],
+  "linked_files": [],
+  "created_by": {
+    "display_name": "Nick",
+    "username": "NRohner",
+    "provider": "github",
+    "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+  },
+  "history": [
+    {
+      "action": "created",
+      "user": {
+        "display_name": "Nick",
+        "username": "NRohner",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+      },
+      "timestamp": "2026-03-02T16:47:46.836504Z"
+    }
+  ]
+}
