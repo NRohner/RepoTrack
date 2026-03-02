@@ -5,10 +5,11 @@
   "description": "",
   "type": "bug",
   "severity": "medium",
-  "status": "open",
+  "status": "completed",
   "tags": [],
   "created_at": "2026-03-02T03:07:06.380410Z",
-  "updated_at": "2026-03-02T03:07:06.380410Z",
+  "updated_at": "2026-03-02T03:21:54.823416Z",
+  "resolved_at": "2026-03-02T03:21:54.823416Z",
   "comments": [],
   "attachments": [],
   "linked_files": [],
@@ -28,6 +29,18 @@
         "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
       },
       "timestamp": "2026-03-02T03:07:06.380410Z"
+    },
+    {
+      "action": "status_changed",
+      "from": "open",
+      "to": "completed",
+      "user": {
+        "display_name": "Nick",
+        "username": "NRohner",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+      },
+      "timestamp": "2026-03-02T03:21:54.823416Z"
     }
   ]
 }
