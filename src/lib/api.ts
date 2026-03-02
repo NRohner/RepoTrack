@@ -13,6 +13,9 @@ import type {
   DirEntry,
   ColorTheme,
   UserInfo,
+  GitStatus,
+  GitBranch,
+  GitCommitInfo,
 } from "./types";
 
 export async function listRecentProjects(): Promise<ProjectInfo[]> {
@@ -180,6 +183,35 @@ export async function openAttachment(
   attachmentId: string
 ): Promise<void> {
   return invoke("open_attachment", { issueId, attachmentId });
+}
+
+// Git
+export async function gitGetStatus(): Promise<GitStatus> {
+  return invoke("git_get_status");
+}
+
+export async function gitGetBranches(): Promise<GitBranch[]> {
+  return invoke("git_get_branches");
+}
+
+export async function gitGetLog(limit?: number): Promise<GitCommitInfo[]> {
+  return invoke("git_get_log", { limit: limit ?? null });
+}
+
+export async function gitCheckoutBranch(name: string): Promise<void> {
+  return invoke("git_checkout_branch", { name });
+}
+
+export async function gitCommitRepotrack(message: string): Promise<GitCommitInfo> {
+  return invoke("git_commit_repotrack", { message });
+}
+
+export async function gitUndoCommit(): Promise<void> {
+  return invoke("git_undo_commit");
+}
+
+export async function gitPush(): Promise<void> {
+  return invoke("git_push");
 }
 
 // Auth

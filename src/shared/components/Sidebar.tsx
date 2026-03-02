@@ -31,6 +31,17 @@ const navItems = [
     ),
   },
   {
+    path: "/git",
+    label: "Git",
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <circle cx="18" cy="18" r="3" strokeWidth={1.5} />
+        <circle cx="6" cy="6" r="3" strokeWidth={1.5} />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 9v3a3 3 0 003 3h6" />
+      </svg>
+    ),
+  },
+  {
     path: "/settings",
     label: "Settings",
     icon: (
@@ -54,6 +65,7 @@ export function Sidebar() {
   const [pillStyle, setPillStyle] = useState<{ top: number; height: number }>({ top: 0, height: 0 });
   const [ready, setReady] = useState(false);
 
+  const gitHasChanges = useAppStore((s) => s.gitHasChanges);
   const activePath = navItems.find((item) => location.pathname.startsWith(item.path))?.path;
 
   useLayoutEffect(() => {
@@ -134,6 +146,9 @@ export function Sidebar() {
           >
             {item.icon}
             {item.label}
+            {item.path === "/git" && gitHasChanges && (
+              <span className="w-2 h-2 rounded-full bg-amber-500" />
+            )}
           </NavLink>
         ))}
       </nav>

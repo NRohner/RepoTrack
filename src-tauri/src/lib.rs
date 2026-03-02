@@ -1,6 +1,7 @@
 pub mod auth;
 pub mod commands;
 pub mod db;
+pub mod git;
 pub mod models;
 pub mod stats;
 pub mod storage;
@@ -124,6 +125,24 @@ pub fn build_app_menu(
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    // Enable continuous spell-check underlines in macOS WKWebView.
+    // By default, WebContinuousSpellCheckingEnabled is false, so the spell
+    // checker detects errors (right-click suggestions work) but red underlines
+    // are not drawn. We must set this in-process via NSUserDefaults BEFORE the
+    // webview is created — using `defaults write` (out-of-process) doesn't work
+    // because the in-memory NSUserDefaults cache won't pick it up in time.
+    // See: https://github.com/tauri-apps/tauri/issues/7705
+    #[cfg(target_os = "macos")]
+    {
+        use objc2_foundation::{NSString, NSUserDefaults};
+
+        unsafe {
+            let defaults = NSUserDefaults::standardUserDefaults();
+            let key = NSString::from_str("WebContinuousSpellCheckingEnabled");
+            defaults.setBool_forKey(true, &key);
+        }
+    }
+
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
@@ -225,6 +244,13 @@ pub fn run() {
             auth::sign_in,
             auth::sign_out,
             auth::get_current_user,
+            git::git_get_status,
+            git::git_get_branches,
+            git::git_get_log,
+            git::git_checkout_branch,
+            git::git_commit_repotrack,
+            git::git_undo_commit,
+            git::git_push,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
