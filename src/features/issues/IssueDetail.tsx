@@ -1,6 +1,7 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { IoClose } from "react-icons/io5";
 import { open as dialogOpen } from "@tauri-apps/plugin-dialog";
 import * as api from "@/lib/api";
 import { useAppStore } from "@/lib/store";
@@ -56,9 +57,16 @@ function AttachmentThumbnail({ issueId, attachment, onClick }: { issueId: string
 export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailProps) {
   const addToast = useAppStore((s) => s.addToast);
   const activeProject = useAppStore((s) => s.activeProject);
+  const issues = useAppStore((s) => s.issues);
   const [closing, setClosing] = useState(false);
   const [lightboxAttachment, setLightboxAttachment] = useState<Attachment | null>(null);
   const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
+
+  const allTags = useMemo(() => {
+    const set = new Set<string>();
+    issues.forEach((i) => i.tags.forEach((t) => set.add(t)));
+    return Array.from(set).sort();
+  }, [issues]);
 
   const handleClose = useCallback(() => {
     setClosing(true);
@@ -68,6 +76,9 @@ export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailP
   const [editing, setEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(issue.title);
   const [editDesc, setEditDesc] = useState(issue.description);
+  const [editTags, setEditTags] = useState<string[]>(issue.tags);
+  const [tagInput, setTagInput] = useState("");
+  const [showTagSuggestions, setShowTagSuggestions] = useState(false);
   const [editSteps, setEditSteps] = useState(issue.steps_to_reproduce || "");
   const [editExpected, setEditExpected] = useState(issue.expected_behavior || "");
   const [editActual, setEditActual] = useState(issue.actual_behavior || "");
@@ -87,6 +98,7 @@ export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailP
         id: issue.id,
         title: editTitle,
         description: editDesc,
+        tags: editTags,
       };
       if (issue.type === "bug") {
         req.steps_to_reproduce = editSteps;
@@ -224,6 +236,19 @@ export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailP
       hour: "2-digit",
       minute: "2-digit",
     });
+
+  const addTag = (tag: string) => {
+    const t = tag.trim().toLowerCase();
+    if (t && !editTags.includes(t)) {
+      setEditTags([...editTags, t]);
+    }
+    setTagInput("");
+    setShowTagSuggestions(false);
+  };
+
+  const filteredTagSuggestions = allTags.filter(
+    (t) => t.includes(tagInput.toLowerCase()) && !editTags.includes(t)
+  );
 
   const quarters = ["Backlog", "Q1 2026", "Q2 2026", "Q3 2026", "Q4 2026", "Q1 2027", "Q2 2027"];
 
@@ -410,11 +435,47 @@ export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailP
             </div>
             <div>
               <p className="text-xs text-surface-400 mb-0.5">Tags</p>
-              <div className="flex flex-wrap gap-1">
-                {issue.tags.length > 0 ? issue.tags.map((t) => (
-                  <span key={t} className="text-xs px-2 py-0.5 bg-surface-200 dark:bg-surface-700 rounded dark:text-surface-300">{t}</span>
-                )) : <span className="text-xs text-surface-400">None</span>}
-              </div>
+              {editing ? (
+                <div>
+                  <div className="flex flex-wrap gap-1 mb-1.5">
+                    {editTags.map((t) => (
+                      <span key={t} className="inline-flex items-center gap-0.5 text-xs px-2 py-0.5 bg-accent-600/10 text-accent-500 rounded-full font-medium">
+                        {t}
+                        <button onClick={() => setEditTags(editTags.filter((tag) => tag !== t))} className="hover:text-accent-300"><IoClose className="w-3 h-3" /></button>
+                      </span>
+                    ))}
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={tagInput}
+                      onChange={(e) => { setTagInput(e.target.value); setShowTagSuggestions(true); }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && tagInput) { e.preventDefault(); addTag(tagInput); }
+                      }}
+                      onFocus={() => setShowTagSuggestions(true)}
+                      onBlur={() => setTimeout(() => setShowTagSuggestions(false), 200)}
+                      placeholder="Add a tag..."
+                      className="w-full px-2 py-1 rounded-md border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-700 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-accent-500"
+                    />
+                    {showTagSuggestions && tagInput && filteredTagSuggestions.length > 0 && (
+                      <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-surface-700 border border-surface-200 dark:border-surface-600 rounded-lg shadow-lg z-10 max-h-32 overflow-y-auto">
+                        {filteredTagSuggestions.map((tag) => (
+                          <button key={tag} onMouseDown={() => addTag(tag)} className="block w-full text-left px-3 py-1.5 text-xs hover:bg-surface-100 dark:hover:bg-surface-600 dark:text-white">
+                            {tag}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-wrap gap-1">
+                  {issue.tags.length > 0 ? issue.tags.map((t) => (
+                    <span key={t} className="text-xs px-2 py-0.5 bg-surface-200 dark:bg-surface-700 rounded dark:text-surface-300">{t}</span>
+                  )) : <span className="text-xs text-surface-400">None</span>}
+                </div>
+              )}
             </div>
             <div>
               <p className="text-xs text-surface-400 mb-0.5">Linked Files</p>
