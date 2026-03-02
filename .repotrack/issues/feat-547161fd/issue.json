@@ -1,0 +1,32 @@
+{
+  "id": "FEAT-0003",
+  "uuid": "547161fd",
+  "title": "Add History to issues",
+  "description": "Just a log of how its status has changed over time. Basically, when it was created, when its status was updated and what it was updated to and who by, and when it was closed and who by.",
+  "type": "feature",
+  "priority": "high",
+  "status": "completed",
+  "tags": [],
+  "created_at": "2026-02-28T20:50:21.281268Z",
+  "updated_at": "2026-02-28T22:15:48.815049Z",
+  "resolved_at": "2026-02-28T21:59:40.913105Z",
+  "votes": 0,
+  "roadmap_quarter": "Q1 2026",
+  "comments": [],
+  "attachments": [],
+  "linked_files": [],
+  "history": [
+    {
+      "action": "status_changed",
+      "from": "open",
+      "to": "completed",
+      "user": {
+        "display_name": "Nick",
+        "username": "NRohner",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+      },
+      "timestamp": "2026-02-28T21:59:40.913105Z"
+    }
+  ]
+}

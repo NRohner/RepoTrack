@@ -4,6 +4,7 @@ import {
   LineChart, Line,
 } from "recharts";
 import type { ProjectStats } from "@/lib/types";
+import { useAppStore } from "@/lib/store";
 
 interface Props {
   stats: ProjectStats;
@@ -12,6 +13,15 @@ interface Props {
 const PIE_COLORS = ["#ef4444", "#f97316", "#eab308", "#94a3b8"];
 
 export function BugsDashboard({ stats }: Props) {
+  const isDark = useAppStore((s) => s.resolvedTheme) === "dark";
+  const tooltipStyle = {
+    contentStyle: {
+      backgroundColor: isDark ? "#1e293b" : "#ffffff",
+      border: `1px solid ${isDark ? "#334155" : "#e2e8f0"}`,
+      borderRadius: 8,
+    },
+    labelStyle: { color: isDark ? "#e2e8f0" : "#1e293b" },
+  };
   const metrics = [
     { label: "Open Bugs", value: stats.open_bugs, color: "text-red-500" },
     { label: "Critical/High Open", value: stats.critical_high_bugs, color: "text-orange-500" },
@@ -59,7 +69,7 @@ export function BugsDashboard({ stats }: Props) {
               <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.3} />
               <XAxis dataKey="date" tick={{ fontSize: 11 }} stroke="#64748b" tickFormatter={(v) => v.slice(5)} />
               <YAxis tick={{ fontSize: 11 }} stroke="#64748b" />
-              <Tooltip contentStyle={{ backgroundColor: "#1e293b", border: "1px solid #334155", borderRadius: 8 }} />
+              <Tooltip {...tooltipStyle} />
               <Area type="monotone" dataKey="value" stroke="#ef4444" fill="url(#bugBurnGrad)" strokeWidth={2} name="Open Bugs" animationDuration={800} />
             </AreaChart>
           </ResponsiveContainer>
@@ -74,7 +84,7 @@ export function BugsDashboard({ stats }: Props) {
                   <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
                 ))}
               </Pie>
-              <Tooltip contentStyle={{ backgroundColor: "#1e293b", border: "1px solid #334155", borderRadius: 8 }} />
+              <Tooltip {...tooltipStyle} />
             </PieChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -116,7 +126,7 @@ export function BugsDashboard({ stats }: Props) {
               <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.3} />
               <XAxis dataKey="date" tick={{ fontSize: 10 }} stroke="#64748b" />
               <YAxis tick={{ fontSize: 11 }} stroke="#64748b" />
-              <Tooltip contentStyle={{ backgroundColor: "#1e293b", border: "1px solid #334155", borderRadius: 8 }} />
+              <Tooltip {...tooltipStyle} />
               <Line type="monotone" dataKey="value" stroke="#22c55e" strokeWidth={2} dot={{ r: 3 }} name="Resolved" animationDuration={800} />
             </LineChart>
           </ResponsiveContainer>

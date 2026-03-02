@@ -165,11 +165,11 @@ impl Database {
 
     pub fn remove_project(&self, path: &str) -> Result<()> {
         let conn = self.conn.lock().map_err(|e| anyhow::anyhow!("{}", e))?;
-        conn.execute("DELETE FROM projects WHERE path = ?1", rusqlite::params![path])?;
         conn.execute(
             "DELETE FROM activity_log WHERE project_path = ?1",
             rusqlite::params![path],
         )?;
+        conn.execute("DELETE FROM projects WHERE path = ?1", rusqlite::params![path])?;
         Ok(())
     }
 
