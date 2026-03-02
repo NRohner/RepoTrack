@@ -65,6 +65,7 @@ export function Sidebar() {
   const [pillStyle, setPillStyle] = useState<{ top: number; height: number }>({ top: 0, height: 0 });
   const [ready, setReady] = useState(false);
 
+  const gitHasChanges = useAppStore((s) => s.gitHasChanges);
   const activePath = navItems.find((item) => location.pathname.startsWith(item.path))?.path;
 
   useLayoutEffect(() => {
@@ -145,6 +146,9 @@ export function Sidebar() {
           >
             {item.icon}
             {item.label}
+            {item.path === "/git" && gitHasChanges && (
+              <span className="w-2 h-2 rounded-full bg-amber-500" />
+            )}
           </NavLink>
         ))}
       </nav>

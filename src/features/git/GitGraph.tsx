@@ -268,9 +268,13 @@ export function GitGraph({ commits, selectedHash, onSelectCommit, unpushedHashes
 
             return isUnpushed ? (
               <g key={`node-${i}`} className="cursor-pointer" style={{ pointerEvents: "all" }} onClick={() => onSelectCommit(pos.commit)}>
+                {/* Selection glow for unpushed */}
+                {isSelected && (
+                  <circle cx={x} cy={y} r={r + 6} fill={color} opacity={0.25} />
+                )}
                 {/* Outer ring for unpushed */}
-                <circle cx={x} cy={y} r={r + 3} fill="none" stroke={color} strokeWidth={1.5} opacity={0.4} />
-                <circle cx={x} cy={y} r={r} fill={isSelected ? color : color} stroke={color} strokeWidth={2} />
+                <circle cx={x} cy={y} r={r + 3} fill="none" stroke={color} strokeWidth={isSelected ? 2.5 : 1.5} opacity={isSelected ? 0.9 : 0.4} />
+                <circle cx={x} cy={y} r={r} fill={color} stroke={isSelected ? "white" : color} strokeWidth={2} />
                 {/* Up-arrow inside the node */}
                 <path
                   d={`M ${x} ${y - 2.5} l -2 2.5 h 1.3 v 2 h 1.4 v -2 h 1.3 z`}
@@ -304,7 +308,7 @@ export function GitGraph({ commits, selectedHash, onSelectCommit, unpushedHashes
               key={pos.commit.hash}
               className={`absolute right-0 flex items-center cursor-pointer transition-colors ${
                 selectedHash === pos.commit.hash
-                  ? "bg-accent-600/10"
+                  ? "bg-accent-600/20 ring-1 ring-inset ring-accent-500/30"
                   : "hover:bg-surface-100 dark:hover:bg-surface-800"
               }`}
               style={{

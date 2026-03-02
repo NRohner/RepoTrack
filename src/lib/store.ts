@@ -29,6 +29,9 @@ interface AppStore {
   showResolved: boolean;
   setShowResolved: (show: boolean) => void;
 
+  gitHasChanges: boolean;
+  setGitHasChanges: (val: boolean) => void;
+
   toasts: Toast[];
   addToast: (toast: Omit<Toast, "id">) => void;
   removeToast: (id: string) => void;
@@ -62,14 +65,17 @@ export const useAppStore = create<AppStore>((set) => ({
   updateIssueInStore: (issue) =>
     set((state) => ({
       issues: state.issues.map((i) => (i.id === issue.id ? issue : i)),
+      gitHasChanges: true,
     })),
   removeIssueFromStore: (id) =>
     set((state) => ({
       issues: state.issues.filter((i) => i.id !== id),
+      gitHasChanges: true,
     })),
   addIssueToStore: (issue) =>
     set((state) => ({
       issues: [...state.issues, issue],
+      gitHasChanges: true,
     })),
 
   selectedIssueId: null,
@@ -83,6 +89,9 @@ export const useAppStore = create<AppStore>((set) => ({
 
   showResolved: false,
   setShowResolved: (show) => set({ showResolved: show }),
+
+  gitHasChanges: false,
+  setGitHasChanges: (val) => set({ gitHasChanges: val }),
 
   toasts: [],
   addToast: (toast) =>

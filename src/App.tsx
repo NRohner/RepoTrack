@@ -12,6 +12,7 @@ import { Dashboard } from "./features/dashboard/Dashboard";
 import { Roadmap } from "./features/roadmap/Roadmap";
 import { Settings } from "./features/settings/Settings";
 import { GitTab } from "./features/git/GitTab";
+import { useGitStatusPolling } from "./lib/useGitStatusPolling";
 
 export default function App() {
   const theme = useAppStore((s) => s.theme);
@@ -19,6 +20,8 @@ export default function App() {
   const setResolvedTheme = useAppStore((s) => s.setResolvedTheme);
   const activeProject = useAppStore((s) => s.activeProject);
   const navigate = useNavigate();
+
+  useGitStatusPolling();
 
   // Load persisted preferences and current user on startup
   useEffect(() => {
