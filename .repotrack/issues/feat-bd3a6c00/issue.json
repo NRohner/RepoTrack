@@ -1,0 +1,35 @@
+{
+  "id": "FEAT-0008",
+  "uuid": "bd3a6c00",
+  "title": "Undo Commit Option",
+  "description": "There should be a way to undo a commit from the git tab if it hasn’t been pushed yet.",
+  "type": "feature",
+  "priority": "medium",
+  "status": "open",
+  "tags": [],
+  "created_at": "2026-03-02T20:02:27.556323Z",
+  "updated_at": "2026-03-02T20:02:27.556323Z",
+  "votes": 0,
+  "roadmap_quarter": "Backlog",
+  "comments": [],
+  "attachments": [],
+  "linked_files": [],
+  "created_by": {
+    "display_name": "Nick Rohner",
+    "username": "NrohnerJLS",
+    "provider": "github",
+    "avatar_url": "https://avatars.githubusercontent.com/u/227610322?v=4"
+  },
+  "history": [
+    {
+      "action": "created",
+      "user": {
+        "display_name": "Nick Rohner",
+        "username": "NrohnerJLS",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/227610322?v=4"
+      },
+      "timestamp": "2026-03-02T20:02:27.556323Z"
+    }
+  ]
+}

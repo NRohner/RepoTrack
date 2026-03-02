@@ -1,0 +1,35 @@
+{
+  "id": "FEAT-0007",
+  "uuid": "c7d23f7c",
+  "title": "Add a notification indicator next to the git tab.",
+  "description": "This indicator should show when there are changes to the .repotrack directory that have not been pushed.",
+  "type": "feature",
+  "priority": "medium",
+  "status": "open",
+  "tags": [],
+  "created_at": "2026-03-02T20:01:37.606579Z",
+  "updated_at": "2026-03-02T20:01:37.606579Z",
+  "votes": 0,
+  "roadmap_quarter": "Backlog",
+  "comments": [],
+  "attachments": [],
+  "linked_files": [],
+  "created_by": {
+    "display_name": "Nick Rohner",
+    "username": "NrohnerJLS",
+    "provider": "github",
+    "avatar_url": "https://avatars.githubusercontent.com/u/227610322?v=4"
+  },
+  "history": [
+    {
+      "action": "created",
+      "user": {
+        "display_name": "Nick Rohner",
+        "username": "NrohnerJLS",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/227610322?v=4"
+      },
+      "timestamp": "2026-03-02T20:01:37.606579Z"
+    }
+  ]
+}
