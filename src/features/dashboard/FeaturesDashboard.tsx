@@ -3,6 +3,7 @@ import {
   FunnelChart, Funnel, LabelList, Cell,
 } from "recharts";
 import type { ProjectStats } from "@/lib/types";
+import { useAppStore } from "@/lib/store";
 
 interface Props {
   stats: ProjectStats;
@@ -11,6 +12,15 @@ interface Props {
 const FUNNEL_COLORS = ["#8b5cf6", "#6366f1", "#22c55e"];
 
 export function FeaturesDashboard({ stats }: Props) {
+  const isDark = useAppStore((s) => s.resolvedTheme) === "dark";
+  const tooltipStyle = {
+    contentStyle: {
+      backgroundColor: isDark ? "#1e293b" : "#ffffff",
+      border: `1px solid ${isDark ? "#334155" : "#e2e8f0"}`,
+      borderRadius: 8,
+    },
+    labelStyle: { color: isDark ? "#e2e8f0" : "#1e293b" },
+  };
   const metrics = [
     { label: "Total Features", value: stats.open_features + stats.completed_features_this_month },
     { label: "Open", value: stats.open_features, color: "text-blue-500" },
@@ -139,7 +149,7 @@ export function FeaturesDashboard({ stats }: Props) {
               <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.3} />
               <XAxis type="number" tick={{ fontSize: 11 }} stroke="#64748b" />
               <YAxis dataKey="tag" type="category" tick={{ fontSize: 11 }} stroke="#64748b" width={80} />
-              <Tooltip contentStyle={{ backgroundColor: "#1e293b", border: "1px solid #334155", borderRadius: 8 }} />
+              <Tooltip {...tooltipStyle} />
               <Bar dataKey="count" fill="#6366f1" radius={[0, 4, 4, 0]} animationDuration={800} name="Features" />
             </BarChart>
           </ResponsiveContainer>
