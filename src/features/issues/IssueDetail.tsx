@@ -398,7 +398,7 @@ export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailP
           )}
 
           {/* Metadata sidebar */}
-          <div className="grid grid-cols-2 gap-4 p-4 bg-surface-50 dark:bg-surface-800/50 rounded-xl">
+          <div className="grid grid-cols-2 gap-4 p-4 bg-surface-50 dark:bg-surface-800 rounded-xl">
             <div>
               <p className="text-xs text-surface-400 mb-0.5">Created by</p>
               <p className="text-xs dark:text-surface-300 font-medium">
