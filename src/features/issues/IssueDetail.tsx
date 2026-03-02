@@ -284,6 +284,7 @@ export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailP
             {editing ? (
               <input
                 type="text"
+                spellCheck
                 value={editTitle}
                 onChange={(e) => setEditTitle(e.target.value)}
                 className="text-xl font-bold dark:text-white w-full bg-transparent border-b-2 border-accent-500 outline-none pb-1"
@@ -340,6 +341,7 @@ export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailP
             </div>
             {editing ? (
               <textarea
+                spellCheck
                 value={editDesc}
                 onChange={(e) => setEditDesc(e.target.value)}
                 rows={8}
@@ -359,7 +361,7 @@ export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailP
             <>
               <Section title="Steps to Reproduce" editing={editing}>
                 {editing ? (
-                  <textarea value={editSteps} onChange={(e) => setEditSteps(e.target.value)} rows={4} className="w-full px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
+                  <textarea spellCheck value={editSteps} onChange={(e) => setEditSteps(e.target.value)} rows={4} className="w-full px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
                 ) : issue.steps_to_reproduce ? (
                   <div className="prose prose-sm dark:prose-invert max-w-none">
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>{issue.steps_to_reproduce}</ReactMarkdown>
@@ -370,7 +372,7 @@ export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailP
               </Section>
               <Section title="Expected Behavior" editing={editing}>
                 {editing ? (
-                  <textarea value={editExpected} onChange={(e) => setEditExpected(e.target.value)} rows={2} className="w-full px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
+                  <textarea spellCheck value={editExpected} onChange={(e) => setEditExpected(e.target.value)} rows={2} className="w-full px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
                 ) : issue.expected_behavior ? (
                   <p className="text-sm dark:text-surface-300">{issue.expected_behavior}</p>
                 ) : (
@@ -379,7 +381,7 @@ export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailP
               </Section>
               <Section title="Actual Behavior" editing={editing}>
                 {editing ? (
-                  <textarea value={editActual} onChange={(e) => setEditActual(e.target.value)} rows={2} className="w-full px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
+                  <textarea spellCheck value={editActual} onChange={(e) => setEditActual(e.target.value)} rows={2} className="w-full px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
                 ) : issue.actual_behavior ? (
                   <p className="text-sm dark:text-surface-300">{issue.actual_behavior}</p>
                 ) : (
@@ -403,7 +405,7 @@ export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailP
             <>
               <Section title="Use Case" editing={editing}>
                 {editing ? (
-                  <textarea value={editUseCase} onChange={(e) => setEditUseCase(e.target.value)} rows={3} className="w-full px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
+                  <textarea spellCheck value={editUseCase} onChange={(e) => setEditUseCase(e.target.value)} rows={3} className="w-full px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
                 ) : issue.use_case ? (
                   <div className="prose prose-sm dark:prose-invert max-w-none">
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>{issue.use_case}</ReactMarkdown>
@@ -414,7 +416,7 @@ export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailP
               </Section>
               <Section title="Acceptance Criteria" editing={editing}>
                 {editing ? (
-                  <textarea value={editAcceptance} onChange={(e) => setEditAcceptance(e.target.value)} rows={4} className="w-full px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
+                  <textarea spellCheck value={editAcceptance} onChange={(e) => setEditAcceptance(e.target.value)} rows={4} className="w-full px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
                 ) : issue.acceptance_criteria ? (
                   <div className="prose prose-sm dark:prose-invert max-w-none">
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>{issue.acceptance_criteria}</ReactMarkdown>
@@ -619,6 +621,7 @@ export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailP
             </div>
             <div className="flex gap-2">
               <textarea
+                spellCheck
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
                 placeholder="Add a comment..."

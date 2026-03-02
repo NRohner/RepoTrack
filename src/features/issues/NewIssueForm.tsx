@@ -197,6 +197,7 @@ export function NewIssueForm({ defaultType, onClose, existingTags }: NewIssueFor
             <label className="block text-sm font-medium dark:text-surface-300 mb-1">Title *</label>
             <input
               type="text"
+              spellCheck
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               maxLength={200}
@@ -210,6 +211,7 @@ export function NewIssueForm({ defaultType, onClose, existingTags }: NewIssueFor
           <div>
             <label className="block text-sm font-medium dark:text-surface-300 mb-1">Description</label>
             <textarea
+              spellCheck
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={6}
@@ -299,16 +301,16 @@ export function NewIssueForm({ defaultType, onClose, existingTags }: NewIssueFor
             <>
               <div>
                 <label className="block text-sm font-medium dark:text-surface-300 mb-1">Steps to Reproduce</label>
-                <textarea value={stepsToReproduce} onChange={(e) => setStepsToReproduce(e.target.value)} rows={3} placeholder="1. Go to...\n2. Click on...\n3. Observe..." className="w-full px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
+                <textarea spellCheck value={stepsToReproduce} onChange={(e) => setStepsToReproduce(e.target.value)} rows={3} placeholder="1. Go to...\n2. Click on...\n3. Observe..." className="w-full px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium dark:text-surface-300 mb-1">Expected Behavior</label>
-                  <textarea value={expectedBehavior} onChange={(e) => setExpectedBehavior(e.target.value)} rows={2} className="w-full px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
+                  <textarea spellCheck value={expectedBehavior} onChange={(e) => setExpectedBehavior(e.target.value)} rows={2} className="w-full px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium dark:text-surface-300 mb-1">Actual Behavior</label>
-                  <textarea value={actualBehavior} onChange={(e) => setActualBehavior(e.target.value)} rows={2} className="w-full px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
+                  <textarea spellCheck value={actualBehavior} onChange={(e) => setActualBehavior(e.target.value)} rows={2} className="w-full px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
                 </div>
               </div>
               <div>
@@ -323,11 +325,11 @@ export function NewIssueForm({ defaultType, onClose, existingTags }: NewIssueFor
             <>
               <div>
                 <label className="block text-sm font-medium dark:text-surface-300 mb-1">Use Case</label>
-                <textarea value={useCase} onChange={(e) => setUseCase(e.target.value)} rows={3} placeholder="Describe the problem this feature would solve..." className="w-full px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
+                <textarea spellCheck value={useCase} onChange={(e) => setUseCase(e.target.value)} rows={3} placeholder="Describe the problem this feature would solve..." className="w-full px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
               </div>
               <div>
                 <label className="block text-sm font-medium dark:text-surface-300 mb-1">Acceptance Criteria</label>
-                <textarea value={acceptanceCriteria} onChange={(e) => setAcceptanceCriteria(e.target.value)} rows={3} placeholder="- [ ] Criterion one\n- [ ] Criterion two" className="w-full px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
+                <textarea spellCheck value={acceptanceCriteria} onChange={(e) => setAcceptanceCriteria(e.target.value)} rows={3} placeholder="- [ ] Criterion one\n- [ ] Criterion two" className="w-full px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
               </div>
               <div>
                 <label className="block text-sm font-medium dark:text-surface-300 mb-1">Roadmap Quarter</label>

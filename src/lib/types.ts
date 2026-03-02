@@ -281,6 +281,31 @@ export interface DirEntry {
   is_dir: boolean;
 }
 
+export interface GitStatus {
+  is_git_repo: boolean;
+  current_branch: string;
+  repotrack_has_changes: boolean;
+  changed_files: string[];
+}
+
+export interface GitBranch {
+  name: string;
+  is_current: boolean;
+  is_remote: boolean;
+  last_commit_summary: string;
+}
+
+export interface GitCommitInfo {
+  hash: string;
+  short_hash: string;
+  message: string;
+  author: string;
+  timestamp: number;
+  parent_hashes: string[];
+  refs: string[];
+  is_merge: boolean;
+}
+
 export const SEVERITIES: Severity[] = ["critical", "high", "medium", "low"];
 
 export const STATUS_COLORS: Record<string, string> = {

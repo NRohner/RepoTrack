@@ -37,6 +37,11 @@ body {
   min-height: 100vh;
 }
 
+/* Spell-check red underline for misspelled words */
+::spelling-error {
+  text-decoration: wavy underline red 1px;
+}
+
 .dark body,
 body.dark {
   background-color: var(--surface-950);
