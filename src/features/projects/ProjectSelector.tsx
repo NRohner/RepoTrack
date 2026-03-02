@@ -17,6 +17,7 @@ export function ProjectSelector() {
   const [migrationData, setMigrationData] = useState<RepoTrackFile | null>(null);
   const [migrationPath, setMigrationPath] = useState("");
   const [migrating, setMigrating] = useState(false);
+  const [pendingRemove, setPendingRemove] = useState<ProjectInfo | null>(null);
   const setActiveProject = useAppStore((s) => s.setActiveProject);
   const addToast = useAppStore((s) => s.addToast);
   const navigate = useNavigate();
@@ -119,14 +120,21 @@ export function ProjectSelector() {
     }
   };
 
-  const handleRemoveProject = async (path: string, e: React.MouseEvent) => {
+  const handleRemoveProject = (project: ProjectInfo, e: React.MouseEvent) => {
     e.stopPropagation();
+    setPendingRemove(project);
+  };
+
+  const confirmRemoveProject = async () => {
+    if (!pendingRemove) return;
     try {
-      await api.removeProject(path);
-      setProjects((prev) => prev.filter((p) => p.path !== path));
+      await api.removeProject(pendingRemove.path);
+      setProjects((prev) => prev.filter((p) => p.path !== pendingRemove.path));
       addToast({ type: "info", message: "Project removed" });
     } catch (err: any) {
       addToast({ type: "error", message: `Failed to remove: ${err}` });
+    } finally {
+      setPendingRemove(null);
     }
   };
 
@@ -211,7 +219,7 @@ export function ProjectSelector() {
                       </span>
                     )}
                     <button
-                      onClick={(e) => handleRemoveProject(project.path, e)}
+                      onClick={(e) => handleRemoveProject(project, e)}
                       className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg hover:bg-red-500/10 text-surface-400 hover:text-red-500 transition-all"
                       title="Remove project"
                     >
@@ -271,6 +279,33 @@ export function ProjectSelector() {
               className="px-4 py-2 text-sm font-medium bg-accent-600 hover:bg-accent-700 text-white rounded-lg transition-colors"
             >
               Create Project
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Remove Confirmation Modal */}
+      <Modal
+        open={!!pendingRemove}
+        onClose={() => setPendingRemove(null)}
+        title="Remove Project"
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-surface-500 dark:text-surface-400">
+            Are you sure you want to remove <span className="font-medium text-surface-700 dark:text-surface-200">{pendingRemove?.name}</span> from recent projects? This won't delete any files on disk.
+          </p>
+          <div className="flex justify-end gap-3 pt-2">
+            <button
+              onClick={() => setPendingRemove(null)}
+              className="px-4 py-2 text-sm font-medium text-surface-600 dark:text-surface-400 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-lg transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={confirmRemoveProject}
+              className="px-4 py-2 text-sm font-medium bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+            >
+              Remove
             </button>
           </div>
         </div>
