@@ -140,8 +140,12 @@ impl Database {
         let projects = stmt.query_map([], |row| {
             let path: String = row.get(2)?;
             let exists = std::path::Path::new(&path)
-                .join("repotrack.json")
-                .exists();
+                .join(".repotrack")
+                .join("project.json")
+                .exists()
+                || std::path::Path::new(&path)
+                    .join("repotrack.json")
+                    .exists();
             Ok(ProjectInfo {
                 id: row.get(0)?,
                 name: row.get(1)?,

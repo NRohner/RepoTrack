@@ -2,21 +2,26 @@
 
 A cross-platform desktop application for lightweight issue and feature request tracking that lives inside your project repositories. Built with Tauri (Rust backend + React frontend).
 
-Instead of storing data in a centralized database, each project's issues and feature requests are written to a `repotrack.json` file at the root of the project repo. All interaction happens through a polished, modern GUI. The file is designed for clean git diffs, making it easy to track changes across your team.
+Instead of storing data in a centralized database, each project's issues and feature requests are written to a `.repotrack/` directory at the root of your project repo. Each issue lives in its own directory with an `issue.json` file, making diffs clean and merges painless. All interaction happens through a polished, modern GUI.
+
+![RepoTrack Issue Board](readme_resources/RepoTrackImg1.png)
 
 ## Features
 
-- **File-Backed Storage** — Issues stored as `repotrack.json` in your project repo, version-controlled with git
+- **Directory-Based Storage** — Each issue gets its own directory under `.repotrack/issues/`, version-controlled with git for clean diffs and easy merges
+- **File Attachments** — Attach screenshots, logs, and documents directly to issues. Image attachments render inline thumbnails with a full-size lightbox preview
 - **Dual Workstreams** — Dedicated views for Bugs (severity, steps to reproduce, environment) and Feature Requests (priority, votes, acceptance criteria, roadmap)
 - **Issue Board** — Sortable/filterable table view and drag-and-drop Kanban board
 - **Dashboard Analytics** — Rich charts including burndown, status distribution, severity breakdown, resolution time histograms, tag treemaps, and activity feeds
 - **Feature Roadmap** — Visual board-style roadmap with drag-and-drop quarter assignment and voting
 - **Dark Mode First** — Beautiful dark theme with light mode support and system preference detection
 - **Export** — CSV and Markdown export with native save dialogs
+- **Legacy Migration** — One-click migration from the old single-file `repotrack.json` format to the new directory format
 - **Cross-Platform** — macOS, Windows, and Linux via Tauri
 
 ## Do You Just Want The App?
-- Download the Mac .app file or the Windows .msi installer here: https://github.com/NRohner/RepoTrack/releases/tag/v0.1.0
+- Download the Mac .dmg or Windows .msi installer from the latest release: https://github.com/NRohner/RepoTrack/releases/tag/v0.3.0
+- For Windows users - Windows Defender will flag the app if you use the MSI installer. This is normal and can be safely ignored. Just click "More info" and then "Run anyway" to proceed.
 
 
 ## Quick Start 
@@ -92,8 +97,9 @@ Output location varies by platform:
 
 1. Click **Open Project** on the home screen
 2. Select a project directory using the native folder picker
-3. If a `repotrack.json` exists, the project loads immediately
+3. If a `.repotrack/` directory (or legacy `repotrack.json`) exists, the project loads immediately
 4. If not, you'll be prompted to create one — enter a project name and click Create
+5. New projects always use the directory storage format
 
 ### Creating Issues
 
@@ -103,7 +109,18 @@ Output location varies by platform:
    - **Bugs:** Severity, steps to reproduce, expected/actual behavior, environment
    - **Features:** Priority, use case, acceptance criteria, roadmap quarter
 4. Add tags, linked files, and time estimates as needed
-5. Click **Create Issue** (or Ctrl/Cmd+Enter)
+5. Optionally attach files (screenshots, logs, etc.) — these are copied into the issue's directory
+6. Click **Create Issue** (or Ctrl/Cmd+Enter)
+
+### Attaching Files to Issues
+
+1. Open an issue and scroll to the **Attachments** section
+2. Click **Attach File** and select one or more files from your system
+3. Files are copied into `.repotrack/issues/{type}-{uuid}/attachments/`
+4. Image files (PNG, JPG, GIF, WebP, SVG) display inline thumbnails
+5. Click a thumbnail to open a full-size in-app lightbox preview
+6. Click the filename to open the file in your system's default application
+7. Attachments require directory storage format — legacy projects show an upgrade prompt
 
 ### Using the Kanban Board
 
@@ -124,17 +141,39 @@ Output location varies by platform:
 - Vote on features to signal demand
 - Filter by priority, status, or tag
 
-## `repotrack.json` Specification
+## Storage Format
 
-### Top-Level Fields
+### Directory Structure (default)
+
+New projects use the directory format. Each issue lives in its own directory:
+
+```
+your-project/
+└── .repotrack/
+    ├── project.json                          # Project metadata and ID counters
+    └── issues/
+        ├── bug-a1b2c3d4/
+        │   ├── issue.json                    # Issue data
+        │   └── attachments/                  # File attachments
+        │       ├── screenshot.png
+        │       └── error-log.txt
+        └── feat-e5f6g7h8/
+            └── issue.json
+```
+
+### `project.json` Fields
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `version` | string | Schema version (`"1.0"`) |
+| `version` | string | Schema version |
 | `project_name` | string | Display name for the project |
-| `created_at` | ISO 8601 | When the file was created |
+| `created_at` | ISO 8601 | When the project was created |
 | `updated_at` | ISO 8601 | Last modification timestamp |
-| `issues` | array | Array of issue objects |
+| `id_counters` | object | Counters per issue type for generating IDs (`{"bug": 3, "feature": 5}`) |
+
+### Legacy Format
+
+Older projects may use a single `repotrack.json` file at the repo root containing all issues in one array. This format is still supported but does not support file attachments. Use the in-app migration button to upgrade to directory format.
 
 ### Shared Issue Fields
 
@@ -149,10 +188,21 @@ Output location varies by platform:
 | `created_at` | ISO 8601 | Creation timestamp |
 | `updated_at` | ISO 8601 | Last update timestamp |
 | `resolved_at` | ISO 8601 \| null | When the issue was resolved |
-| `comments` | Comment[] | Array of `{id, text, created_at}` |
+| `comments` | Comment[] | Array of `{id, text, created_at, created_by?}` |
+| `attachments` | Attachment[] | Array of file attachment metadata (directory format only) |
 | `linked_files` | string[] | Relative file paths within the project |
 | `time_estimate_hours` | number \| null | Estimated hours |
 | `time_spent_hours` | number \| null | Actual hours spent |
+
+### Attachment Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Auto-generated: `att-0001`, `att-0002`, etc. |
+| `filename` | string | Stored filename (deduplicated if needed) |
+| `size_bytes` | number | File size in bytes |
+| `created_at` | ISO 8601 | When the file was attached |
+| `created_by` | UserInfo \| null | User who attached the file |
 
 ### Bug-Specific Fields
 
@@ -178,10 +228,12 @@ Output location varies by platform:
 
 ## Git Workflow Tips
 
-- Add `repotrack.json` to version control — it's designed for clean diffs
-- Consider adding to `.gitattributes`: `repotrack.json linguist-generated=true`
+- Add the `.repotrack/` directory to version control — it's designed for clean diffs
+- Each issue is a separate file, so concurrent edits to different issues won't conflict
+- Consider adding to `.gitattributes`: `.repotrack/** linguist-generated=true`
+- For large binary attachments, consider using [Git LFS](https://git-lfs.github.com/) for the `attachments/` directories
 - Suggested commit message convention: `chore(repotrack): update issue tracking data`
-- If a teammate updates the file, their changes will be picked up on the next `git pull`
+- If a teammate updates issues, their changes will be picked up on the next `git pull`
 
 ## Architecture
 
@@ -198,15 +250,16 @@ React Frontend ──invoke()──> Rust Backend ──> Filesystem / SQLite
                                   │
                     ┌─────────────┼─────────────┐
                     ▼             ▼              ▼
-              repotrack.json   SQLite DB    File Watcher
-              (per project)   (app data)    (notify crate)
+              .repotrack/     SQLite DB     Attachments
+              (per project)   (app data)    (binary files)
 ```
 
 - **Frontend** calls Rust commands via `invoke()` with typed wrappers
 - **Backend** holds the active project in managed state behind a `Mutex`
-- **Every mutation** writes back to `repotrack.json` immediately
+- **Every mutation** writes back to the issue's `issue.json` immediately
+- **Attachments** are copied into each issue's `attachments/` subdirectory; image data is served to the frontend as base64 data URLs
 - **SQLite** stores project registry, user preferences, and activity log
-- The JSON file is always the source of truth for issue data
+- The `.repotrack/` directory is always the source of truth for issue data
 
 ### Project Structure
 
@@ -267,7 +320,7 @@ src/
 
 - **No component library** — All UI components built from scratch with Tailwind for a custom feel
 - **Dark mode first** — Dark theme designed as primary, with equally polished light mode
-- **File as source of truth** — The JSON file can be manually edited, committed by teammates, or generated by scripts
+- **Filesystem as source of truth** — Issue JSON files can be manually edited, committed by teammates, or generated by scripts
 - **SQLite for metadata only** — Project registry, preferences, and activity log. Never the source of truth for issues
 
 ## License

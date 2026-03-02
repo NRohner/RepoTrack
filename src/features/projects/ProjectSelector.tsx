@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getVersion } from "@tauri-apps/api/app";
 import { useAppStore } from "@/lib/store";
 import * as api from "@/lib/api";
-import type { ProjectInfo } from "@/lib/types";
+import type { ProjectInfo, RepoTrackFile } from "@/lib/types";
 import { Modal } from "@/shared/components/Modal";
 
 export function ProjectSelector() {
@@ -13,6 +13,10 @@ export function ProjectSelector() {
   const [showNewProject, setShowNewProject] = useState(false);
   const [newProjectName, setNewProjectName] = useState("");
   const [selectedPath, setSelectedPath] = useState("");
+  const [showMigration, setShowMigration] = useState(false);
+  const [migrationData, setMigrationData] = useState<RepoTrackFile | null>(null);
+  const [migrationPath, setMigrationPath] = useState("");
+  const [migrating, setMigrating] = useState(false);
   const setActiveProject = useAppStore((s) => s.setActiveProject);
   const addToast = useAppStore((s) => s.addToast);
   const navigate = useNavigate();
@@ -33,11 +37,44 @@ export function ProjectSelector() {
     getVersion().then(setVersion).catch(() => {});
   }, []);
 
+  const openAndCheckMigration = async (data: RepoTrackFile, path: string) => {
+    if (data.storage_format === "legacy") {
+      setMigrationData(data);
+      setMigrationPath(path);
+      setShowMigration(true);
+    } else {
+      setActiveProject(data, path);
+      navigate("/issues");
+    }
+  };
+
+  const handleMigrate = async () => {
+    setMigrating(true);
+    try {
+      const updated = await api.migrateProject();
+      setActiveProject(updated, migrationPath);
+      setShowMigration(false);
+      navigate("/issues");
+      addToast({ type: "success", message: "Project upgraded to per-issue storage" });
+    } catch (e: any) {
+      addToast({ type: "error", message: `Migration failed: ${e}` });
+    } finally {
+      setMigrating(false);
+    }
+  };
+
+  const handleSkipMigration = () => {
+    if (migrationData) {
+      setActiveProject(migrationData, migrationPath);
+    }
+    setShowMigration(false);
+    navigate("/issues");
+  };
+
   const handleOpenProject = async (path: string) => {
     try {
       const data = await api.openProject(path);
-      setActiveProject(data, path);
-      navigate("/issues");
+      await openAndCheckMigration(data, path);
     } catch (e: any) {
       addToast({ type: "error", message: `Failed to open project: ${e}` });
     }
@@ -52,13 +89,12 @@ export function ProjectSelector() {
         title: "Select Project Directory",
       });
       if (selected && typeof selected === "string") {
-        // Check if repotrack.json exists
+        // Check if project exists (either format)
         try {
           const data = await api.openProject(selected);
-          setActiveProject(data, selected);
-          navigate("/issues");
+          await openAndCheckMigration(data, selected);
         } catch {
-          // No repotrack.json, prompt to create
+          // No project found, prompt to create
           setSelectedPath(selected);
           const dirName = selected.split("/").pop() || selected.split("\\").pop() || "My Project";
           setNewProjectName(dirName);
@@ -204,7 +240,7 @@ export function ProjectSelector() {
       >
         <div className="space-y-4">
           <p className="text-sm text-surface-500 dark:text-surface-400">
-            No <code className="bg-surface-100 dark:bg-surface-800 px-1.5 py-0.5 rounded text-xs">repotrack.json</code> found.
+            No RepoTrack project found.
             Create one to start tracking issues.
           </p>
           <div>
@@ -235,6 +271,41 @@ export function ProjectSelector() {
               className="px-4 py-2 text-sm font-medium bg-accent-600 hover:bg-accent-700 text-white rounded-lg transition-colors"
             >
               Create Project
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Migration Prompt Modal */}
+      <Modal
+        open={showMigration}
+        onClose={handleSkipMigration}
+        title="Upgrade Project Storage"
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-surface-500 dark:text-surface-400">
+            This project uses the legacy single-file format (<code className="bg-surface-100 dark:bg-surface-800 px-1.5 py-0.5 rounded text-xs">repotrack.json</code>).
+            Upgrading splits each issue into its own file, which reduces merge conflicts when collaborating via git.
+          </p>
+          <div className="bg-surface-100 dark:bg-surface-800 rounded-lg p-3 text-xs text-surface-500 dark:text-surface-400 space-y-1">
+            <p className="font-medium text-surface-700 dark:text-surface-300">What changes:</p>
+            <p>A <code>.repotrack/</code> directory is created with <code>project.json</code> and one folder per issue.</p>
+            <p>The old <code>repotrack.json</code> is removed.</p>
+            <p>All your issues and data are preserved.</p>
+          </div>
+          <div className="flex justify-end gap-3 pt-2">
+            <button
+              onClick={handleSkipMigration}
+              className="px-4 py-2 text-sm font-medium text-surface-600 dark:text-surface-400 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-lg transition-colors"
+            >
+              Not Now
+            </button>
+            <button
+              onClick={handleMigrate}
+              disabled={migrating}
+              className="px-4 py-2 text-sm font-medium bg-accent-600 hover:bg-accent-700 text-white rounded-lg transition-colors disabled:opacity-50"
+            >
+              {migrating ? "Upgrading..." : "Upgrade"}
             </button>
           </div>
         </div>

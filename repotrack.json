@@ -1,12 +1,13 @@
 {
   "_repotrack": "This file is managed by RepoTrack. Download it at https://github.com/NRohner/RepoTrack",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "project_name": "RepoTrack",
   "created_at": "2026-02-27T20:53:18.961609Z",
-  "updated_at": "2026-02-28T22:20:05.439475Z",
+  "updated_at": "2026-03-01T21:38:27.617487Z",
   "issues": [
     {
       "id": "IMP-0001",
+      "uuid": "7156d35d",
       "title": "The home page looks a little boring",
       "description": "Add some sort of gradient grid to it to make it a bit more visually interesting.",
       "type": "improvement",
@@ -17,11 +18,13 @@
       "updated_at": "2026-02-28T20:46:06.836390Z",
       "resolved_at": "2026-02-28T20:46:06.836390Z",
       "comments": [],
+      "attachments": [],
       "linked_files": [],
       "history": []
     },
     {
       "id": "FEAT-0001",
+      "uuid": "eda20274",
       "title": "Github OAuth to Atribut bugs to users.",
       "description": "",
       "type": "feature",
@@ -34,6 +37,7 @@
       "votes": 0,
       "roadmap_quarter": "Q1 2026",
       "comments": [],
+      "attachments": [],
       "linked_files": [],
       "history": [
         {
@@ -52,6 +56,7 @@
     },
     {
       "id": "FEAT-0003",
+      "uuid": "547161fd",
       "title": "Add History to issues",
       "description": "Just a log of how its status has changed over time. Basically, when it was created, when its status was updated and what it was updated to and who by, and when it was closed and who by.",
       "type": "feature",
@@ -64,6 +69,7 @@
       "votes": 0,
       "roadmap_quarter": "Q1 2026",
       "comments": [],
+      "attachments": [],
       "linked_files": [],
       "history": [
         {
@@ -82,6 +88,7 @@
     },
     {
       "id": "IMP-0002",
+      "uuid": "e80810f8",
       "title": "Completed should be hidden by default",
       "description": "There should be a toggle check button to show completed",
       "type": "improvement",
@@ -92,6 +99,7 @@
       "updated_at": "2026-02-28T22:20:01.540289Z",
       "resolved_at": "2026-02-28T22:20:01.540289Z",
       "comments": [],
+      "attachments": [],
       "linked_files": [],
       "history": [
         {
@@ -110,6 +118,7 @@
     },
     {
       "id": "IMP-0003",
+      "uuid": "eb041952",
       "title": "Add animation when viewing an issue",
       "description": "Match the animation that happens when creating a new issue.",
       "type": "improvement",
@@ -120,6 +129,7 @@
       "updated_at": "2026-02-28T22:20:05.439475Z",
       "resolved_at": "2026-02-28T22:20:05.439475Z",
       "comments": [],
+      "attachments": [],
       "linked_files": [],
       "created_by": {
         "display_name": "Nick",
@@ -149,6 +159,209 @@
             "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
           },
           "timestamp": "2026-02-28T22:20:05.439475Z"
+        }
+      ]
+    },
+    {
+      "id": "FEAT-0004",
+      "uuid": "7d636014",
+      "title": "Ability to Archive an Issue",
+      "description": "Different from delete. We should have this.",
+      "type": "feature",
+      "priority": "medium",
+      "status": "open",
+      "tags": [],
+      "created_at": "2026-03-01T21:34:41.827144Z",
+      "updated_at": "2026-03-01T21:34:41.827144Z",
+      "votes": 0,
+      "roadmap_quarter": "Backlog",
+      "comments": [],
+      "attachments": [],
+      "linked_files": [],
+      "created_by": {
+        "display_name": "Nick",
+        "username": "NRohner",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+      },
+      "history": [
+        {
+          "action": "created",
+          "user": {
+            "display_name": "Nick",
+            "username": "NRohner",
+            "provider": "github",
+            "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+          },
+          "timestamp": "2026-03-01T21:34:41.827144Z"
+        }
+      ]
+    },
+    {
+      "id": "IMP-0004",
+      "uuid": "a88c4b68",
+      "title": "Change “Create Issue” button to just “Create\"",
+      "description": "A feature isn’t an issue so why does the button say issue?",
+      "type": "improvement",
+      "severity": "medium",
+      "status": "open",
+      "tags": [],
+      "created_at": "2026-03-01T21:35:15.588344Z",
+      "updated_at": "2026-03-01T21:35:15.588344Z",
+      "comments": [],
+      "attachments": [],
+      "linked_files": [],
+      "created_by": {
+        "display_name": "Nick",
+        "username": "NRohner",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+      },
+      "history": [
+        {
+          "action": "created",
+          "user": {
+            "display_name": "Nick",
+            "username": "NRohner",
+            "provider": "github",
+            "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+          },
+          "timestamp": "2026-03-01T21:35:15.588344Z"
+        }
+      ]
+    },
+    {
+      "id": "IMP-0005",
+      "uuid": "c96487d9",
+      "title": "Change “New issue” to just “New\"",
+      "description": "",
+      "type": "improvement",
+      "severity": "medium",
+      "status": "open",
+      "tags": [],
+      "created_at": "2026-03-01T21:35:32.536676Z",
+      "updated_at": "2026-03-01T21:35:32.536676Z",
+      "comments": [],
+      "attachments": [],
+      "linked_files": [],
+      "created_by": {
+        "display_name": "Nick",
+        "username": "NRohner",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+      },
+      "history": [
+        {
+          "action": "created",
+          "user": {
+            "display_name": "Nick",
+            "username": "NRohner",
+            "provider": "github",
+            "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+          },
+          "timestamp": "2026-03-01T21:35:32.536676Z"
+        }
+      ]
+    },
+    {
+      "id": "BUG-0001",
+      "uuid": "851af581",
+      "title": "Test Bug",
+      "description": "",
+      "type": "bug",
+      "severity": "medium",
+      "status": "open",
+      "tags": [],
+      "created_at": "2026-03-01T21:35:59.612477Z",
+      "updated_at": "2026-03-01T21:35:59.612477Z",
+      "comments": [],
+      "attachments": [],
+      "linked_files": [],
+      "created_by": {
+        "display_name": "Nick",
+        "username": "NRohner",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+      },
+      "history": [
+        {
+          "action": "created",
+          "user": {
+            "display_name": "Nick",
+            "username": "NRohner",
+            "provider": "github",
+            "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+          },
+          "timestamp": "2026-03-01T21:35:59.612477Z"
+        }
+      ]
+    },
+    {
+      "id": "BUG-0002",
+      "uuid": "40ccfce4",
+      "title": "“Not Provided” Text Is different Formats",
+      "description": "When a bug is created but no fields are filled out, the “Not Provided” message shows up differently for each section. Instead, it should have one standard format/apperance.",
+      "type": "bug",
+      "severity": "medium",
+      "status": "open",
+      "tags": [],
+      "created_at": "2026-03-01T21:37:07.914369Z",
+      "updated_at": "2026-03-01T21:37:07.914369Z",
+      "comments": [],
+      "attachments": [],
+      "linked_files": [],
+      "created_by": {
+        "display_name": "Nick",
+        "username": "NRohner",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+      },
+      "history": [
+        {
+          "action": "created",
+          "user": {
+            "display_name": "Nick",
+            "username": "NRohner",
+            "provider": "github",
+            "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+          },
+          "timestamp": "2026-03-01T21:37:07.914369Z"
+        }
+      ]
+    },
+    {
+      "id": "BUG-0003",
+      "uuid": "4e7143c7",
+      "title": "White Section When Viewing an Issue in Dark Mode",
+      "description": "When you view an issue in dark mode, one section still appears “light”.",
+      "type": "bug",
+      "severity": "medium",
+      "status": "open",
+      "tags": [
+        "ui",
+        "dark mode"
+      ],
+      "created_at": "2026-03-01T21:38:27.617487Z",
+      "updated_at": "2026-03-01T21:38:27.617487Z",
+      "comments": [],
+      "attachments": [],
+      "linked_files": [],
+      "created_by": {
+        "display_name": "Nick",
+        "username": "NRohner",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+      },
+      "history": [
+        {
+          "action": "created",
+          "user": {
+            "display_name": "Nick",
+            "username": "NRohner",
+            "provider": "github",
+            "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+          },
+          "timestamp": "2026-03-01T21:38:27.617487Z"
         }
       ]
     }

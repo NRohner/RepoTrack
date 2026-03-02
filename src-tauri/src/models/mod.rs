@@ -2,6 +2,17 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
+pub fn generate_uuid() -> String {
+    uuid::Uuid::new_v4().to_string()[..8].to_string()
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum StorageFormat {
+    Legacy,
+    Directory,
+}
+
 pub type ColorPalette = HashMap<String, String>;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -74,8 +85,20 @@ pub struct Comment {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Attachment {
+    pub id: String,
+    pub filename: String,
+    pub size_bytes: u64,
+    pub created_at: DateTime<Utc>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub created_by: Option<UserInfo>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Issue {
     pub id: String,
+    #[serde(default = "generate_uuid")]
+    pub uuid: String,
     pub title: String,
     pub description: String,
     #[serde(rename = "type")]
@@ -110,6 +133,8 @@ pub struct Issue {
     #[serde(default)]
     pub comments: Vec<Comment>,
     #[serde(default)]
+    pub attachments: Vec<Attachment>,
+    #[serde(default)]
     pub linked_files: Vec<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub time_estimate_hours: Option<f64>,
@@ -132,6 +157,44 @@ pub struct RepoTrackFile {
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub issues: Vec<Issue>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub storage_format: Option<StorageFormat>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ProjectMetadata {
+    pub _repotrack: String,
+    pub version: String,
+    pub project_name: String,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+    pub id_counters: HashMap<String, u32>,
+}
+
+impl ProjectMetadata {
+    pub fn new(name: String) -> Self {
+        let now = Utc::now();
+        Self {
+            _repotrack: REPOTRACK_NOTICE.to_string(),
+            version: env!("CARGO_PKG_VERSION").to_string(),
+            project_name: name,
+            created_at: now,
+            updated_at: now,
+            id_counters: HashMap::new(),
+        }
+    }
+
+    pub fn next_id(&mut self, issue_type: &IssueType) -> String {
+        let (prefix, key) = match issue_type {
+            IssueType::Bug => ("BUG", "bug"),
+            IssueType::Feature => ("FEAT", "feature"),
+            IssueType::Improvement => ("IMP", "improvement"),
+            IssueType::Task => ("TASK", "task"),
+        };
+        let counter = self.id_counters.entry(key.to_string()).or_insert(0);
+        *counter += 1;
+        format!("{}-{:04}", prefix, *counter)
+    }
 }
 
 fn default_notice() -> String {
@@ -148,6 +211,7 @@ impl RepoTrackFile {
             created_at: now,
             updated_at: now,
             issues: Vec::new(),
+            storage_format: None,
         }
     }
 
