@@ -422,7 +422,7 @@ export function NewIssueForm({ defaultType, onClose, existingTags }: NewIssueFor
               disabled={submitting || !title.trim()}
               className="px-6 py-2 bg-accent-600 hover:bg-accent-700 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition-all active:scale-[0.98]"
             >
-              {submitting ? "Creating..." : "Create Issue"}
+              {submitting ? "Creating..." : "Create"}
             </button>
           </div>
         </div>
