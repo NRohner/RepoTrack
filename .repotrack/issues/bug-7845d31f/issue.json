@@ -1,0 +1,33 @@
+{
+  "id": "BUG-0011",
+  "uuid": "7845d31f",
+  "title": "Another test bug",
+  "description": "",
+  "type": "bug",
+  "severity": "medium",
+  "status": "open",
+  "tags": [],
+  "created_at": "2026-03-02T20:39:40.290275Z",
+  "updated_at": "2026-03-02T20:39:40.290275Z",
+  "comments": [],
+  "attachments": [],
+  "linked_files": [],
+  "created_by": {
+    "display_name": "Nick",
+    "username": "NRohner",
+    "provider": "github",
+    "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+  },
+  "history": [
+    {
+      "action": "created",
+      "user": {
+        "display_name": "Nick",
+        "username": "NRohner",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+      },
+      "timestamp": "2026-03-02T20:39:40.290275Z"
+    }
+  ]
+}
