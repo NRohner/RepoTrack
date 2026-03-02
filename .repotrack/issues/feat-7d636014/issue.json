@@ -1,0 +1,35 @@
+{
+  "id": "FEAT-0004",
+  "uuid": "7d636014",
+  "title": "Ability to Archive an Issue",
+  "description": "Different from delete. We should have this.",
+  "type": "feature",
+  "priority": "medium",
+  "status": "open",
+  "tags": [],
+  "created_at": "2026-03-01T21:34:41.827144Z",
+  "updated_at": "2026-03-01T21:34:41.827144Z",
+  "votes": 0,
+  "roadmap_quarter": "Backlog",
+  "comments": [],
+  "attachments": [],
+  "linked_files": [],
+  "created_by": {
+    "display_name": "Nick",
+    "username": "NRohner",
+    "provider": "github",
+    "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+  },
+  "history": [
+    {
+      "action": "created",
+      "user": {
+        "display_name": "Nick",
+        "username": "NRohner",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+      },
+      "timestamp": "2026-03-01T21:34:41.827144Z"
+    }
+  ]
+}

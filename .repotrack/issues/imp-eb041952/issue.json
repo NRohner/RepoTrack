@@ -1,0 +1,46 @@
+{
+  "id": "IMP-0003",
+  "uuid": "eb041952",
+  "title": "Add animation when viewing an issue",
+  "description": "Match the animation that happens when creating a new issue.",
+  "type": "improvement",
+  "severity": "medium",
+  "status": "completed",
+  "tags": [],
+  "created_at": "2026-02-28T21:52:15.166335Z",
+  "updated_at": "2026-02-28T22:20:05.439475Z",
+  "resolved_at": "2026-02-28T22:20:05.439475Z",
+  "comments": [],
+  "attachments": [],
+  "linked_files": [],
+  "created_by": {
+    "display_name": "Nick",
+    "username": "NRohner",
+    "provider": "github",
+    "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+  },
+  "history": [
+    {
+      "action": "created",
+      "user": {
+        "display_name": "Nick",
+        "username": "NRohner",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+      },
+      "timestamp": "2026-02-28T21:52:15.166335Z"
+    },
+    {
+      "action": "status_changed",
+      "from": "open",
+      "to": "completed",
+      "user": {
+        "display_name": "Nick",
+        "username": "NRohner",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+      },
+      "timestamp": "2026-02-28T22:20:05.439475Z"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "id": "BUG-0002",
+  "uuid": "40ccfce4",
+  "title": "“Not Provided” Text Is different Formats",
+  "description": "When a bug is created but no fields are filled out, the “Not Provided” message shows up differently for each section. Instead, it should have one standard format/apperance.",
+  "type": "bug",
+  "severity": "medium",
+  "status": "open",
+  "tags": [],
+  "created_at": "2026-03-01T21:37:07.914369Z",
+  "updated_at": "2026-03-01T21:37:07.914369Z",
+  "comments": [],
+  "attachments": [],
+  "linked_files": [],
+  "created_by": {
+    "display_name": "Nick",
+    "username": "NRohner",
+    "provider": "github",
+    "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+  },
+  "history": [
+    {
+      "action": "created",
+      "user": {
+        "display_name": "Nick",
+        "username": "NRohner",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+      },
+      "timestamp": "2026-03-01T21:37:07.914369Z"
+    }
+  ]
+}

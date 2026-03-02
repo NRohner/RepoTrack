@@ -1,0 +1,30 @@
+{
+  "id": "IMP-0002",
+  "uuid": "e80810f8",
+  "title": "Completed should be hidden by default",
+  "description": "There should be a toggle check button to show completed",
+  "type": "improvement",
+  "severity": "medium",
+  "status": "completed",
+  "tags": [],
+  "created_at": "2026-02-28T20:56:50.915313Z",
+  "updated_at": "2026-02-28T22:20:01.540289Z",
+  "resolved_at": "2026-02-28T22:20:01.540289Z",
+  "comments": [],
+  "attachments": [],
+  "linked_files": [],
+  "history": [
+    {
+      "action": "status_changed",
+      "from": "open",
+      "to": "completed",
+      "user": {
+        "display_name": "Nick",
+        "username": "NRohner",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+      },
+      "timestamp": "2026-02-28T22:20:01.540289Z"
+    }
+  ]
+}

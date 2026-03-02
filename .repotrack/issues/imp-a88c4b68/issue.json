@@ -1,0 +1,33 @@
+{
+  "id": "IMP-0004",
+  "uuid": "a88c4b68",
+  "title": "Change “Create Issue” button to just “Create\"",
+  "description": "A feature isn’t an issue so why does the button say issue?",
+  "type": "improvement",
+  "severity": "medium",
+  "status": "open",
+  "tags": [],
+  "created_at": "2026-03-01T21:35:15.588344Z",
+  "updated_at": "2026-03-01T21:35:15.588344Z",
+  "comments": [],
+  "attachments": [],
+  "linked_files": [],
+  "created_by": {
+    "display_name": "Nick",
+    "username": "NRohner",
+    "provider": "github",
+    "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+  },
+  "history": [
+    {
+      "action": "created",
+      "user": {
+        "display_name": "Nick",
+        "username": "NRohner",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+      },
+      "timestamp": "2026-03-01T21:35:15.588344Z"
+    }
+  ]
+}
