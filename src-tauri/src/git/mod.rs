@@ -10,6 +10,69 @@ fn map_err<E: std::fmt::Display>(e: E) -> String {
     e.to_string()
 }
 
+/// Walk from HEAD back and collect commit hashes that are ahead of the
+/// remote tracking branch for the current branch. Returns an empty vec
+/// if there is no remote tracking branch or on any error.
+fn compute_unpushed_hashes(repo: &Repository) -> Vec<String> {
+    let head = match repo.head() {
+        Ok(h) => h,
+        Err(_) => return Vec::new(),
+    };
+
+    let branch_name = match head.shorthand() {
+        Some(n) => n.to_string(),
+        None => return Vec::new(),
+    };
+
+    let local_oid = match head.target() {
+        Some(oid) => oid,
+        None => return Vec::new(),
+    };
+
+    // Find the remote tracking branch (e.g. origin/<branch>)
+    let local_branch = match repo.find_branch(&branch_name, BranchType::Local) {
+        Ok(b) => b,
+        Err(_) => return Vec::new(),
+    };
+
+    let upstream = match local_branch.upstream() {
+        Ok(u) => u,
+        Err(_) => return Vec::new(), // no remote tracking branch
+    };
+
+    let remote_oid = match upstream.get().target() {
+        Some(oid) => oid,
+        None => return Vec::new(),
+    };
+
+    if local_oid == remote_oid {
+        return Vec::new(); // up to date
+    }
+
+    // Walk from HEAD, collecting commits until we reach the remote tip
+    let mut revwalk = match repo.revwalk() {
+        Ok(rw) => rw,
+        Err(_) => return Vec::new(),
+    };
+
+    if revwalk.push(local_oid).is_err() {
+        return Vec::new();
+    }
+    if revwalk.hide(remote_oid).is_err() {
+        return Vec::new();
+    }
+
+    let mut hashes = Vec::new();
+    for oid_result in revwalk {
+        match oid_result {
+            Ok(oid) => hashes.push(oid.to_string()),
+            Err(_) => break,
+        }
+    }
+
+    hashes
+}
+
 fn get_project_path(state: &AppState) -> CmdResult<String> {
     let guard = state.active_project.lock().map_err(map_err)?;
     guard
@@ -24,6 +87,7 @@ pub struct GitStatus {
     pub current_branch: String,
     pub repotrack_has_changes: bool,
     pub changed_files: Vec<String>,
+    pub unpushed_hashes: Vec<String>,
 }
 
 #[derive(Serialize, Clone)]
@@ -57,6 +121,7 @@ pub fn git_get_status(state: State<'_, AppState>) -> CmdResult<GitStatus> {
                 current_branch: String::new(),
                 repotrack_has_changes: false,
                 changed_files: Vec::new(),
+                unpushed_hashes: Vec::new(),
             });
         }
     };
@@ -81,11 +146,15 @@ pub fn git_get_status(state: State<'_, AppState>) -> CmdResult<GitStatus> {
         }
     }
 
+    // Find commits that are ahead of the remote tracking branch (unpushed)
+    let unpushed_hashes = compute_unpushed_hashes(&repo);
+
     Ok(GitStatus {
         is_git_repo: true,
         current_branch,
         repotrack_has_changes: !changed_files.is_empty(),
         changed_files,
+        unpushed_hashes,
     })
 }
 
@@ -331,37 +400,23 @@ pub fn git_commit_repotrack(
 pub fn git_push(state: State<'_, AppState>) -> CmdResult<()> {
     let path = get_project_path(&state)?;
     let repo = Repository::discover(&path).map_err(map_err)?;
+    let workdir = repo
+        .workdir()
+        .ok_or("Cannot determine repository working directory")?;
 
-    let head = repo.head().map_err(map_err)?;
-    let branch_name = head
-        .shorthand()
-        .ok_or("Cannot determine current branch")?
-        .to_string();
+    // Shell out to system git for push — it handles credential helpers
+    // (macOS Keychain, GitHub CLI, git-credential-manager, etc.) automatically,
+    // whereas git2's credential callback struggles with HTTPS auth.
+    let output = std::process::Command::new("git")
+        .args(["push"])
+        .current_dir(workdir)
+        .output()
+        .map_err(|e| format!("Failed to run git push: {}", e))?;
 
-    let mut remote = repo.find_remote("origin").map_err(map_err)?;
-
-    let refspec = format!("refs/heads/{}:refs/heads/{}", branch_name, branch_name);
-
-    // Set up callbacks for authentication
-    let mut callbacks = git2::RemoteCallbacks::new();
-    callbacks.credentials(|_url, username_from_url, allowed_types| {
-        if allowed_types.contains(git2::CredentialType::SSH_KEY) {
-            let user = username_from_url.unwrap_or("git");
-            git2::Cred::ssh_key_from_agent(user)
-        } else if allowed_types.contains(git2::CredentialType::USER_PASS_PLAINTEXT) {
-            // Try git credential helper via default credentials
-            git2::Cred::default()
-        } else {
-            Err(git2::Error::from_str("no suitable authentication method"))
-        }
-    });
-
-    let mut push_opts = git2::PushOptions::new();
-    push_opts.remote_callbacks(callbacks);
-
-    remote
-        .push(&[&refspec], Some(&mut push_opts))
-        .map_err(map_err)?;
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        return Err(format!("git push failed: {}", stderr.trim()));
+    }
 
     Ok(())
 }

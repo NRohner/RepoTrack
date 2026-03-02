@@ -286,6 +286,7 @@ export interface GitStatus {
   current_branch: string;
   repotrack_has_changes: boolean;
   changed_files: string[];
+  unpushed_hashes: string[];
 }
 
 export interface GitBranch {

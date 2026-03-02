@@ -112,6 +112,7 @@ export function GitTab() {
     try {
       await api.gitPush();
       addToast({ type: "success", message: "Pushed to remote" });
+      await loadData();
     } catch (e: any) {
       addToast({ type: "error", message: e.toString() });
     } finally {
@@ -251,6 +252,7 @@ export function GitTab() {
                 commits={commits}
                 selectedHash={selectedCommit?.hash ?? null}
                 onSelectCommit={setSelectedCommit}
+                unpushedHashes={new Set(status.unpushed_hashes)}
               />
             ) : (
               <div className="flex items-center justify-center h-full text-surface-400 text-sm">
