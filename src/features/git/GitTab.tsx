@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import * as api from "@/lib/api";
 import { useAppStore } from "@/lib/store";
 import type { GitStatus, GitBranch, GitCommitInfo } from "@/lib/types";
@@ -15,6 +15,8 @@ export function GitTab() {
   const [committing, setCommitting] = useState(false);
   const [pushing, setPushing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [spinKey, setSpinKey] = useState(0);
+  const refreshRef = useRef<SVGSVGElement>(null);
   const [showBranchDropdown, setShowBranchDropdown] = useState(false);
 
   const refresh = useCallback(async () => {
@@ -222,11 +224,21 @@ export function GitTab() {
 
           {/* Refresh button */}
           <button
-            onClick={loadData}
+            onClick={() => {
+              setSpinKey((k) => k + 1);
+              loadData();
+            }}
             className="p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-surface-400 transition-colors"
             title="Refresh"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              key={spinKey}
+              ref={refreshRef}
+              className={`w-4 h-4 ${spinKey > 0 ? "animate-spin-ccw" : ""}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
           </button>

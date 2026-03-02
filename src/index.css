@@ -182,3 +182,13 @@ body.dark {
   opacity: 0.15;
 }
 
+/* Counter-clockwise spin for refresh button */
+@keyframes spin-ccw {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+.animate-spin-ccw {
+  animation: spin-ccw 0.7s ease-in-out;
+}
+
