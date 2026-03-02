@@ -345,10 +345,12 @@ export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailP
                 rows={8}
                 className="w-full px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
               />
-            ) : (
+            ) : issue.description ? (
               <div className="prose prose-sm dark:prose-invert max-w-none">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>{issue.description || "*No description*"}</ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{issue.description}</ReactMarkdown>
               </div>
+            ) : (
+              <p className="text-sm italic text-surface-400">No description</p>
             )}
           </div>
 
@@ -358,31 +360,39 @@ export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailP
               <Section title="Steps to Reproduce" editing={editing}>
                 {editing ? (
                   <textarea value={editSteps} onChange={(e) => setEditSteps(e.target.value)} rows={4} className="w-full px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
-                ) : (
+                ) : issue.steps_to_reproduce ? (
                   <div className="prose prose-sm dark:prose-invert max-w-none">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{issue.steps_to_reproduce || "*Not provided*"}</ReactMarkdown>
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{issue.steps_to_reproduce}</ReactMarkdown>
                   </div>
+                ) : (
+                  <p className="text-sm italic text-surface-400">Not provided</p>
                 )}
               </Section>
               <Section title="Expected Behavior" editing={editing}>
                 {editing ? (
                   <textarea value={editExpected} onChange={(e) => setEditExpected(e.target.value)} rows={2} className="w-full px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
+                ) : issue.expected_behavior ? (
+                  <p className="text-sm dark:text-surface-300">{issue.expected_behavior}</p>
                 ) : (
-                  <p className="text-sm dark:text-surface-300">{issue.expected_behavior || "*Not provided*"}</p>
+                  <p className="text-sm italic text-surface-400">Not provided</p>
                 )}
               </Section>
               <Section title="Actual Behavior" editing={editing}>
                 {editing ? (
                   <textarea value={editActual} onChange={(e) => setEditActual(e.target.value)} rows={2} className="w-full px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
+                ) : issue.actual_behavior ? (
+                  <p className="text-sm dark:text-surface-300">{issue.actual_behavior}</p>
                 ) : (
-                  <p className="text-sm dark:text-surface-300">{issue.actual_behavior || "*Not provided*"}</p>
+                  <p className="text-sm italic text-surface-400">Not provided</p>
                 )}
               </Section>
               <Section title="Environment" editing={editing}>
                 {editing ? (
                   <input type="text" value={editEnvironment} onChange={(e) => setEditEnvironment(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
+                ) : issue.environment ? (
+                  <p className="text-sm dark:text-surface-300 font-mono">{issue.environment}</p>
                 ) : (
-                  <p className="text-sm dark:text-surface-300 font-mono">{issue.environment || "*Not provided*"}</p>
+                  <p className="text-sm italic text-surface-400">Not provided</p>
                 )}
               </Section>
             </>
@@ -394,19 +404,23 @@ export function IssueDetail({ issue, onClose, onUpdate, onDelete }: IssueDetailP
               <Section title="Use Case" editing={editing}>
                 {editing ? (
                   <textarea value={editUseCase} onChange={(e) => setEditUseCase(e.target.value)} rows={3} className="w-full px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
-                ) : (
+                ) : issue.use_case ? (
                   <div className="prose prose-sm dark:prose-invert max-w-none">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{issue.use_case || "*Not provided*"}</ReactMarkdown>
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{issue.use_case}</ReactMarkdown>
                   </div>
+                ) : (
+                  <p className="text-sm italic text-surface-400">Not provided</p>
                 )}
               </Section>
               <Section title="Acceptance Criteria" editing={editing}>
                 {editing ? (
                   <textarea value={editAcceptance} onChange={(e) => setEditAcceptance(e.target.value)} rows={4} className="w-full px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
-                ) : (
+                ) : issue.acceptance_criteria ? (
                   <div className="prose prose-sm dark:prose-invert max-w-none">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{issue.acceptance_criteria || "*Not provided*"}</ReactMarkdown>
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{issue.acceptance_criteria}</ReactMarkdown>
                   </div>
+                ) : (
+                  <p className="text-sm italic text-surface-400">Not provided</p>
                 )}
               </Section>
               <Section title="Roadmap Quarter" editing={editing}>
