@@ -397,6 +397,37 @@ pub fn git_commit_repotrack(
 }
 
 #[tauri::command]
+pub fn git_undo_commit(state: State<'_, AppState>) -> CmdResult<()> {
+    let path = get_project_path(&state)?;
+    let repo = Repository::discover(&path).map_err(map_err)?;
+
+    let head = repo.head().map_err(map_err)?;
+    let head_commit = head.peel_to_commit().map_err(map_err)?;
+
+    // Don't undo merge commits
+    if head_commit.parent_count() > 1 {
+        return Err("Cannot undo a merge commit".to_string());
+    }
+
+    // Must have a parent (not the initial commit)
+    if head_commit.parent_count() == 0 {
+        return Err("Cannot undo the initial commit".to_string());
+    }
+
+    // HEAD must be unpushed
+    let unpushed = compute_unpushed_hashes(&repo);
+    if !unpushed.contains(&head_commit.id().to_string()) {
+        return Err("Cannot undo a commit that has already been pushed".to_string());
+    }
+
+    let parent = head_commit.parent(0).map_err(map_err)?;
+    repo.reset(parent.as_object(), git2::ResetType::Soft, None)
+        .map_err(map_err)?;
+
+    Ok(())
+}
+
+#[tauri::command]
 pub fn git_push(state: State<'_, AppState>) -> CmdResult<()> {
     let path = get_project_path(&state)?;
     let repo = Repository::discover(&path).map_err(map_err)?;

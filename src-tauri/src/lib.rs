@@ -249,6 +249,7 @@ pub fn run() {
             git::git_get_log,
             git::git_checkout_branch,
             git::git_commit_repotrack,
+            git::git_undo_commit,
             git::git_push,
         ])
         .run(tauri::generate_context!())

@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(export:*)"
+      "Bash(export:*)",
+      "Bash(find /Users/nickrohner/Documents/Code/RepoTrack/.repotrack/issues -type f -name \"issue.json\" -exec grep -l '\"type\": \"feature\"' {} \\\\;)",
+      "Bash(cd /Users/nickrohner/Documents/Code/RepoTrack/src-tauri && cargo check 2>&1)",
+      "Bash(cd /Users/nickrohner/Documents/Code/RepoTrack && npx tsc --noEmit 2>&1)",
+      "Bash(npx tsc --noEmit 2>&1)"
     ]
   }
 }
