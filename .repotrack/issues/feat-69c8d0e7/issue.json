@@ -1,0 +1,37 @@
+{
+  "id": "FEAT-0009",
+  "uuid": "69c8d0e7",
+  "title": "Method for storing Claude Code resume codes in an issue",
+  "description": "Keep Claude Code resume codes in the issue json somewhere. If you can’t finish an issue in a single session, Claude can provide you a resume code so you can pick up where you left off. Would be very convenient to be able to store these codes in the issue JSON so you can find them when returning to a project.",
+  "type": "feature",
+  "priority": "medium",
+  "status": "open",
+  "tags": [
+    "claude"
+  ],
+  "created_at": "2026-03-05T18:59:23.117993Z",
+  "updated_at": "2026-03-05T18:59:23.117993Z",
+  "votes": 0,
+  "roadmap_quarter": "Backlog",
+  "comments": [],
+  "attachments": [],
+  "linked_files": [],
+  "created_by": {
+    "display_name": "Nick Rohner",
+    "username": "NrohnerJLS",
+    "provider": "github",
+    "avatar_url": "https://avatars.githubusercontent.com/u/227610322?v=4"
+  },
+  "history": [
+    {
+      "action": "created",
+      "user": {
+        "display_name": "Nick Rohner",
+        "username": "NrohnerJLS",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/227610322?v=4"
+      },
+      "timestamp": "2026-03-05T18:59:23.117993Z"
+    }
+  ]
+}
