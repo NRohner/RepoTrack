@@ -214,6 +214,15 @@ export async function gitPush(): Promise<void> {
   return invoke("git_push");
 }
 
+// Open in editor / terminal
+export async function openInEditor(editor: string): Promise<void> {
+  return invoke("open_in_editor", { editor });
+}
+
+export async function openInTerminal(): Promise<void> {
+  return invoke("open_in_terminal");
+}
+
 // Auth
 export async function signIn(provider: string): Promise<UserInfo> {
   return invoke("sign_in", { provider });

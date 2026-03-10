@@ -261,6 +261,7 @@ export interface UserPreferences {
   default_severity_filter?: string;
   selected_color_theme?: string;
   show_resolved_issues?: string;
+  default_editor?: string;
 }
 
 export type ColorPalette = Record<string, string>;

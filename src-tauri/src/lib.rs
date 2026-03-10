@@ -251,6 +251,8 @@ pub fn run() {
             git::git_commit_repotrack,
             git::git_undo_commit,
             git::git_push,
+            commands::open_in_editor,
+            commands::open_in_terminal,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
