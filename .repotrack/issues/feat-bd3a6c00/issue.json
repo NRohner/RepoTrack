@@ -5,10 +5,11 @@
   "description": "There should be a way to undo a commit from the git tab if it hasn’t been pushed yet.",
   "type": "feature",
   "priority": "medium",
-  "status": "open",
+  "status": "completed",
   "tags": [],
   "created_at": "2026-03-02T20:02:27.556323Z",
-  "updated_at": "2026-03-02T20:02:27.556323Z",
+  "updated_at": "2026-03-10T13:35:43.846906Z",
+  "resolved_at": "2026-03-10T13:35:43.846906Z",
   "votes": 0,
   "roadmap_quarter": "Backlog",
   "comments": [],
@@ -30,6 +31,18 @@
         "avatar_url": "https://avatars.githubusercontent.com/u/227610322?v=4"
       },
       "timestamp": "2026-03-02T20:02:27.556323Z"
+    },
+    {
+      "action": "status_changed",
+      "from": "open",
+      "to": "completed",
+      "user": {
+        "display_name": "Nick Rohner",
+        "username": "NrohnerJLS",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/227610322?v=4"
+      },
+      "timestamp": "2026-03-10T13:35:43.846906Z"
     }
   ]
 }
