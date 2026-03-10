@@ -233,6 +233,7 @@ impl Database {
                 "default_severity_filter" => prefs.default_severity_filter = Some(value),
                 "selected_color_theme" => prefs.selected_color_theme = Some(value),
                 "show_resolved_issues" => prefs.show_resolved_issues = Some(value),
+                "default_editor" => prefs.default_editor = Some(value),
                 _ => {}
             }
         }
@@ -273,6 +274,12 @@ impl Database {
         if let Some(ref v) = prefs.show_resolved_issues {
             conn.execute(
                 "INSERT OR REPLACE INTO preferences (key, value) VALUES ('show_resolved_issues', ?1)",
+                rusqlite::params![v],
+            )?;
+        }
+        if let Some(ref v) = prefs.default_editor {
+            conn.execute(
+                "INSERT OR REPLACE INTO preferences (key, value) VALUES ('default_editor', ?1)",
                 rusqlite::params![v],
             )?;
         }
