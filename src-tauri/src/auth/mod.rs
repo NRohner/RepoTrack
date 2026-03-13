@@ -98,7 +98,7 @@ async fn exchange_github_token(code: &str, code_verifier: &str, redirect_uri: &s
         .header("Accept", "application/json")
         .form(&[
             ("client_id", config::GITHUB_CLIENT_ID),
-            ("client_secret", config::GITHUB_CLIENT_SECRET),
+            ("client_secret", &*config::GITHUB_CLIENT_SECRET),
             ("code", code),
             ("redirect_uri", redirect_uri),
             ("code_verifier", code_verifier),
@@ -125,7 +125,7 @@ async fn exchange_google_token(code: &str, code_verifier: &str, redirect_uri: &s
         .post(config::GOOGLE_TOKEN_URL)
         .form(&[
             ("client_id", config::GOOGLE_CLIENT_ID),
-            ("client_secret", config::GOOGLE_CLIENT_SECRET),
+            ("client_secret", &*config::GOOGLE_CLIENT_SECRET),
             ("code", code),
             ("redirect_uri", redirect_uri),
             ("code_verifier", code_verifier),

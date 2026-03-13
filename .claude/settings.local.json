@@ -8,7 +8,8 @@
       "Bash(npx tsc --noEmit 2>&1)",
       "Bash(cargo check:*)",
       "Bash(npm install:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(cd /Users/nickrohner/Documents/Code/RepoTrack/src-tauri && cargo add dotenvy)"
     ]
   }
 }

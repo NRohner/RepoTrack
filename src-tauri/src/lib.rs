@@ -125,6 +125,14 @@ pub fn build_app_menu(
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    // Load .env file from project root (works for both dev and built app)
+    let _ = dotenvy::from_path(
+        std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .unwrap()
+            .join(".env"),
+    );
+
     // Enable continuous spell-check underlines in macOS WKWebView.
     // By default, WebContinuousSpellCheckingEnabled is false, so the spell
     // checker detects errors (right-click suggestions work) but red underlines
