@@ -448,6 +448,7 @@ pub struct UserPreferences {
     pub default_severity_filter: Option<String>,
     pub selected_color_theme: Option<String>,
     pub show_resolved_issues: Option<String>,
+    pub default_editor: Option<String>,
 }
 
 impl Default for UserPreferences {
@@ -460,6 +461,7 @@ impl Default for UserPreferences {
             default_severity_filter: None,
             selected_color_theme: None,
             show_resolved_issues: None,
+            default_editor: None,
         }
     }
 }

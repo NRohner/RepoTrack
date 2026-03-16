@@ -1,15 +1,17 @@
 {
-  "id": "FEAT-0008",
-  "uuid": "bd3a6c00",
-  "title": "Undo Commit Option",
-  "description": "There should be a way to undo a commit from the git tab if it hasn’t been pushed yet.",
+  "id": "FEAT-0009",
+  "uuid": "69c8d0e7",
+  "title": "Open Project in Buttons",
+  "description": "## Overview\nAdd a button that opens the project in your code editor of choice. There should be a selection in settings to set your default code editor. There should also be a button to open the project in terminal.",
   "type": "feature",
   "priority": "medium",
   "status": "completed",
   "tags": [],
-  "created_at": "2026-03-02T20:02:27.556323Z",
-  "updated_at": "2026-03-10T13:35:43.846906Z",
-  "resolved_at": "2026-03-10T13:35:43.846906Z",
+  "created_at": "2026-03-05T18:59:23.117993Z",
+  "updated_at": "2026-03-10T13:33:21.707203Z",
+  "resolved_at": "2026-03-10T13:33:21.707203Z",
+  "use_case": "",
+  "acceptance_criteria": "",
   "votes": 0,
   "roadmap_quarter": "Backlog",
   "comments": [],
@@ -30,7 +32,7 @@
         "provider": "github",
         "avatar_url": "https://avatars.githubusercontent.com/u/227610322?v=4"
       },
-      "timestamp": "2026-03-02T20:02:27.556323Z"
+      "timestamp": "2026-03-05T18:59:23.117993Z"
     },
     {
       "action": "status_changed",
@@ -42,7 +44,7 @@
         "provider": "github",
         "avatar_url": "https://avatars.githubusercontent.com/u/227610322?v=4"
       },
-      "timestamp": "2026-03-10T13:35:43.846906Z"
+      "timestamp": "2026-03-10T13:33:21.707203Z"
     }
   ]
 }

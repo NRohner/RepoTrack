@@ -1367,3 +1367,93 @@ pub fn update_recent_menu(
 
     Ok(())
 }
+
+#[tauri::command]
+pub fn open_in_editor(editor: String, state: State<AppState>) -> CmdResult<()> {
+    let active = state.active_project.lock().map_err(map_err)?;
+    let project = active.as_ref().ok_or("No project is open")?;
+    let path = &project.path;
+
+    let cmd = match editor.as_str() {
+        "vscode" => "code",
+        "cursor" => "cursor",
+        "zed" => "zed",
+        "sublime" => "subl",
+        "webstorm" => "webstorm",
+        "idea" => "idea",
+        "atom" => "atom",
+        "vim" | "neovim" => "nvim",
+        other => other,
+    };
+
+    // On macOS, GUI apps don't inherit the user's shell PATH, so CLI tools
+    // like `code` won't be found. Spawn via the user's login shell to get
+    // the full PATH. We cd into the project dir and run `<editor> .` which
+    // is the standard way to open a folder in most editors.
+    #[cfg(target_os = "macos")]
+    {
+        let shell = std::env::var("SHELL").unwrap_or_else(|_| "/bin/zsh".to_string());
+        std::process::Command::new(&shell)
+            .args(["-li", "-c", &format!("cd '{}' && {} .", path, cmd)])
+            .spawn()
+            .map_err(|e| format!("Failed to open editor '{}': {}. Make sure it's installed and available in your PATH.", cmd, e))?;
+    }
+
+    #[cfg(not(target_os = "macos"))]
+    {
+        std::process::Command::new(cmd)
+            .arg(path)
+            .spawn()
+            .map_err(|e| format!("Failed to open editor '{}': {}. Make sure it's installed and available in your PATH.", cmd, e))?;
+    }
+
+    Ok(())
+}
+
+#[tauri::command]
+pub fn open_in_terminal(state: State<AppState>) -> CmdResult<()> {
+    let active = state.active_project.lock().map_err(map_err)?;
+    let project = active.as_ref().ok_or("No project is open")?;
+    let path = &project.path;
+
+    #[cfg(target_os = "macos")]
+    {
+        std::process::Command::new("open")
+            .arg("-a")
+            .arg("Terminal")
+            .arg(path)
+            .spawn()
+            .map_err(|e| format!("Failed to open Terminal: {}", e))?;
+    }
+
+    #[cfg(target_os = "windows")]
+    {
+        std::process::Command::new("cmd")
+            .args(["/c", "start", "cmd", "/k", &format!("cd /d {}", path)])
+            .spawn()
+            .map_err(|e| format!("Failed to open terminal: {}", e))?;
+    }
+
+    #[cfg(target_os = "linux")]
+    {
+        // Try common terminal emulators in order
+        let terminals = ["x-terminal-emulator", "gnome-terminal", "konsole", "xterm"];
+        let mut opened = false;
+        for term in &terminals {
+            if std::process::Command::new(term)
+                .arg("--working-directory")
+                .arg(path)
+                .spawn()
+                .is_ok()
+            {
+                opened = true;
+                break;
+            }
+        }
+        if !opened {
+            return Err("Could not find a terminal emulator".to_string());
+        }
+    }
+
+    Ok(())
+}

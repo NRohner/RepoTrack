@@ -1,6 +1,7 @@
 import { useRef, useLayoutEffect, useState, useCallback } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAppStore } from "@/lib/store";
+import * as api from "@/lib/api";
 
 const navItems = [
   {
@@ -56,6 +57,7 @@ const navItems = [
 export function Sidebar() {
   const activeProject = useAppStore((s) => s.activeProject);
   const setActiveProject = useAppStore((s) => s.setActiveProject);
+  const addToast = useAppStore((s) => s.addToast);
   const currentUser = useAppStore((s) => s.currentUser);
   const location = useLocation();
   const navigate = useNavigate();
@@ -64,8 +66,26 @@ export function Sidebar() {
   const linkRefs = useRef<Map<string, HTMLAnchorElement>>(new Map());
   const [pillStyle, setPillStyle] = useState<{ top: number; height: number }>({ top: 0, height: 0 });
   const [ready, setReady] = useState(false);
-
   const gitHasChanges = useAppStore((s) => s.gitHasChanges);
+
+  const handleOpenInEditor = async () => {
+    try {
+      // Fetch fresh preferences each time so changes in Settings take effect immediately
+      const prefs = await api.getPreferences();
+      const editor = prefs?.default_editor || "vscode";
+      await api.openInEditor(editor);
+    } catch (e: any) {
+      addToast({ type: "error", message: e.toString() });
+    }
+  };
+
+  const handleOpenInTerminal = async () => {
+    try {
+      await api.openInTerminal();
+    } catch (e: any) {
+      addToast({ type: "error", message: e.toString() });
+    }
+  };
   const activePath = navItems.find((item) => location.pathname.startsWith(item.path))?.path;
 
   useLayoutEffect(() => {
@@ -107,12 +127,32 @@ export function Sidebar() {
           <p className="text-sm font-semibold dark:text-white truncate mt-0.5">
             {activeProject.project_name}
           </p>
-          <button
-            onClick={() => setActiveProject(null, null)}
-            className="text-xs text-accent-500 hover:text-accent-400 mt-1 transition-colors"
-          >
-            Switch Project
-          </button>
+          <div className="flex items-center gap-1 mt-1.5">
+            <button
+              onClick={handleOpenInEditor}
+              title="Open in Editor"
+              className="p-1 rounded hover:bg-surface-100 dark:hover:bg-surface-800 text-surface-400 hover:text-accent-500 transition-colors"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+              </svg>
+            </button>
+            <button
+              onClick={handleOpenInTerminal}
+              title="Open in Terminal"
+              className="p-1 rounded hover:bg-surface-100 dark:hover:bg-surface-800 text-surface-400 hover:text-accent-500 transition-colors"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </button>
+            <button
+              onClick={() => setActiveProject(null, null)}
+              className="text-xs text-accent-500 hover:text-accent-400 transition-colors ml-auto"
+            >
+              Switch
+            </button>
+          </div>
         </div>
       )}
 

@@ -273,6 +273,24 @@ export function Settings() {
           </button>
         </SettingsSection>
 
+        {/* Code Editor */}
+        <SettingsSection title="Code Editor" description="Choose your default code editor for the 'Open in Editor' action">
+          <select
+            value={prefs?.default_editor || "vscode"}
+            onChange={(e) => handlePrefsChange("default_editor", e.target.value)}
+            className="w-full px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white text-sm"
+          >
+            <option value="vscode">Visual Studio Code</option>
+            <option value="cursor">Cursor</option>
+            <option value="zed">Zed</option>
+            <option value="sublime">Sublime Text</option>
+            <option value="webstorm">WebStorm</option>
+            <option value="idea">IntelliJ IDEA</option>
+            <option value="atom">Atom</option>
+            <option value="neovim">Neovim</option>
+          </select>
+        </SettingsSection>
+
         {/* Default View */}
         <SettingsSection title="Default View" description="Set the default tab and layout when opening a project">
           <div className="grid grid-cols-2 gap-4">
