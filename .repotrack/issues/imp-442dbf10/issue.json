@@ -5,10 +5,11 @@
   "description": "## Overview\nThe comment entry box can not be resized like other text entry boxes (ie description). I’d like to be able to resize this box to make it easier to enter and read longer comments.",
   "type": "improvement",
   "severity": "medium",
-  "status": "open",
+  "status": "completed",
   "tags": [],
   "created_at": "2026-03-25T22:43:23.531879Z",
-  "updated_at": "2026-03-25T22:43:23.531879Z",
+  "updated_at": "2026-03-25T23:20:03.327207Z",
+  "resolved_at": "2026-03-25T23:20:03.327207Z",
   "comments": [],
   "attachments": [],
   "linked_files": [],
@@ -28,6 +29,18 @@
         "avatar_url": "https://avatars.githubusercontent.com/u/227610322?v=4"
       },
       "timestamp": "2026-03-25T22:43:23.531879Z"
+    },
+    {
+      "action": "status_changed",
+      "from": "open",
+      "to": "completed",
+      "user": {
+        "display_name": "Nick Rohner",
+        "username": "NrohnerJLS",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/227610322?v=4"
+      },
+      "timestamp": "2026-03-25T23:20:03.327207Z"
     }
   ]
 }
