@@ -5,12 +5,14 @@ pub mod git;
 pub mod models;
 pub mod stats;
 pub mod storage;
+pub mod watcher;
 
 use commands::{AppState, RecentProjectPaths};
 use db::Database;
 use std::sync::Mutex;
 use tauri::menu::{Menu, MenuItem, PredefinedMenuItem, Submenu};
 use tauri::{Emitter, Manager};
+use watcher::FileWatcher;
 
 pub fn build_app_menu(
     handle: &tauri::AppHandle,
@@ -180,6 +182,7 @@ pub fn run() {
                 current_user: Mutex::new(restored_user),
             });
             app.manage(RecentProjectPaths(Mutex::new(recent.clone())));
+            app.manage(FileWatcher(Mutex::new(None)));
 
             // Build and set menu
             let handle = app.handle();
