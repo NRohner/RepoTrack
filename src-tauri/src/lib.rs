@@ -5,12 +5,14 @@ pub mod git;
 pub mod models;
 pub mod stats;
 pub mod storage;
+pub mod watcher;
 
 use commands::{AppState, RecentProjectPaths};
 use db::Database;
 use std::sync::Mutex;
 use tauri::menu::{Menu, MenuItem, PredefinedMenuItem, Submenu};
 use tauri::{Emitter, Manager};
+use watcher::FileWatcher;
 
 pub fn build_app_menu(
     handle: &tauri::AppHandle,
@@ -144,11 +146,9 @@ pub fn run() {
     {
         use objc2_foundation::{NSString, NSUserDefaults};
 
-        unsafe {
-            let defaults = NSUserDefaults::standardUserDefaults();
-            let key = NSString::from_str("WebContinuousSpellCheckingEnabled");
-            defaults.setBool_forKey(true, &key);
-        }
+        let defaults = NSUserDefaults::standardUserDefaults();
+        let key = NSString::from_str("WebContinuousSpellCheckingEnabled");
+        defaults.setBool_forKey(true, &key);
     }
 
     tauri::Builder::default()
@@ -180,6 +180,7 @@ pub fn run() {
                 current_user: Mutex::new(restored_user),
             });
             app.manage(RecentProjectPaths(Mutex::new(recent.clone())));
+            app.manage(FileWatcher(Mutex::new(None)));
 
             // Build and set menu
             let handle = app.handle();
@@ -257,6 +258,7 @@ pub fn run() {
             git::git_get_log,
             git::git_checkout_branch,
             git::git_commit_repotrack,
+            git::git_commit_all,
             git::git_undo_commit,
             git::git_push,
             commands::open_in_editor,

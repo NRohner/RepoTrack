@@ -76,6 +76,24 @@ export default function App() {
     );
   }, [resolvedTheme]);
 
+  // Listen for file watcher events — reload issues without navigating
+  useEffect(() => {
+    const unlistenPromise = listen("repotrack-files-changed", async () => {
+      const { activeProjectPath, setIssues, activeProject } =
+        useAppStore.getState();
+      if (!activeProject || !activeProjectPath) return;
+      try {
+        const data = await api.reloadProject();
+        setIssues(data.issues);
+      } catch {
+        // Silently ignore — the file may have been mid-write
+      }
+    });
+    return () => {
+      unlistenPromise.then((unlisten) => unlisten());
+    };
+  }, []);
+
   useEffect(() => {
     const unlistenPromise = listen<string>("menu-event", async (event) => {
       const payload = event.payload;

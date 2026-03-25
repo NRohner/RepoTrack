@@ -2,6 +2,7 @@ use crate::db::Database;
 use crate::models::*;
 use crate::stats::compute_stats;
 use crate::storage;
+use crate::watcher::{self, FileWatcher};
 use chrono::Utc;
 use std::collections::HashMap;
 use std::sync::Mutex;
@@ -127,23 +128,6 @@ fn save_project_after_delete(project: &ActiveProject, deleted: &Issue) -> Result
                 .map_err(map_err)?;
             let mut meta = project.to_metadata();
             meta.updated_at = project.updated_at;
-            storage::write_project_metadata(&project.path, &meta).map_err(map_err)
-        }
-    }
-}
-
-fn save_full_project(project: &ActiveProject) -> Result<(), String> {
-    match project.format {
-        StorageFormat::Legacy => {
-            let rt_path = storage::repotrack_path(&project.path);
-            let data = project.to_repotrack_file();
-            storage::write_repotrack_file(&rt_path, &data).map_err(map_err)
-        }
-        StorageFormat::Directory => {
-            for issue in &project.issues {
-                storage::write_issue(&project.path, issue).map_err(map_err)?;
-            }
-            let meta = project.to_metadata();
             storage::write_project_metadata(&project.path, &meta).map_err(map_err)
         }
     }
@@ -286,7 +270,12 @@ pub fn list_recent_projects(state: State<AppState>) -> CmdResult<Vec<ProjectInfo
 }
 
 #[tauri::command]
-pub fn open_project(path: String, state: State<AppState>) -> CmdResult<RepoTrackFile> {
+pub fn open_project(
+    path: String,
+    state: State<AppState>,
+    file_watcher: State<FileWatcher>,
+    app_handle: tauri::AppHandle,
+) -> CmdResult<RepoTrackFile> {
     let project = load_project(&path)?;
 
     // Ensure the project exists in the database (upsert), then update last_opened
@@ -298,6 +287,11 @@ pub fn open_project(path: String, state: State<AppState>) -> CmdResult<RepoTrack
     let result = project.to_repotrack_file();
     let mut active = state.active_project.lock().map_err(map_err)?;
     *active = Some(project);
+
+    // Start file watcher for the new project (stops any previous watcher)
+    let mut watcher_guard = file_watcher.0.lock().map_err(map_err)?;
+    *watcher_guard = watcher::start_watching(&path, app_handle).ok();
+
     Ok(result)
 }
 
@@ -306,6 +300,8 @@ pub fn create_project(
     path: String,
     name: String,
     state: State<AppState>,
+    file_watcher: State<FileWatcher>,
+    app_handle: tauri::AppHandle,
 ) -> CmdResult<RepoTrackFile> {
     // New projects always use directory format
     storage::create_directory_structure(&path).map_err(map_err)?;
@@ -327,6 +323,11 @@ pub fn create_project(
     let result = project.to_repotrack_file();
     let mut active = state.active_project.lock().map_err(map_err)?;
     *active = Some(project);
+
+    // Start file watcher for the new project
+    let mut watcher_guard = file_watcher.0.lock().map_err(map_err)?;
+    *watcher_guard = watcher::start_watching(&path, app_handle).ok();
+
     Ok(result)
 }
 
@@ -781,9 +782,17 @@ pub fn get_active_project(state: State<AppState>) -> CmdResult<Option<RepoTrackF
 }
 
 #[tauri::command]
-pub fn close_project(state: State<AppState>) -> CmdResult<()> {
+pub fn close_project(
+    state: State<AppState>,
+    file_watcher: State<FileWatcher>,
+) -> CmdResult<()> {
     let mut active = state.active_project.lock().map_err(map_err)?;
     *active = None;
+
+    // Stop the file watcher
+    let mut watcher_guard = file_watcher.0.lock().map_err(map_err)?;
+    *watcher_guard = None;
+
     Ok(())
 }
 

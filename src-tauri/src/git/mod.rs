@@ -87,6 +87,8 @@ pub struct GitStatus {
     pub current_branch: String,
     pub repotrack_has_changes: bool,
     pub changed_files: Vec<String>,
+    pub all_has_changes: bool,
+    pub all_changed_files: Vec<String>,
     pub unpushed_hashes: Vec<String>,
 }
 
@@ -121,6 +123,8 @@ pub fn git_get_status(state: State<'_, AppState>) -> CmdResult<GitStatus> {
                 current_branch: String::new(),
                 repotrack_has_changes: false,
                 changed_files: Vec::new(),
+                all_has_changes: false,
+                all_changed_files: Vec::new(),
                 unpushed_hashes: Vec::new(),
             });
         }
@@ -134,15 +138,28 @@ pub fn git_get_status(state: State<'_, AppState>) -> CmdResult<GitStatus> {
         Err(_) => "HEAD (detached)".to_string(),
     };
 
-    let mut opts = StatusOptions::new();
-    opts.include_untracked(true);
-    opts.pathspec(".repotrack");
+    // .repotrack changes only
+    let mut rt_opts = StatusOptions::new();
+    rt_opts.include_untracked(true);
+    rt_opts.pathspec(".repotrack");
 
-    let statuses = repo.statuses(Some(&mut opts)).map_err(map_err)?;
+    let rt_statuses = repo.statuses(Some(&mut rt_opts)).map_err(map_err)?;
     let mut changed_files = Vec::new();
-    for entry in statuses.iter() {
+    for entry in rt_statuses.iter() {
         if let Some(p) = entry.path() {
             changed_files.push(p.to_string());
+        }
+    }
+
+    // All files
+    let mut all_opts = StatusOptions::new();
+    all_opts.include_untracked(true);
+
+    let all_statuses = repo.statuses(Some(&mut all_opts)).map_err(map_err)?;
+    let mut all_changed_files = Vec::new();
+    for entry in all_statuses.iter() {
+        if let Some(p) = entry.path() {
+            all_changed_files.push(p.to_string());
         }
     }
 
@@ -154,6 +171,8 @@ pub fn git_get_status(state: State<'_, AppState>) -> CmdResult<GitStatus> {
         current_branch,
         repotrack_has_changes: !changed_files.is_empty(),
         changed_files,
+        all_has_changes: !all_changed_files.is_empty(),
+        all_changed_files,
         unpushed_hashes,
     })
 }
@@ -355,6 +374,64 @@ pub fn git_commit_repotrack(
     // Also handle deleted .repotrack files
     index
         .update_all([".repotrack"], None)
+        .map_err(map_err)?;
+    index.write().map_err(map_err)?;
+
+    let tree_id = index.write_tree().map_err(map_err)?;
+    let tree = repo.find_tree(tree_id).map_err(map_err)?;
+
+    let sig = repo
+        .signature()
+        .or_else(|_| Signature::now("RepoTrack User", "repotrack@localhost"))
+        .map_err(map_err)?;
+
+    let parent_commit = repo
+        .head()
+        .map_err(map_err)?
+        .peel_to_commit()
+        .map_err(map_err)?;
+
+    let oid = repo
+        .commit(Some("HEAD"), &sig, &sig, &message, &tree, &[&parent_commit])
+        .map_err(map_err)?;
+
+    let commit = repo.find_commit(oid).map_err(map_err)?;
+    let hash = oid.to_string();
+    let short_hash = hash[..7.min(hash.len())].to_string();
+    let msg = commit.summary().unwrap_or("").to_string();
+    let author = commit.author().name().unwrap_or("unknown").to_string();
+    let timestamp = commit.time().seconds();
+    let parent_hashes: Vec<String> = commit.parent_ids().map(|id| id.to_string()).collect();
+
+    Ok(GitCommitInfo {
+        hash,
+        short_hash,
+        message: msg,
+        author,
+        timestamp,
+        parent_hashes,
+        refs: Vec::new(),
+        is_merge: false,
+    })
+}
+
+#[tauri::command]
+pub fn git_commit_all(
+    state: State<'_, AppState>,
+    message: String,
+) -> CmdResult<GitCommitInfo> {
+    let path = get_project_path(&state)?;
+    let repo = Repository::discover(&path).map_err(map_err)?;
+
+    let mut index = repo.index().map_err(map_err)?;
+
+    // Stage all files (new + modified)
+    index
+        .add_all(["*"], git2::IndexAddOption::DEFAULT, None)
+        .map_err(map_err)?;
+    // Also handle deleted files
+    index
+        .update_all(["*"], None)
         .map_err(map_err)?;
     index.write().map_err(map_err)?;
 
