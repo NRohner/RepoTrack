@@ -133,23 +133,6 @@ fn save_project_after_delete(project: &ActiveProject, deleted: &Issue) -> Result
     }
 }
 
-fn save_full_project(project: &ActiveProject) -> Result<(), String> {
-    match project.format {
-        StorageFormat::Legacy => {
-            let rt_path = storage::repotrack_path(&project.path);
-            let data = project.to_repotrack_file();
-            storage::write_repotrack_file(&rt_path, &data).map_err(map_err)
-        }
-        StorageFormat::Directory => {
-            for issue in &project.issues {
-                storage::write_issue(&project.path, issue).map_err(map_err)?;
-            }
-            let meta = project.to_metadata();
-            storage::write_project_metadata(&project.path, &meta).map_err(map_err)
-        }
-    }
-}
-
 fn save_metadata_only(project: &ActiveProject) -> Result<(), String> {
     match project.format {
         StorageFormat::Legacy => {

@@ -146,11 +146,9 @@ pub fn run() {
     {
         use objc2_foundation::{NSString, NSUserDefaults};
 
-        unsafe {
-            let defaults = NSUserDefaults::standardUserDefaults();
-            let key = NSString::from_str("WebContinuousSpellCheckingEnabled");
-            defaults.setBool_forKey(true, &key);
-        }
+        let defaults = NSUserDefaults::standardUserDefaults();
+        let key = NSString::from_str("WebContinuousSpellCheckingEnabled");
+        defaults.setBool_forKey(true, &key);
     }
 
     tauri::Builder::default()
