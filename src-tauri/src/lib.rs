@@ -258,6 +258,7 @@ pub fn run() {
             git::git_get_log,
             git::git_checkout_branch,
             git::git_commit_repotrack,
+            git::git_commit_all,
             git::git_undo_commit,
             git::git_push,
             commands::open_in_editor,
