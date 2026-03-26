@@ -18,6 +18,9 @@ Instead of storing data in a centralized database, each project's issues and fea
 - **Export** — CSV and Markdown export with native save dialogs
 - **Legacy Migration** — One-click migration from the old single-file `repotrack.json` format to the new directory format
 - **Cross-Platform** — macOS, Windows, and Linux via Tauri
+- **Auto-Reload on External Changes** — Watches the `.repotrack/` directory for changes made by external tools (Claude Code, `git pull`, manual edits) and automatically refreshes the UI while preserving your current tab, view, and open issue panel
+- **Full Git Commit Support** — The Git tab can now commit all repository files, not just `.repotrack/` data. Toggle between `.repotrack`-only and "All Files" mode to commit code and issue changes together without leaving the app
+- **Resizable Comment Box** — The comment text area on the issue detail panel can be resized vertically by dragging its handle, making it easier to write and review longer comments
 
 ## Do You Just Want the App?
 
@@ -244,6 +247,44 @@ Older projects may use a single `repotrack.json` file at the repo root containin
 | `acceptance_criteria` | string | Markdown (supports `- [ ]` checklists) |
 | `votes` | number | Upvote count (default 0) |
 | `roadmap_quarter` | string \| null | e.g., `"Q2 2026"`, `"Backlog"` |
+
+## Claude Code Integration
+
+RepoTrack includes a Claude Code skill file for managing issues directly from the command line using [Claude Code](https://claude.ai/code). This lets Claude read, create, update, and manage RepoTrack issues without leaving your terminal.
+
+### Setting Up the Skill File
+
+The skill file is located at `skills/repotrack-issues.md` in this repository.
+
+**Local scope (single project):**
+
+Copy the file into your project's `.claude/` directory:
+
+```bash
+mkdir -p .claude
+cp skills/repotrack-issues.md .claude/repotrack-issues.md
+```
+
+**Global scope (all projects):**
+
+Copy the file into your home `.claude/` directory so it's available across all repositories:
+
+```bash
+cp skills/repotrack-issues.md ~/.claude/repotrack-issues.md
+```
+
+### Configuring CLAUDE.md
+
+Add the following lines to your `CLAUDE.md` file so Claude Code knows to use the skill for issue tracking:
+
+```markdown
+## Issue Management
+Use ~/.claude/repotrack-issues.md for all issue tracking tasks (reading, creating, updating, and managing issues).
+```
+
+**Local scope:** Add the lines to the `CLAUDE.md` file in your project root.
+
+**Global scope:** Add the lines to `~/.claude/CLAUDE.md` to apply across all projects.
 
 ## Git Workflow Tips
 
