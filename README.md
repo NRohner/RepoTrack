@@ -179,74 +179,206 @@ your-project/
         │   └── attachments/                  # File attachments
         │       ├── screenshot.png
         │       └── error-log.txt
-        └── feat-e5f6g7h8/
+        ├── feat-e5f6g7h8/
+        │   └── issue.json
+        ├── imp-c96487d9/
+        │   └── issue.json
+        └── task-1a2b3c4d/
             └── issue.json
 ```
+
+Issue directories are named `<type-prefix>-<uuid>`, where the prefix is `bug`, `feat`, `imp`, or `task`, and the UUID is the first 8 characters of a v4 UUID.
 
 ### `project.json` Fields
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `version` | string | Schema version |
+| `_repotrack` | string | Notice: `"This file is managed by RepoTrack..."` (constant) |
+| `version` | string | RepoTrack app version (e.g., `"0.5.0"`) |
 | `project_name` | string | Display name for the project |
 | `created_at` | ISO 8601 | When the project was created |
 | `updated_at` | ISO 8601 | Last modification timestamp |
-| `id_counters` | object | Counters per issue type for generating IDs (`{"bug": 3, "feature": 5}`) |
+| `id_counters` | object | Counters per issue type for generating display IDs (`{"bug": 3, "feature": 5, "improvement": 1, "task": 0}`) |
 
 ### Legacy Format
 
 Older projects may use a single `repotrack.json` file at the repo root containing all issues in one array. This format is still supported but does not support file attachments. Use the in-app migration button to upgrade to directory format.
 
+### `issue.json` Example
+
+```json
+{
+  "id": "BUG-0004",
+  "uuid": "40ccfce4",
+  "title": "Dashboard chart fails to render with no data",
+  "description": "When a project has zero resolved issues, the burndown chart throws a JS error.",
+  "type": "bug",
+  "severity": "high",
+  "status": "completed",
+  "tags": ["dashboard", "charts"],
+  "created_at": "2026-03-01T21:37:07.914369Z",
+  "updated_at": "2026-03-02T03:29:54.859392Z",
+  "resolved_at": "2026-03-02T03:29:54.859392Z",
+  "steps_to_reproduce": "1. Create a new project\n2. Open the dashboard",
+  "expected_behavior": "Chart renders an empty state",
+  "actual_behavior": "JS error in console, chart area is blank",
+  "environment": "macOS 14.3, Chrome 122",
+  "time_estimate_hours": 2.0,
+  "time_spent_hours": 1.5,
+  "linked_files": ["src/features/dashboard/Overview.tsx"],
+  "comments": [
+    {
+      "id": "CMT-0001",
+      "text": "Confirmed — also reproduces on Windows.",
+      "created_at": "2026-03-02T03:39:22.584406Z",
+      "created_by": {
+        "display_name": "Nick",
+        "username": "NRohner",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+      }
+    }
+  ],
+  "attachments": [
+    {
+      "id": "att-0001",
+      "filename": "error-screenshot.png",
+      "size_bytes": 45641,
+      "created_at": "2026-03-02T03:24:09.627477Z",
+      "created_by": {
+        "display_name": "Nick",
+        "username": "NRohner",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+      }
+    }
+  ],
+  "created_by": {
+    "display_name": "Nick",
+    "username": "NRohner",
+    "provider": "github",
+    "avatar_url": "https://avatars.githubusercontent.com/u/62449619?v=4"
+  },
+  "history": [
+    {
+      "action": "created",
+      "user": { "display_name": "Nick", "username": "NRohner", "provider": "github" },
+      "timestamp": "2026-03-01T21:37:07.914369Z"
+    },
+    {
+      "action": "status_changed",
+      "from": "open",
+      "to": "completed",
+      "user": { "display_name": "Nick", "username": "NRohner", "provider": "github" },
+      "timestamp": "2026-03-02T03:29:54.859392Z"
+    }
+  ]
+}
+```
+
+Optional fields (`severity`, `priority`, `steps_to_reproduce`, `votes`, `roadmap_quarter`, etc.) are omitted from the JSON when null or empty.
+
 ### Shared Issue Fields
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | string | Auto-generated: `BUG-0001`, `FEAT-0001`, `IMP-0001`, `TASK-0001` |
-| `title` | string | Short summary (max 200 chars) |
+| `id` | string | Auto-generated display ID: `BUG-0001`, `FEAT-0001`, `IMP-0001`, `TASK-0001` |
+| `uuid` | string | 8-character hex string (first 8 chars of a v4 UUID), used in directory naming |
+| `title` | string | Short summary |
 | `description` | string | Detailed description (Markdown) |
 | `type` | string | `bug`, `feature`, `improvement`, `task` |
-| `status` | string | Status (depends on type) |
+| `status` | string | `open`, `in-progress`, `completed`, `wont-fix` (same for all types) |
 | `tags` | string[] | Freeform categorization tags |
 | `created_at` | ISO 8601 | Creation timestamp |
 | `updated_at` | ISO 8601 | Last update timestamp |
 | `resolved_at` | ISO 8601 \| null | When the issue was resolved |
-| `comments` | Comment[] | Array of `{id, text, created_at, created_by?}` |
-| `attachments` | Attachment[] | Array of file attachment metadata (directory format only) |
+| `comments` | Comment[] | Array of comment objects (see below) |
+| `attachments` | Attachment[] | Array of attachment metadata (directory format only) |
 | `linked_files` | string[] | Relative file paths within the project |
 | `time_estimate_hours` | number \| null | Estimated hours |
 | `time_spent_hours` | number \| null | Actual hours spent |
+| `created_by` | UserInfo \| null | User who created the issue |
+| `history` | HistoryEntry[] | Audit log of all changes to the issue |
+
+### Bug-Specific Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `severity` | string | `critical`, `high`, `medium`, `low` |
+| `steps_to_reproduce` | string | Markdown |
+| `expected_behavior` | string | |
+| `actual_behavior` | string | |
+| `environment` | string | Freeform (e.g., `"Chrome 122, macOS 14.3"`) |
+
+### Feature-Specific Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `priority` | string | `critical`, `high`, `medium`, `low` |
+| `use_case` | string | Markdown |
+| `acceptance_criteria` | string | Markdown (supports `- [ ]` checklists) |
+| `votes` | number | Upvote count (default 0) |
+| `roadmap_quarter` | string \| null | e.g., `"Q2 2026"`, `"Backlog"` |
+
+### Improvement-Specific Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `severity` | string | `critical`, `high`, `medium`, `low` |
+
+Improvements use `severity` (same as bugs) but do not have bug-specific fields like `steps_to_reproduce` or `environment`.
+
+### Task-Specific Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `priority` | string | `critical`, `high`, `medium`, `low` |
+
+Tasks use `priority` (same as features) but do not have feature-specific fields like `use_case` or `votes`.
+
+### Comment Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Auto-generated within the issue: `CMT-0001`, `CMT-0002`, etc. |
+| `text` | string | Comment text (Markdown) |
+| `created_at` | ISO 8601 | When the comment was posted |
+| `created_by` | UserInfo \| null | User who posted the comment (omitted for anonymous) |
 
 ### Attachment Fields
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | string | Auto-generated: `att-0001`, `att-0002`, etc. |
+| `id` | string | Auto-generated within the issue: `att-0001`, `att-0002`, etc. |
 | `filename` | string | Stored filename (deduplicated if needed) |
 | `size_bytes` | number | File size in bytes |
 | `created_at` | ISO 8601 | When the file was attached |
 | `created_by` | UserInfo \| null | User who attached the file |
 
-### Bug-Specific Fields
+Actual attachment files are stored at `.repotrack/issues/<type>-<uuid>/attachments/<filename>`.
 
-| Field | Type | Values |
-|-------|------|--------|
-| `severity` | string | `critical`, `high`, `medium`, `low` |
-| `status` | string | `open`, `in-progress`, `resolved`, `closed`, `wont-fix` |
-| `steps_to_reproduce` | string | Markdown |
-| `expected_behavior` | string | |
-| `actual_behavior` | string | |
-| `environment` | string | Freeform (e.g., "Chrome 122, macOS 14.3") |
+### History Entry Fields
 
-### Feature-Specific Fields
+Each issue maintains an audit log of changes in its `history` array.
 
-| Field | Type | Values |
-|-------|------|--------|
-| `priority` | string | `critical`, `high`, `medium`, `low` |
-| `status` | string | `proposed`, `under-review`, `planned`, `in-progress`, `completed`, `declined` |
-| `use_case` | string | Markdown |
-| `acceptance_criteria` | string | Markdown (supports `- [ ]` checklists) |
-| `votes` | number | Upvote count (default 0) |
-| `roadmap_quarter` | string \| null | e.g., `"Q2 2026"`, `"Backlog"` |
+| Field | Type | Description |
+|-------|------|-------------|
+| `action` | string | `created`, `status_changed`, `comment_added`, `attachment_added` |
+| `from` | string \| null | Previous value (used by `status_changed`) |
+| `to` | string \| null | New value (used by `status_changed` and `attachment_added`) |
+| `user` | UserInfo | User who performed the action |
+| `timestamp` | ISO 8601 | When the action occurred |
+
+### UserInfo Fields
+
+User attribution is attached to issues, comments, attachments, and history entries. When no user is signed in, actions are attributed to `"anon"`.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `display_name` | string | User's display name |
+| `username` | string | Username or handle |
+| `provider` | string | Auth provider: `"github"`, `"google"`, or `"anon"` |
+| `avatar_url` | string \| null | Profile picture URL |
 
 ## Claude Code Integration
 

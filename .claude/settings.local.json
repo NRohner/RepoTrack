@@ -13,7 +13,8 @@
       "Bash(rustup update)",
       "Bash(find /d/nrohner/Documents/Code/RepoTrack/.repotrack/issues -name *task* -o -name *task-*)",
       "Bash(npm run:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(grep -n \"status\" /Users/nickrohner/Documents/Code/RepoTrack/.repotrack/issues/*/issue.json)"
     ]
   }
 }
