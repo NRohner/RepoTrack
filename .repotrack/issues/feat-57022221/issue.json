@@ -1,0 +1,49 @@
+{
+  "id": "FEAT-0011",
+  "uuid": "57022221",
+  "title": "Add file watch functionality",
+  "description": "## Overview\nNow that we have created the Claude skill, Claude has the ability to change files in the .repotrack directory. We need to update the repo track code so that it is constantly watching those files and automatically updating itself when those files change.",
+  "type": "feature",
+  "priority": "medium",
+  "status": "completed",
+  "tags": [],
+  "created_at": "2026-03-19T19:34:54.289371Z",
+  "updated_at": "2026-03-25T23:17:24.173753Z",
+  "resolved_at": "2026-03-25T23:17:24.173753Z",
+  "use_case": "Claude marks a bug as in progress. Reportrack sees that change and automatically updates the UI to show that bug as in progress. Currently, for that change to take effect, the user would need to quit and re-open",
+  "votes": 0,
+  "roadmap_quarter": "Backlog",
+  "comments": [],
+  "attachments": [],
+  "linked_files": [],
+  "created_by": {
+    "display_name": "Nick Rohner",
+    "username": "NrohnerJLS",
+    "provider": "github",
+    "avatar_url": "https://avatars.githubusercontent.com/u/227610322?v=4"
+  },
+  "history": [
+    {
+      "action": "created",
+      "user": {
+        "display_name": "Nick Rohner",
+        "username": "NrohnerJLS",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/227610322?v=4"
+      },
+      "timestamp": "2026-03-19T19:34:54.289371Z"
+    },
+    {
+      "action": "status_changed",
+      "from": "open",
+      "to": "completed",
+      "user": {
+        "display_name": "Nick Rohner",
+        "username": "NrohnerJLS",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/227610322?v=4"
+      },
+      "timestamp": "2026-03-25T23:17:24.173753Z"
+    }
+  ]
+}

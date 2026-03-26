@@ -1,0 +1,46 @@
+{
+  "id": "IMP-0007",
+  "uuid": "ebbcbf02",
+  "title": "Full GIT Implementation",
+  "description": "## Current State\nCurrently, the git tab only allows users to commit and push changes to the repotrack directory.\n\n## Desired State\nAdd a toggle to the git page that allows users to toggle between committing/pushing only repotrack files or ALL files.",
+  "type": "improvement",
+  "severity": "medium",
+  "status": "completed",
+  "tags": [],
+  "created_at": "2026-03-25T22:44:56.333284Z",
+  "updated_at": "2026-03-26T00:06:06.371060Z",
+  "resolved_at": "2026-03-26T00:06:06.371060Z",
+  "comments": [],
+  "attachments": [],
+  "linked_files": [],
+  "created_by": {
+    "display_name": "Nick Rohner",
+    "username": "NrohnerJLS",
+    "provider": "github",
+    "avatar_url": "https://avatars.githubusercontent.com/u/227610322?v=4"
+  },
+  "history": [
+    {
+      "action": "created",
+      "user": {
+        "display_name": "Nick Rohner",
+        "username": "NrohnerJLS",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/227610322?v=4"
+      },
+      "timestamp": "2026-03-25T22:44:56.333284Z"
+    },
+    {
+      "action": "status_changed",
+      "from": "open",
+      "to": "completed",
+      "user": {
+        "display_name": "Nick Rohner",
+        "username": "NrohnerJLS",
+        "provider": "github",
+        "avatar_url": "https://avatars.githubusercontent.com/u/227610322?v=4"
+      },
+      "timestamp": "2026-03-26T00:06:06.371060Z"
+    }
+  ]
+}

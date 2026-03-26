@@ -22,6 +22,7 @@ export function GitTab() {
   const [showBranchDropdown, setShowBranchDropdown] = useState(false);
   const [showUndoModal, setShowUndoModal] = useState(false);
   const [undoing, setUndoing] = useState(false);
+  const [commitScope, setCommitScope] = useState<"repotrack" | "all">("repotrack");
 
   const refresh = useCallback(async () => {
     try {
@@ -83,11 +84,18 @@ export function GitTab() {
     }
   };
 
+  const doCommit = async (message: string) => {
+    if (commitScope === "all") {
+      return api.gitCommitAll(message);
+    }
+    return api.gitCommitRepotrack(message);
+  };
+
   const handleCommit = async () => {
     if (!commitMessage.trim()) return;
     setCommitting(true);
     try {
-      await api.gitCommitRepotrack(commitMessage.trim());
+      await doCommit(commitMessage.trim());
       setCommitMessage("");
       addToast({ type: "success", message: "Changes committed" });
       await loadData();
@@ -102,7 +110,7 @@ export function GitTab() {
     if (!commitMessage.trim()) return;
     setCommitting(true);
     try {
-      await api.gitCommitRepotrack(commitMessage.trim());
+      await doCommit(commitMessage.trim());
       setCommitMessage("");
       addToast({ type: "success", message: "Changes committed" });
       setPushing(true);
@@ -410,68 +418,98 @@ export function GitTab() {
           </div>
         </Modal>
 
-        {/* Bottom panel: .repotrack changes + commit form */}
+        {/* Bottom panel: changes + commit form */}
         <div className="shrink-0 border-t border-surface-200 dark:border-surface-800 p-4 space-y-3 bg-white dark:bg-surface-950">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-surface-400 uppercase tracking-wider">
-              .repotrack Changes
-            </h3>
-            {status.repotrack_has_changes && (
+            <div className="flex items-center gap-3">
+              <h3 className="text-sm font-semibold text-surface-400 uppercase tracking-wider">
+                {commitScope === "all" ? "All Changes" : ".repotrack Changes"}
+              </h3>
+              {/* Scope toggle */}
+              <div className="flex rounded-lg border border-surface-300 dark:border-surface-600 overflow-hidden">
+                <button
+                  onClick={() => setCommitScope("repotrack")}
+                  className={`px-2.5 py-1 text-[11px] font-medium transition-colors ${
+                    commitScope === "repotrack"
+                      ? "bg-accent-600 text-white"
+                      : "bg-white dark:bg-surface-800 text-surface-500 dark:text-surface-400 hover:bg-surface-50 dark:hover:bg-surface-700"
+                  }`}
+                >
+                  .repotrack
+                </button>
+                <button
+                  onClick={() => setCommitScope("all")}
+                  className={`px-2.5 py-1 text-[11px] font-medium transition-colors border-l border-surface-300 dark:border-surface-600 ${
+                    commitScope === "all"
+                      ? "bg-accent-600 text-white"
+                      : "bg-white dark:bg-surface-800 text-surface-500 dark:text-surface-400 hover:bg-surface-50 dark:hover:bg-surface-700"
+                  }`}
+                >
+                  All Files
+                </button>
+              </div>
+            </div>
+            {(commitScope === "all" ? status.all_has_changes : status.repotrack_has_changes) && (
               <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-500 font-medium">
-                {status.changed_files.length} file{status.changed_files.length !== 1 ? "s" : ""} changed
+                {(commitScope === "all" ? status.all_changed_files : status.changed_files).length} file{(commitScope === "all" ? status.all_changed_files : status.changed_files).length !== 1 ? "s" : ""} changed
               </span>
             )}
           </div>
 
-          {status.changed_files.length > 0 ? (
-            <>
-              <div className="max-h-28 overflow-y-auto space-y-1">
-                {status.changed_files.map((f) => (
-                  <div key={f} className="flex items-center gap-2 text-xs">
-                    <span className="px-1 py-0.5 rounded font-mono text-[10px] font-bold bg-amber-500/15 text-amber-500">M</span>
-                    <span className="font-mono dark:text-surface-300 truncate">{f}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={commitMessage}
-                  onChange={(e) => setCommitMessage(e.target.value)}
-                  placeholder="Commit message..."
-                  className="flex-1 px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
-                  onKeyDown={(e) => {
-                    if ((e.metaKey || e.ctrlKey) && e.key === "Enter") handleCommitAndPush();
-                    else if (e.key === "Enter") handleCommit();
-                  }}
-                />
-                <button
-                  onClick={handleCommit}
-                  disabled={committing || !commitMessage.trim()}
-                  className="px-4 py-2 rounded-lg text-sm font-medium bg-surface-100 dark:bg-surface-800 hover:bg-surface-200 dark:hover:bg-surface-700 dark:text-white transition-colors disabled:opacity-50"
-                >
-                  {committing ? "..." : "Commit"}
-                </button>
-                <button
-                  onClick={handleCommitAndPush}
-                  disabled={committing || pushing || !commitMessage.trim()}
-                  className="px-4 py-2 bg-accent-600 hover:bg-accent-700 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition-all flex items-center gap-2"
-                >
-                  {committing || pushing ? (
-                    <>
-                      <svg className="w-3.5 h-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
-                        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity="0.3" />
-                        <path d="M12 2a10 10 0 019.95 9" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-                      </svg>
-                      {pushing ? "Pushing..." : "Committing..."}
-                    </>
-                  ) : "Commit & Push"}
-                </button>
-              </div>
-            </>
-          ) : (
-            <p className="text-xs text-surface-400">No .repotrack changes to commit</p>
-          )}
+          {(() => {
+            const files = commitScope === "all" ? status.all_changed_files : status.changed_files;
+            return files.length > 0 ? (
+              <>
+                <div className="max-h-28 overflow-y-auto space-y-1">
+                  {files.map((f) => (
+                    <div key={f} className="flex items-center gap-2 text-xs">
+                      <span className="px-1 py-0.5 rounded font-mono text-[10px] font-bold bg-amber-500/15 text-amber-500">M</span>
+                      <span className="font-mono dark:text-surface-300 truncate">{f}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={commitMessage}
+                    onChange={(e) => setCommitMessage(e.target.value)}
+                    placeholder="Commit message..."
+                    className="flex-1 px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
+                    onKeyDown={(e) => {
+                      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") handleCommitAndPush();
+                      else if (e.key === "Enter") handleCommit();
+                    }}
+                  />
+                  <button
+                    onClick={handleCommit}
+                    disabled={committing || !commitMessage.trim()}
+                    className="px-4 py-2 rounded-lg text-sm font-medium bg-surface-100 dark:bg-surface-800 hover:bg-surface-200 dark:hover:bg-surface-700 dark:text-white transition-colors disabled:opacity-50"
+                  >
+                    {committing ? "..." : "Commit"}
+                  </button>
+                  <button
+                    onClick={handleCommitAndPush}
+                    disabled={committing || pushing || !commitMessage.trim()}
+                    className="px-4 py-2 bg-accent-600 hover:bg-accent-700 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition-all flex items-center gap-2"
+                  >
+                    {committing || pushing ? (
+                      <>
+                        <svg className="w-3.5 h-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
+                          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity="0.3" />
+                          <path d="M12 2a10 10 0 019.95 9" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                        </svg>
+                        {pushing ? "Pushing..." : "Committing..."}
+                      </>
+                    ) : "Commit & Push"}
+                  </button>
+                </div>
+              </>
+            ) : (
+              <p className="text-xs text-surface-400">
+                {commitScope === "all" ? "No changes to commit" : "No .repotrack changes to commit"}
+              </p>
+            );
+          })()}
         </div>
       </div>
     </div>

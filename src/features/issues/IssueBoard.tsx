@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useAppStore } from "@/lib/store";
 import * as api from "@/lib/api";
 import type { Issue, IssueType, Severity } from "@/lib/types";
@@ -42,6 +42,19 @@ export function IssueBoard() {
   const [showNewIssue, setShowNewIssue] = useState(false);
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
   const [inlineEditId, setInlineEditId] = useState<string | null>(null);
+
+  // Sync the open issue detail panel when issues change (e.g., from file watcher reload)
+  useEffect(() => {
+    if (selectedIssue) {
+      const updated = issues.find((i) => i.id === selectedIssue.id);
+      if (updated) {
+        setSelectedIssue(updated);
+      } else {
+        // Issue was deleted externally — close the panel
+        setSelectedIssue(null);
+      }
+    }
+  }, [issues]);
 
   const tabs: { key: ViewTab; label: string; icon: React.ReactNode | null }[] = [
     { key: "all", label: "All", icon: null },

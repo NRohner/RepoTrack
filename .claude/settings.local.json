@@ -10,7 +10,9 @@
       "Bash(npm install:*)",
       "Bash(git push:*)",
       "Bash(cd /Users/nickrohner/Documents/Code/RepoTrack/src-tauri && cargo add dotenvy)",
-      "Bash(rustup update)"
+      "Bash(rustup update)",
+      "Bash(find /d/nrohner/Documents/Code/RepoTrack/.repotrack/issues -name *task* -o -name *task-*)",
+      "Bash(npm run:*)"
     ]
   }
 }
