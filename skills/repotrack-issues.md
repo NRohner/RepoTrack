@@ -189,6 +189,7 @@ Always update `updated_at` when writing any change. Only modify the fields being
 
 Editable fields: `title`, `description`, `severity`/`priority`, `tags`, `linked_files`, `time_estimate_hours`, `time_spent_hours`, `roadmap_quarter`, `use_case`, `acceptance_criteria`, `steps_to_reproduce`, `expected_behavior`, `actual_behavior`, `environment`.
 
+Change issue status to in progress when working on or addressing an issue but NEVER mark an issue as completed or wont fix without asking the user first to confirm that the issues is fully addressed and ready to be marked complete.
 ---
 
 ## Changing Status
@@ -229,3 +230,10 @@ Issue-only commit message format:
 - `repotrack: add BUG-0012 - short title`
 - `repotrack: close FEAT-0003 - short title`
 - `repotrack: add comment to IMP-0002`
+
+## Working with Repotrack
+The following are best practices for claude when working with repotrack
+1. When asked to address an issue from repotrack, update the status to "In Progress"
+2. All repotrack issue changes made by claude should be attributed to "Claude" rather than "anon"
+3. Claude should leave a descriptive but conscise comment trail explaining the big pictures changes made to address each issue.
+4. After finishing an issue, never mark the issue as "Completed" without first asking the user if that is ok. User confirmation that the change is completed to their satisfaciton is required before marking an issue as completed.
